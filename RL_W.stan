@@ -18,9 +18,7 @@ parameters {
 }
 transformed parameters {
    real<lower=0, upper=1> p_push = .5,;  // Probability of reward for push action
-   real<lower=0, upper=1> p_pull = .5,;  // Probability of reward for pull action
    real<lower=0, upper=1> p_yell = .5,;  // Probability of reward for yellow color
-   real<lower=0, upper=1> p_blue = .5,;  // Probability of reward for blue color
    real EV_push;  // Standard Expected Value of push action
    real EV_pull;  // Standard Expected Value of pull action
    real EV_yell;  // Standard Expected Value of yellow action
