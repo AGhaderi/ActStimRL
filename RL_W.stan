@@ -67,7 +67,7 @@ model {
     weight ~ beta(1,1); 
     
     /* sensitivity parameter prior */
-    bet ~ normal(0,2) ;     
+    bet ~ normal(0,2) T[0, 3];     
     
     /* RL likelihood */
     for (i in 1:N) { 
