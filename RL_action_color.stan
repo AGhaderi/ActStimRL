@@ -1,102 +1,86 @@
-functions { 
-  /* Model 3
-   * Ratcliff diffusion log-PDF for a single response (adapted from brms 1.10.2 and hddm 0.7.8)
-   * Arguments: 
-   *   Y: acc*rt in seconds (negative and positive RTs for incorrect and correct responses respectively)
-   *   boundary: boundary separation parameter > 0
-   *   ndt: non-decision time parameter > 0
-   *   bias: initial bias parameter in [0, 1]
-   *   drift: mean drift rate parameter across trials
-   *   sddrift: standard deviation of drift rates across trials
-   * Returns:  
-   *   a scalar to be added to the log posterior 
-   */ 
-   real ratcliff_lpdf(real Y, real boundary, 
-                              real ndt, real bias, real drift, real sddrift) { 
-    real X;
-    X = (fabs(Y) - ndt); // Remove non-decision time   
-    if (Y >= 0) {
-    return wiener_lpdf( fabs(Y) | boundary, ndt, bias, drift )  + (  ( (boundary*(1-bias)*sddrift)^2 + 2*drift*boundary*(1-bias) - (drift^2)*X ) / (2*(sddrift^2)*X+2)  ) - log(sqrt((sddrift^2)*X+1)) - drift*boundary*(1-bias) + (drift^2)*X*0.5;
-    } else {
-    return wiener_lpdf( fabs(Y) | boundary, ndt, 1-bias, -drift ) + (  ( (boundary*bias*sddrift)^2 - 2*drift*boundary*bias - (drift^2)*X ) / (2*(sddrift^2)*X+2)  ) - log(sqrt((sddrift^2)*X+1)) + drift*boundary*bias + (drift^2)*X*0.5;
-    }
-   }
-} 
+/* Model RL in addditon to weightening for modeling both Action and Color values learning at the same time
+* This model is just based on responce choices rather that both responce choices and responce time
+*/ 
 data {
-    int<lower=1> N_obs;       // Number of trial-level observations
-    int<lower=1> N_mis;       // Number of trial-level missing data
-    int<lower=1> ncohers;     // Number of coherence conditions {2}
-    int<lower=1> nspats;      // Number of spatial conditions {2}
-    int<lower=1> nconds;      // Number of conditions
-    real y[N_obs + N_mis];    // acc*rt in seconds (negative and positive RTs for incorrect and correct responses respectively)
-    int<lower=1> cond_coher[N_obs + N_mis];  // High and low coherence conditions index {1, 2} for each trial
-    int<lower=1> cond_spat[N_obs + N_mis];   // Prioritized and non-prioritized spatial conditions index {1, 2} for each trial
-    int<lower=1> conds[N_obs + N_mis];       // Conditions index {1, 2, 3, 4} for each trial
-    vector<lower=0>[N_obs] n200lat_obs;      // N200 Latency for observed trials
+    int<lower=1> N;                          // Number of trial-level observations
+    int<lower=0, upper=1> pushedChosen;      // 1 if push acion is chosen and 0 if push action is not chosen 
+    int<lower=0, upper=1> yellowChosen;      // 1 if yellow color is chosen and 0 if yellow color is not chosen 
+    int<lower=0, upper=100> winAmtPushable;  // the amount of values feedback when push action is correct response
+    int<lower=0, upper=100> winAmtYellow;    // 1 if yellow color is chosen and 0 if yellow color is not chosen 
+    real<lower=0, upper=1> acc[N_obs];         // accuracy (0, 1) incorrect and correct responses respectively
 }
 parameters {
-    vector<lower=0.101, upper=0.248>[N_mis] n200lat_mis;  // vector of missing data for n200 latency  
-    
-    real<lower=0> n200latstd;     // n200lat std
-    /* main paameter*/
-    real<lower=0, upper=6> delta[ncohers];    // drift rate for coherences conditions
-    real<lower=0, upper=4> alpha;               // Boundary boundary
-    real<lower=0, upper=3> eta;                 // Trial-to-trial standard deviation of drift rate
-    real<lower=0, upper=.4> res;                // residual of Non-decision time
-    real<lower=0, upper=.4> n200sub[nconds];  // n200 mu parameter for each condition 
-    real<lower=0, upper=3> lambda[nspats];              // coefficient paramter
+    real<lower=0, upper=1> alpha_A; // Learning rate for Action Learning Value
+    real<lower=0, upper=1> alpha_C; // Learning rate for Color Learning Value
+    real<lower=0, upper=1> weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
+    real<lower=0> beta;             // With a higher sensitivity value θ, choices are more sensitive to value differences 
+ 
 }
 transformed parameters {
-   vector[N_obs + N_mis] n200lat = append_row(n200lat_obs, n200lat_mis);
+   real<lower=0, upper=1> p_push = .5,;  // Probability of reward for push action
+   real<lower=0, upper=1> p_pull = .5,;  // Probability of reward for pull action
+   real<lower=0, upper=1> p_yell = .5,;  // Probability of reward for yellow color
+   real<lower=0, upper=1> p_blue = .5,;  // Probability of reward for blue color
+   real EV_push;  // Standard Expected Value of push action
+   real EV_pull;  // Standard Expected Value of pull action
+   real EV_yell;  // Standard Expected Value of yellow action
+   real EV_blue;  // Standard Expected Value of blue action
+   real EV_push_yell;  // Weighting two strategies between push action and yellow color values learning
+   real EV_push_blue;  // Weighting two strategies between push action and blue color values learning
+   real EV_pull_yell;  // Weighting two strategies between pull action and yellow color values learning
+   real EV_pull_blue;  // Weighting two strategies between pull action and blue color values learning
+   vector[N] soft_max_EV; //  The soft-max function for each trial
+   
+   # Calculating the probability of reward
+   for (i in 1:N) {
+       # RL rule update
+       p_push = p_push + alpha_A*(pushedChosen[i] - p_push)   
+       p_yell = p_yell + alpha_C*(yellowChosen[i] - p_yell)
+       
+       # Calculating the Standard Expected Value
+       EV_push = p_push*winAmtPushable[i]
+       EV_pull = (1 - p_push)*(100 - winAmtPushable[i])
+       EV_yell = p_yell*winAmtYellow[i]
+       EV_blue = (1 - p_yell)*(100 - winAmtPushable[i])
+       
+       # Relative contribution of Action Value Learning verus Stimulus Value Learning
+       EV_push_yell = weight*EV_push + (1 - weight)*EV_yell
+       EV_push_blue = weight*EV_push + (1 - weight)*EV_blue
+       EV_pull_yell = weight*EV_pull + (1 - weight)*EV_yell
+       EV_pull_blue = weight*EV_pull + (1 - weight)*EV_blue
+       
+       # Calculating the soft-max function ovwer weightening Action and Color conditions
+       if (pushedChosen[i] == 1 & yellowChosen[i] == 1):
+           soft_max_EV[i] = exp(beta*EV_push_yell)/(exp(beta*EV_push_yell) + exp(beta*EV_pull_blue))
+       elif (pushedChosen[i] == 1 & yellowChosen[i] == 0):
+           soft_max_EV[i] = exp(beta*EV_push_blue)/(exp(beta*EV_push_blue) + exp(beta*EV_pull_yell))
+       elif (pushedChosen[i] == 0 & yellowChosen[i] == 1):
+           soft_max_EV[i] = exp(beta*EV_pull_yell)/(exp(beta*EV_pull_yell) + exp(beta*EV_push_blue))
+       else (pushedChosen[i] == 0 & yellowChosen[i] == 0):
+           soft_max_EV[i] = exp(beta*EV_pull_blue)/(exp(beta*EV_pull_blue) + exp(beta*EV_push_yell))      
+    }   
 }
 model {
-    
-    n200latstd ~ gamma(.1,.1); 
-    /* main paameter*/
-    for (c in 1:ncohers) {
-        delta[c] ~ normal(2, 4) T[0, 6];
-    }
+    /* learning rate parameters prior */
+    alpha_A ~ beta(1,1); 
+    alpha_A ~ beta(1,1); 
 
-    res ~ normal(.1, .1) T[0,.4];
-    for (c in 1:nspats){
-        lambda[c] ~ normal(.4, .5) T[0, 3];
-    }
-
-    for (c in 1:nconds) {
-         n200sub[c] ~ normal(.17,.05) T[0, .4];
-    }
-    alpha ~ normal(1, 2) T[0, 4];
-    eta ~ normal(1, 2) T[0, 3];
+    /* Wieghtening parameter prior */
+    weight ~ beta(1,1); 
     
-    for (i in 1:N_obs) {
-        // Note that N200 latencies are censored between 100 and 250 ms for observed data
-        n200lat_obs[i] ~ normal(n200sub[conds[i]], n200latstd) T[.101,.248];
-    }    
-    for (i in 1:N_mis) {
-        // Note that N200 latencies are censored between 100 and 250 ms for missing data
-        n200lat_mis[i] ~ normal(n200sub[conds[N_obs + i]], n200latstd) T[.101,.248];
-    }
+    /* sensitivity parameter prior */
+    beta ~ normal(0,2) ;     
     
-    // Wiener likelihood
-    for (i in 1:N_obs + N_mis) { 
-    
-        // Log density for DDM process
-        y[i] ~ ratcliff_lpdf(alpha, res + lambda[cond_spat[i]]*n200lat[i], .5, delta[cond_coher[i]], eta);
+    /* RL likelihood */
+    for (i in 1:N) { 
+        acc[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
 generated quantities { 
-   vector[N_obs + N_mis] log_lik; 
-   vector[N_obs + N_mis] n200lat_lpdf;
-    
-    // n200lat likelihood
-    for (i in 1:N_obs+N_mis) {
-        // Note that N200 latencies are censored between 100 and 250 ms for observed data
-        n200lat_lpdf[i] = normal_lpdf(n200lat[i] | n200sub[conds[i]], n200latstd);
-    }   
-    
-   // Wiener likelihood
-    for (i in 1:N_obs+N_mis) {
-        // Log density for DDM process
-         log_lik[i] = ratcliff_lpdf(y[i] | alpha, res + lambda[cond_spat[i]]*n200lat[i], .5, delta[cond_coher[i]], eta) + n200lat_lpdf[i];
+   vector[N] log_lik;  
+   
+    /*  RL Log density likelihood */
+    for (i in 1:N) {
+         log_lik[i] = bernoulli(soft_max_EV[i])
    }
 }
