@@ -7,7 +7,7 @@ data {
     int<lower=0, upper=1> yellowChosen;      // 1 if yellow color is chosen and 0 if yellow color is not chosen 
     int<lower=0, upper=100> winAmtPushable;  // the amount of values feedback when push action is correct response
     int<lower=0, upper=100> winAmtYellow;    // 1 if yellow color is chosen and 0 if yellow color is not chosen 
-    real<lower=0, upper=1> acc[N_obs];         // accuracy (0, 1) incorrect and correct responses respectively
+    real<lower=0, upper=1> w[N_obs];         // 1 if rewarded feedback and 0 if non-rewarded feedback
 }
 parameters {
     real<lower=0, upper=1> alpha_A; // Learning rate for Action Learning Value
@@ -71,7 +71,7 @@ model {
     
     /* RL likelihood */
     for (i in 1:N) { 
-        acc[i] ~ bernoulli(soft_max_EV[i]);
+        w[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
 generated quantities { 
