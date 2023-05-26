@@ -13,7 +13,7 @@ parameters {
     real<lower=0, upper=1> alpha_A; // Learning rate for Action Learning Value
     real<lower=0, upper=1> alpha_C; // Learning rate for Color Learning Value
     real<lower=0, upper=1> weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
-    real<lower=0> beta;             // With a higher sensitivity value θ, choices are more sensitive to value differences 
+    real<lower=0> bet;              // With a higher sensitivity value θ, choices are more sensitive to value differences 
  
 }
 transformed parameters {
@@ -49,13 +49,13 @@ transformed parameters {
        
        # Calculating the soft-max function ovwer weightening Action and Color conditions
        if (pushedChosen[i] == 1 & yellowChosen[i] == 1):
-           soft_max_EV[i] = exp(beta*EV_push_yell)/(exp(beta*EV_push_yell) + exp(beta*EV_pull_blue))
+           soft_max_EV[i] = exp(bet*EV_push_yell)/(exp(bet*EV_push_yell) + exp(bet*EV_pull_blue))
        elif (pushedChosen[i] == 1 & yellowChosen[i] == 0):
-           soft_max_EV[i] = exp(beta*EV_push_blue)/(exp(beta*EV_push_blue) + exp(beta*EV_pull_yell))
+           soft_max_EV[i] = exp(bet*EV_push_blue)/(exp(bet*EV_push_blue) + exp(bet*EV_pull_yell))
        elif (pushedChosen[i] == 0 & yellowChosen[i] == 1):
-           soft_max_EV[i] = exp(beta*EV_pull_yell)/(exp(beta*EV_pull_yell) + exp(beta*EV_push_blue))
+           soft_max_EV[i] = exp(bet*EV_pull_yell)/(exp(bet*EV_pull_yell) + exp(bet*EV_push_blue))
        else (pushedChosen[i] == 0 & yellowChosen[i] == 0):
-           soft_max_EV[i] = exp(beta*EV_pull_blue)/(exp(beta*EV_pull_blue) + exp(beta*EV_push_yell))      
+           soft_max_EV[i] = exp(bet*EV_pull_blue)/(exp(bet*EV_pull_blue) + exp(bet*EV_push_yell))      
     }   
 }
 model {
@@ -67,7 +67,7 @@ model {
     weight ~ beta(1,1); 
     
     /* sensitivity parameter prior */
-    beta ~ normal(0,2) ;     
+    bet ~ normal(0,2) ;     
     
     /* RL likelihood */
     for (i in 1:N) { 
