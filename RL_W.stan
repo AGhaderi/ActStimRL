@@ -2,14 +2,14 @@
 * This model is just based on responce choices rather that both responce choices and responce time
 */ 
 data {
-    int<lower=1> N;                             // Number of trial-level observations
-    int<lower=0, upper=1> pushed[N];            // 1 if pushed and 0 if pulled 
-    int<lower=0, upper=1> yellowChosen[N];      // 1 if yellow color is chosen and 0 if yellow color is not chosen 
-    int<lower=0, upper=100> winAmtPushable[N];  // the amount of values feedback when push action is correct response
-    int<lower=0, upper=100> winAmtYellow[N];    // 1 if yellow color is chosen and 0 if yellow color is not chosen 
+    int<lower=1> N;                            // Number of trial-level observations
+    int<lower=0, upper=1> pushed[N];           // 1 if pushed and 0 if pulled 
+    int<lower=0, upper=1> yellowChosen[N];     // 1 if yellow color is chosen and 0 if yellow color is not chosen 
+    int<lower=0, upper=100> winAmtPushable[N]; // the amount of values feedback when push action is correct response
+    int<lower=0, upper=100> winAmtYellow[N];   // 1 if yellow color is chosen and 0 if yellow color is not chosen 
     int<lower=0, upper=1> rewarded[N];         // 1 if rewarded feedback and 0 if non-rewarded feedback
-    real<lower=0, upper=1> p_push_init;     // 1 if rewarded feedback and 0 if non-rewarded feedback
-    real<lower=0, upper=1> p_yell_init;     // 1 if rewarded feedback and 0 if non-rewarded feedback
+    real<lower=0, upper=1> p_push_init;        // initial value for probability of reward for pushed responce
+    real<lower=0, upper=1> p_yell_init;        // initial value for probability of reward for stimulus responce
  }
 parameters {
     real<lower=0, upper=1> alpha_A; // Learning rate for Action Learning Value
