@@ -1,4 +1,6 @@
-/* Model RL in addditon to weightening parameter to modele both Action and Stimulus values learning at the same time
+/* Model RL in addditon to weightening parameter to modele both Action and Color values learning at the same time
+   This code can only model each singel data for instance one condition in one specific session and run.
+   Therefore, this code conducts the individual level nanalysis
 */ 
 data {
     int<lower=1> N;                            // Number of trial-level observations
@@ -8,7 +10,7 @@ data {
     int<lower=0, upper=100> winAmtYellow[N];   // The amount of values feedback when yellow chosen is correct response 
     int<lower=0, upper=1> rewarded[N];         // 1 for rewarding and 0 for punishment
     real<lower=0, upper=1> p_push_init;        // Initial value of reward probability for pushed responce
-    real<lower=0, upper=1> p_yell_init;        // Initial value of reward probability for stimulus responce
+    real<lower=0, upper=1> p_yell_init;        // Initial value of reward probability for Color responce
  }
 transformed data{
     // Transform the actual choice data to two combined possibilities
@@ -16,12 +18,12 @@ transformed data{
     // Or
     // 1: pushed and blue   vs 0: pulled and yellow
     // NaN: no choice/irregular response (e.g. pushing when pulling allowed) have been removed before model fitting
-    int<lower=0, upper=1> resActStim[N];
-    resActStim = pushed;   
+    int<lower=0, upper=1> resActClr[N];
+    resActClr = pushed;   
 }
 parameters {
     real<lower=0, upper=1> alphaAct_; // Learning rate for Action Learning Value
-    real<lower=0, upper=1> alphaStim_; // Learning rate for Stimulus Learning Value
+    real<lower=0, upper=1> alphaClr_; // Learning rate for Color Learning Value
     real<lower=0, upper=1> weightAct_;  // Wieghtening of Action Learning Value against to Color Learnig Value
     real<lower=0> beta_; // With a higher sensitivity value θ, choices are more sensitive to value differences 
  
@@ -57,11 +59,11 @@ transformed parameters {
             p_push = 1 - p_pull;
        }    
        if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaStim_*(rewarded[i] - p_yell);
+           p_yell = p_yell + alphaClr_*(rewarded[i] - p_yell);
            p_blue = 1 - p_yell;
        }    
        else{
-           p_blue = p_blue + alphaStim_*(rewarded[i] - p_blue);
+           p_blue = p_blue + alphaClr_*(rewarded[i] - p_blue);
            p_yell = 1 - p_blue;           
        }
        // Calculating the Standard Expected Value
@@ -70,7 +72,7 @@ transformed parameters {
        EV_yell = p_yell*winAmtYellow[i];
        EV_blue = p_blue*(100 - winAmtYellow[i]);
        
-       // Relative contribution of Action Value Learning verus Stimulus Value Learning
+       // Relative contribution of Action Value Learning verus Color Value Learning
        EV_push_yell = weightAct_*EV_push + (1 - weightAct_)*EV_yell;
        EV_push_blue = weightAct_*EV_push + (1 - weightAct_)*EV_blue;
        EV_pull_yell = weightAct_*EV_pull + (1 - weightAct_)*EV_yell;
@@ -89,7 +91,7 @@ transformed parameters {
 model {
     /* learning rate parameters prior */
     alphaAct_ ~ beta(3,3); 
-    alphaStim_ ~ beta(3,3); 
+    alphaClr_ ~ beta(3,3); 
 
     /* Wieghtening parameter prior */
     weightAct_ ~ beta(3,3); 
@@ -99,7 +101,7 @@ model {
     
     /* RL likelihood */
     for (i in 1:N) { 
-        resActStim[i] ~ bernoulli(soft_max_EV[i]);
+        resActClr[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
 generated quantities { 
@@ -107,6 +109,6 @@ generated quantities {
    
     /*  RL Log density likelihood */
     for (i in 1:N) {
-         log_lik[i] = bernoulli_lpmf(resActStim[i] | soft_max_EV[i]);
+         log_lik[i] = bernoulli_lpmf(resActClr[i] | soft_max_EV[i]);
    }
 }

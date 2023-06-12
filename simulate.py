@@ -132,14 +132,14 @@ def genertae_task_act_stim(isActFirst = True):
             
             # predefined pushed correct responce
             pushCorrect[ses*4*42:(ses+1)*4*42] = np.concatenate([data['triallist1_1'][0], # The condition 1 and run 1
-                                                                shuffle_Binomial(), # The condition 1 and run 2
-                                                                  shuffle_Binomial(),  # The condition 2 and run 1
-                                                                  data['triallist2_2'][0]]) # The condition 2 and run 2
+                                                                 shuffle_Binomial(), # The condition 1 and run 2
+                                                                 shuffle_Binomial(),  # The condition 2 and run 1
+                                                                 data['triallist2_2'][0]]) # The condition 2 and run 2
             # predefined Yellow correct responce
             yellowCorrect[ses*4*42:(ses+1)*4*42] = np.concatenate([shuffle_Binomial(), # The condition 1 and run 1
-                                                                data['triallist1_2'][0], # The condition 1 and run 2
-                                                                data['triallist2_1'][0],# The condition 2 and run 1
-                                                                shuffle_Binomial()]) # The condition 2 and run 2                    
+                                                                   data['triallist1_2'][0], # The condition 1 and run 2
+                                                                   data['triallist2_1'][0],# The condition 2 and run 1
+                                                                   shuffle_Binomial()]) # The condition 2 and run 2                    
             isActFirst = False
 
         else:
