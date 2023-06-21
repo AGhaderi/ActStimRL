@@ -7,7 +7,7 @@ data {
     int<lower=0, upper=1> y[N];      // outcome
 }
 parameters {
-    vector[K] beta;       // regression coefficients
+    matrix[nParts, K] beta;       // regression coefficients
 }
 model {
     beta ~ cauchy(0, 5);  // prior coefficients

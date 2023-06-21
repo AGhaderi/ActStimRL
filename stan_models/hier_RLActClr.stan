@@ -14,7 +14,7 @@ data {
     int<lower=0, upper=1> rewarded[N];         // 1 for rewarding and 0 for punishment
     real<lower=0, upper=1> p_push_init;        // Initial value of reward probability for pushed responce
     real<lower=0, upper=1> p_yell_init;        // Initial value of reward probability for Color responce
-    int<lower=1> participant[N_obs + N_mis];   // participant index for each trial
+    int<lower=1> participant[N];   // participant index for each trial
     int<lower=1, upper=2> session[N];          // session index for each trial
     int<lower=1, upper=2> cond[N];             // Condition index for each trial, 1: Action, 2: Stimulus
  }
@@ -35,17 +35,17 @@ parameters {
     real<lower=0> beta_sd;          // Between-participant variability Sensitivity
 
     /* Hierarchical mu parameter*/                               
-    real<lower=0, upper=1> alphaAct_hier;      // Hierarchical Learning rate in  Action Learning Value
-    real<lower=0, upper=1> alphaClr_hier;      // Hierarchical Learning rate in  Color Learning Value  
-    real<lower=0, upper=1> weightAct_hier;     // Hierarchical Wieghtening in  Action Learning Value against to Color Learnig Value
-    real<lower=0, upper=1> beta_hier;          // Hierarchical variability Sensitivity
+    real<lower=0, upper=1> alphaAct_hier[nSes, nCond];      // Hierarchical Learning rate in  Action Learning Value
+    real<lower=0, upper=1> alphaClr_hier[nSes, nCond];      // Hierarchical Learning rate in  Color Learning Value  
+    real<lower=0, upper=1> weightAct_hier[nSes, nCond];     // Hierarchical Wieghtening in  Action Learning Value against to Color Learnig Value
+    real<lower=0, upper=1> beta_hier[nSes];          // Hierarchical variability Sensitivity
 
 
     /* participant-level main paameter*/
-    matrix<lower=0, upper=1>[nparts, nSes, nCond] alphaAct_;   // Individual Learning rate in  Action Learning Value
-    matrix<lower=0, upper=1>[nparts, nSes, nCond] alphaClr_;   // Individual Learning rate in Color Learning Value
-    matrix<lower=0, upper=1>[nparts, nSes, nCond] weightAct_;  // Individual Wieghtening in Action Learning Value against to Color Learnig Value
-    vector<lower=0, upper=1>[nparts, nSes] beta_;  // Individual Sensitivity,  With a higher sensitivity value θ, choices are more sensitive to value differences 
+    real<lower=0, upper=1> alphaAct_[nparts, nSes, nCond];   // Individual Learning rate in  Action Learning Value
+    real<lower=0, upper=1> alphaClr_[nparts, nSes, nCond];   // Individual Learning rate in Color Learning Value
+    real<lower=0, upper=1> weightAct_[nparts, nSes, nCond];  // Individual Wieghtening in Action Learning Value against to Color Learnig Value
+    real<lower=0, upper=1> beta_[nparts, nSes];  // Individual Sensitivity,  With a higher sensitivity value θ, choices are more sensitive to value differences 
  
 }
 transformed parameters {
@@ -138,7 +138,7 @@ model {
           alphaClr_[p, s, r] ~ normal(alphaClr_hier[s, r], alphaClr_sd) T[0, 1]; 
           weightAct_[p, s, r] ~ normal(weightAct_hier[s, r], weightAct_sd) T[0, 1]; 
        }
-       beta_hier[p, s] ~ normal(alphaAct_hier[s, r], beta_sd) T[0, 10];   
+       beta_[p, s] ~ normal(alphaAct_hier[s], beta_sd) T[0, 10];   
       }
     }
     
