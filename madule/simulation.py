@@ -4,10 +4,26 @@ import pandas as pd
 from scipy.io import loadmat
 import os
 
-def trueParam(alphaAct_mu, alphaAct_sd,
-              alphaClr_mu, alphaClr_sd,
-              weghtAct_mu, weghtAct_sd,
-              beta_mu, beta_sd, simNumber = 1):
+def softmax(values, beta = 1):
+    """Choices are selected by the soft-max function rule in each trial"""
+    nom = np.exp(values[0]*beta)
+    denom = np.sum([nom + np.exp(values[1]*beta)])
+    return nom/denom
+
+
+def sample_Bernouli(theta = .5, n_samples = 1):
+    """
+    Generating samples at random from Bernouli density funtion
+    """
+    return (np.random.rand(n_samples) <= theta).astype(int) 
+   
+    
+def trueParamAllParts(alphaAct_mu, alphaAct_sd,
+                      alphaClr_mu, alphaClr_sd,
+                      weghtAct_mu, weghtAct_sd,
+                      beta_mu, beta_sd, simNumber = 1):
+    """Put heirarchical true parameters to task desgin for each participant"""
+    
     # List of subjects
     subList = ['sub-004', 'sub-020', 'sub-012', 'sub-020', 'sub-025', 'sub-026', 'sub-029',
                'sub-030', 'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042',
@@ -16,47 +32,53 @@ def trueParam(alphaAct_mu, alphaAct_sd,
                'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080',
                'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089',
                'sub-090', 'sub-092', 'sub-108', 'sub-109']
+    try:
+        # Set true parameters for each session and conditions realted to unkown parameters
+        for subName in subList:
 
-    # Set true parameters for each session and conditions realted to unkown parameters
-    for subName in subList:
+            # Get the partisipant's task design from the original behavioral dataset 'originalfMRIbehFiles'
+            task_design = getTaskDesign(subName=subName)
+            # Put true parameters into the task design
+            task_desin_parameters = hierTrueParam(task_design = task_design,
+                                                  alphaAct_mu = alphaAct_mu, alphaAct_sd = alphaAct_sd,
+                                                  alphaClr_mu = alphaClr_mu, alphaClr_sd = alphaClr_sd,
+                                                  weghtAct_mu = weghtAct_mu, weghtAct_sd = weghtAct_sd,
+                                                  beta_mu = beta_mu, beta_sd = beta_sd) 
+            # Save task design plus true parameters for each participant
+            parent_dir  = '../data/simulation/'
+            if not os.path.isdir(parent_dir + subName):
+                os.mkdir(parent_dir + subName) 
 
-        # Get the partisipant's task design from the original behavioral dataset 'originalfMRIbehFiles'
-        task_design = getTaskDesign(subName=subName)
-        # Put true parameters into the task design
-        task_desin_parameters = hierTrueParam(task_design = task_design,
-                                              alphaAct_mu = alphaAct_mu, alphaAct_sd = alphaAct_sd,
-                                              alphaClr_mu = alphaClr_mu, alphaClr_sd = alphaClr_sd,
-                                              weghtAct_mu = weghtAct_mu, weghtAct_sd = weghtAct_sd,
-                                              beta_mu = beta_mu, beta_sd = beta_sd) 
-        # Save task design plus true parameters for each participant
-        parent_dir  = '../data/simulation/'
-        if not os.path.isdir(parent_dir + subName):
-            os.mkdir(parent_dir + subName) 
+            if not os.path.isdir(parent_dir + subName + '/' + str(simNumber)):
+                os.mkdir(parent_dir + subName + '/' + str(simNumber))
 
-        if not os.path.isdir(parent_dir + subName + '/' + str(simNumber)):
-            os.mkdir(parent_dir + subName + '/' + str(simNumber))
-            
-        task_desin_parameters.to_csv(parent_dir + subName + '/' + str(simNumber) + '/' +subName +'-task-design-true-param.csv', index=False)
-        
-    # Save hierarchical true parameters
-    dicHierMeanStdParam= ({'label':['Act-session1', 'Stim-session1', 'Act-session2', 'Stim-session2'],
-                           'hierAlphaAct_mu':alphaAct_mu.flatten(),
-                           'hierAlphaAct_sd': alphaAct_sd.flatten(),
-                           'hierAlphaClr_mu': alphaClr_mu.flatten(),
-                           'hierAlphaClr_sd': alphaClr_sd.flatten(),
-                           'hierWeghtAct_mu': weghtAct_mu.flatten(),
-                           'hieWeghtAct_sd': weghtAct_sd.flatten(),
-                           'hierbeta_mu': beta_mu.flatten(),
-                           'hieBeta_sd': beta_sd.flatten()})
-    dataHierMeanStdParam = pd.DataFrame(dicHierMeanStdParam)
+            task_desin_parameters.to_csv(parent_dir + subName + '/' + str(simNumber) + '/' +subName +'-task-design-true-param.csv', index=False)
+
+        # Save hierarchical true parameters
+        dicHierMeanStdParam= ({'label':['Act-session1', 'Stim-session1', 'Act-session2', 'Stim-session2'],
+                               'hierAlphaAct_mu':alphaAct_mu.flatten(),
+                               'hierAlphaAct_sd': alphaAct_sd.flatten(),
+                               'hierAlphaClr_mu': alphaClr_mu.flatten(),
+                               'hierAlphaClr_sd': alphaClr_sd.flatten(),
+                               'hierWeghtAct_mu': weghtAct_mu.flatten(),
+                               'hieWeghtAct_sd': weghtAct_sd.flatten(),
+                               'hierbeta_mu': beta_mu.flatten(),
+                               'hieBeta_sd': beta_sd.flatten()})
+        dataHierMeanStdParam = pd.DataFrame(dicHierMeanStdParam)
+
+        if not os.path.isdir(parent_dir + 'hierParam'):
+            os.mkdir(parent_dir + 'hierParam') 
+
+        if not os.path.isdir(parent_dir + 'hierParam' + '/' + str(simNumber)):
+            os.mkdir(parent_dir + 'hierParam' + '/' + str(simNumber))
+
+        dataHierMeanStdParam.to_csv(parent_dir + 'hierParam' + '/' + str(simNumber) + '/hier-Mean-Std-True-Param.csv', index=False)
     
-    if not os.path.isdir(parent_dir + 'hierParam'):
-        os.mkdir(parent_dir + 'hierParam') 
-
-    if not os.path.isdir(parent_dir + 'hierParam' + '/' + str(simNumber)):
-        os.mkdir(parent_dir + 'hierParam' + '/' + str(simNumber))
-            
-    dataHierMeanStdParam.to_csv(parent_dir + 'hierParam' + '/' + str(simNumber) + '/hier-Mean-Std-True-Param.csv', index=False)
+        return print("All true parameters for each participant have been generated successfully!")
+    
+    except:
+        return print("An exception accured: " + str(e))
+    
     
 def getTaskDesign(subName = 'sub-092'):
     """Extract task design dataframe from a participant"""
@@ -151,3 +173,150 @@ def hierTrueParam(task_design,
             task_design.loc[(task_design['session'] == s+1) & (task_design['block'] == condition[c]), 'beta'] = beta      
                     
     return task_design
+
+
+def simulateActClr(task_design_param):
+    """Simulated data from the predifed true parameters in dataframe task_design_param"""
+
+    # Number of trials
+    n_trials = task_design_param.shape[0]
+    
+    # condition
+    block = task_design_param.block.to_numpy()
+    
+    # which action and color are available options
+    winAmtPushable = task_design_param.winAmtPushable.to_numpy()
+    winAmtPullable = task_design_param.winAmtPullable.to_numpy()
+    winAmtYellow = task_design_param.winAmtYellow.to_numpy()
+    winAmtBlue = task_design_param.winAmtBlue.to_numpy()  
+    
+    # available options on left and right side
+    leftCanBePushed = task_design_param.leftCanBePushed.to_numpy()
+    yellowOnLeftSide = task_design_param.yellowOnLeftSide.to_numpy()
+    
+    # Correct responces
+    pushCorrect = task_design_param.pushCorrect.to_numpy()
+    yellowCorrect = task_design_param.yellowCorrect.to_numpy()
+    
+    # True Unkown Parameters
+    alphaAct = task_design_param.alphaAct.to_numpy()
+    alphaClr = task_design_param.alphaClr.to_numpy()
+    weghtAct = task_design_param.weghtAct.to_numpy()
+    beta = task_design_param.beta.to_numpy()
+    
+    # output of simulation
+    correctChoice = np.zeros(n_trials).astype(int)
+    pushed = np.zeros(n_trials).astype(int)
+    yellowChosen = np.zeros(n_trials).astype(int)
+
+    # Initial expected probability
+    probPush = .5
+    probPull = .5
+    probYell = .5
+    probBlue = .5
+    
+    for i in range(n_trials):
+        # Standard Expected Value 
+        expValuePush = probPush*winAmtPushable[i]
+        expValuePull = probPull*winAmtPullable[i]
+        expValueYell = probYell*winAmtYellow[i]
+        expValueBlue = probBlue*winAmtBlue[i]
+
+        # Relative contribution of Action Value Learning verus Color Value Learning
+        expValuePushYell = weghtAct[i]*expValuePush + (1 - weghtAct[i])*expValueYell;
+        expValuePushBlue = weghtAct[i]*expValuePush + (1 - weghtAct[i])*expValueBlue;
+        expValuePullYell = weghtAct[i]*expValuePull + (1 - weghtAct[i])*expValueYell;
+        expValuePullBlue = weghtAct[i]*expValuePull + (1 - weghtAct[i])*expValueBlue;
+
+        # Calculating the soft-max function over weightening Action and Color conditions*/ 
+        if (leftCanBePushed[i] == 1 and yellowOnLeftSide[i] == 1) and (leftCanBePushed[i] == 0 and yellowOnLeftSide[i] == 0):
+            """pushed and yellow vs pulled and blue"""
+            theta = softmax(values=[expValuePushYell, expValuePullBlue], beta=beta[i])
+            
+            # make a response
+            y = sample_Bernouli(theta = theta) 
+            
+            # Response for the current trial
+            if y==1:
+                pushed[i] = 1
+                yellowChosen[i] = 1
+            else:
+                pushed[i] = 0
+                yellowChosen[i] = 0
+                
+        elif (leftCanBePushed[i] == 1 and yellowOnLeftSide[i] == 0) or (leftCanBePushed[i] == 0 and yellowOnLeftSide[i] == 1):
+            """pushed and blue vs pulled and yellow"""
+            theta = softmax(values=[expValuePushBlue, expValuePullYell], beta=beta[i]) 
+           
+            # make a response
+            y = sample_Bernouli(theta = theta)        
+            
+            # Response for the current trial
+            if y==1:
+                pushed[i] = 1
+                yellowChosen[i] = 0
+            else:
+                pushed[i] = 0
+                yellowChosen[i] = 1
+                
+        # Get reward
+        if block[i] == 'Act':
+            reward = int(pushed[i] == pushCorrect[i])
+            # Choice correct for the current trial
+            correctChoice[i] =  reward
+        elif block[i] == 'Stim':
+            reward = int(yellowChosen[i] == yellowCorrect[i])
+            # Choice correct for the current trial
+            correctChoice[i] =  reward
+        
+        # Rl rule update
+        if pushed[i] == 1:
+            probPush = probPush + alphaAct[i]*(reward - probPush)
+            probPull = 1 - probPush           
+        else:
+            probPull = probPull + alphaAct[i]*(reward - probPull)
+            probPush = 1 - probPull                      
+        if yellowChosen[i] == 1:
+            probYell = probYell + alphaClr[i]*(reward - probYell)
+            probBlue = 1 - probYell
+        else:
+            probBlue = probBlue + alphaClr[i]*(reward - probBlue)
+            probYell = 1 - probBlue  
+        
+    # output results
+    task_design_param['correctChoice'] = correctChoice
+    task_design_param['pushed'] = pushed
+    task_design_param['yellowChosen'] = yellowChosen 
+
+    return task_design_param
+
+
+def simulateActClrAllParts(simNumber = 1):
+    """Simulated data for each participatn based on predefined True Parameters"""
+    
+    # List of subjects
+    subList = ['sub-004', 'sub-012', 'sub-020', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
+               'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-045',
+               'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 'sub-060',
+               'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 'sub-074',
+               'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 'sub-081',
+               'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 'sub-090',
+               'sub-092', 'sub-108', 'sub-109']
+    try:
+        # Simulation for participant
+        for subName in subList:
+
+            parent_dir  = '../data/simulation/'+ subName + '/' + str(simNumber) + '/'
+            # Read predefined task design with true parameters
+            task_design_param = pd.read_csv(parent_dir + subName +'-task-design-true-param.csv')
+
+            simulated_data = simulateActClr(task_design_param)
+            simulated_data.to_csv(parent_dir + subName +'-simulated-data-with-task-design-true-param.csv', index=False)
+            
+        return print("All simulations have been done successfully!")
+    
+    except Exception as e:
+        return print("An exception accured: " + str(e))
+    
+    
+    
