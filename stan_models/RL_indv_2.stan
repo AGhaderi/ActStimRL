@@ -16,23 +16,19 @@ data {
     real<lower=0, upper=1> p_push_init;        // Initial value of reward probability for pushed responce
     real<lower=0, upper=1> p_yell_init;        // Initial value of reward probability for Color responce
  }
-transformed data{
-    // Transform the actual choice data to two combined possibilities
-    // 1: pushed and yellow vs 0: pulled and blue
-    // Or
-    // 1: pushed and blue   vs 0: pulled and yellow
-    // NaN: no choice/irregular response (e.g. pushing when pulling allowed) have been removed before model fitting
-    int<lower=0, upper=1> resActClr[N];
-    resActClr = pushed;
-}
 parameters {
-    matrix<lower=0, upper=1>[nSes, nCond] alphaAct_; // Learning rate for Action Learning Value
-    matrix<lower=0, upper=1>[nSes, nCond] alphaClr_; // Learning rate for Color Learning Value
-    matrix<lower=0, upper=1>[nSes, nCond] weightAct_;  // Wieghtening of Action Learning Value against to Color Learnig Value
-    vector<lower=0>[nSes] beta_; // With a higher sensitivity value θ, choices are more sensitive to value differences 
+    matrix[nSes, nCond] alphaAct; // Learning rate for Action Learning Value
+    matrix[nSes, nCond] alphaClr; // Learning rate for Color Learning Value
+    matrix[nSes, nCond] weightAct;  // Wieghtening of Action Learning Value against to Color Learnig Value
+    vector[nSes] sensitivity; // With a higher sensitivity value θ, choices are more sensitive to value differences 
  
 }
 transformed parameters {
+    matrix[nSes, nCond] transf_alphaAct = Phi(alphaAct);
+    matrix[nSes, nCond] transf_alphaClr = Phi(alphaClr);
+    matrix[nSes, nCond] transf_weightAct = Phi(weightAct);
+	  vector[nSes] transf_sensitivity = log(1+exp(sensitivity)); 
+  
    real<lower=0, upper=1> p_push;  // Probability of reward for pushing responce
    real<lower=0, upper=1> p_pull;  // Probability of reward for pulling responce
    real<lower=0, upper=1> p_yell;  // Probability of reward for yrllow responce
@@ -55,19 +51,19 @@ transformed parameters {
    for (i in 1:N) {
        // RL rule update
        if (pushed[i] == 1){
-            p_push = p_push + alphaAct_[session[i], cond[i]]*(rewarded[i] - p_push); 
+            p_push = p_push + transf_alphaAct[session[i], cond[i]]*(rewarded[i] - p_push); 
             p_pull = 1 - p_push;
         }
        else{
-            p_pull = p_pull + alphaAct_[session[i], cond[i]]*(rewarded[i] - p_pull);
+            p_pull = p_pull + transf_alphaAct[session[i], cond[i]]*(rewarded[i] - p_pull);
             p_push = 1 - p_pull;
        }    
        if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaClr_[session[i], cond[i]]*(rewarded[i] - p_yell);
+           p_yell = p_yell + transf_alphaClr[session[i], cond[i]]*(rewarded[i] - p_yell);
            p_blue = 1 - p_yell;
        }    
        else{
-           p_blue = p_blue + alphaClr_[session[i], cond[i]]*(rewarded[i] - p_blue);
+           p_blue = p_blue + transf_alphaClr[session[i], cond[i]]*(rewarded[i] - p_blue);
            p_yell = 1 - p_blue;           
        }
        // Calculating the Standard Expected Value
@@ -77,19 +73,19 @@ transformed parameters {
        EV_blue = p_blue*(100 - winAmtYellow[i]);
        
        // Relative contribution of Action Value Learning verus Color Value Learning
-       EV_push_yell = weightAct_[session[i], cond[i]]*EV_push + (1 - weightAct_[session[i], cond[i]])*EV_yell;
-       EV_push_blue = weightAct_[session[i], cond[i]]*EV_push + (1 - weightAct_[session[i], cond[i]])*EV_blue;
-       EV_pull_yell = weightAct_[session[i], cond[i]]*EV_pull + (1 - weightAct_[session[i], cond[i]])*EV_yell;
-       EV_pull_blue = weightAct_[session[i], cond[i]]*EV_pull + (1 - weightAct_[session[i], cond[i]])*EV_blue;
+       EV_push_yell = transf_weightAct[session[i], cond[i]]*EV_push + (1 - transf_weightAct[session[i], cond[i]])*EV_yell;
+       EV_push_blue = transf_weightAct[session[i], cond[i]]*EV_push + (1 - transf_weightAct[session[i], cond[i]])*EV_blue;
+       EV_pull_yell = transf_weightAct[session[i], cond[i]]*EV_pull + (1 - transf_weightAct[session[i], cond[i]])*EV_yell;
+       EV_pull_blue = transf_weightAct[session[i], cond[i]]*EV_pull + (1 - transf_weightAct[session[i], cond[i]])*EV_blue;
        
         /* Calculating the soft-max function ovwer weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(beta_[session[i]]*EV_push_yell)/(exp(beta_[session[i]]*EV_push_yell) + exp(beta_[session[i]]*EV_pull_blue));
+            soft_max_EV[i] = exp(transf_sensitivity[session[i]]*EV_push_yell)/(exp(transf_sensitivity[session[i]]*EV_push_yell) + exp(transf_sensitivity[session[i]]*EV_pull_blue));
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(beta_[session[i]]*EV_push_blue)/(exp(beta_[session[i]]*EV_push_blue) + exp(beta_[session[i]]*EV_pull_yell));      
+            soft_max_EV[i] = exp(transf_sensitivity[session[i]]*EV_push_blue)/(exp(transf_sensitivity[session[i]]*EV_push_blue) + exp(transf_sensitivity[session[i]]*EV_pull_yell));      
     }   
 }
 model {
@@ -97,19 +93,18 @@ model {
      /* learning rate parameters prior */
     /* Wieghtening parameter prior */   
     for (s in 1:nSes) {
+      sensitivity[s] ~ normal(1,.5); 
       
-      beta_[s] ~ gamma(1,1) T[0, 10];   
-      
-      for (r in 1:nCond) {
-        alphaAct_[s, r] ~ beta(3,3); 
-        alphaClr_[s, r] ~ beta(3,3);
-        weightAct_[s, r] ~ beta(3,3); 
+      for (c in 1:nCond) {
+        alphaAct[s, c] ~ normal(.5,.5);
+        alphaClr[s, c] ~ normal(.5,.5);
+        weightAct[s, c] ~ normal(.5,.5);
        }
     }
     
     /* RL likelihood */
     for (i in 1:N) { 
-        resActClr[i] ~ bernoulli(soft_max_EV[i]);
+        pushed[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
 generated quantities { 
@@ -117,6 +112,6 @@ generated quantities {
    
     /*  RL Log density likelihood */
     for (i in 1:N) {
-         log_lik[i] = bernoulli_lpmf(resActClr[i] | soft_max_EV[i]);
+         log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
    }
 }

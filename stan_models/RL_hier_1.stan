@@ -4,7 +4,7 @@
 */ 
 data {
     int<lower=1> N;       // Number of trial-level observations
-    int<lower=1> nparts;  // Number of participants
+    int<lower=1> nParts;  // Number of participants
     int<lower=1> nCond;   // Number of conditions (Action vs Color)
     int<lower=1> nSes;    // Number of Session
     int<lower=0, upper=1> pushed[N];           // 1 if pushed and 0 if pulled 
@@ -16,37 +16,26 @@ data {
     real<lower=0, upper=1> p_yell_init;        // Initial value of reward probability for Color responce
     int<lower=1> participant[N];   // participant index for each trial
     int<lower=1, upper=2> session[N];          // session index for each trial
-    int<lower=1, upper=2> cond[N];             // Condition index for each trial, 1: Action, 2: Stimulus
+    int<lower=1, upper=2> condition[N];             // Condition index for each trial, 1: Action, 2: Stimulus
  }
-transformed data{
-    // Transform the actual choice data to two combined possibilities
-    // 1: pushed and yellow vs 0: pulled and blue
-    // Or
-    // 1: pushed and blue   vs 0: pulled and yellow
-    // NaN: no choice/irregular response (e.g. pushing when pulling allowed) have been removed before model fitting
-    int<lower=0, upper=1> resActClr[N];
-    resActClr = pushed;
-}
 parameters {
       /* sigma paameter*/
     real<lower=0> alphaAct_sd;      // Between-participant variability Learning rate in  Action Learning Value
     real<lower=0> alphaClr_sd;      // Between-participant variability Learning rate in  Color Learning Value  
     real<lower=0> weightAct_sd;     // Between-participant variability Wieghtening in  Action Learning Value against to Color Learnig Value
-    real<lower=0> beta_sd;          // Between-participant variability Sensitivity
+    real<lower=0> sensitivity_sd;          // Between-participant variability Sensitivity
 
     /* Hierarchical mu parameter*/                               
     real<lower=0, upper=1> alphaAct_hier[nSes, nCond];      // Hierarchical Learning rate in  Action Learning Value
     real<lower=0, upper=1> alphaClr_hier[nSes, nCond];      // Hierarchical Learning rate in  Color Learning Value  
     real<lower=0, upper=1> weightAct_hier[nSes, nCond];     // Hierarchical Wieghtening in  Action Learning Value against to Color Learnig Value
-    real<lower=0, upper=1> beta_hier[nSes];          // Hierarchical variability Sensitivity
-
+    real<lower=0, upper=1> sensitivity_hier[nSes];          // Hierarchical variability Sensitivity
 
     /* participant-level main paameter*/
-    real<lower=0, upper=1> alphaAct_[nparts, nSes, nCond];   // Individual Learning rate in  Action Learning Value
-    real<lower=0, upper=1> alphaClr_[nparts, nSes, nCond];   // Individual Learning rate in Color Learning Value
-    real<lower=0, upper=1> weightAct_[nparts, nSes, nCond];  // Individual Wieghtening in Action Learning Value against to Color Learnig Value
-    real<lower=0, upper=1> beta_[nparts, nSes];  // Individual Sensitivity,  With a higher sensitivity value θ, choices are more sensitive to value differences 
- 
+    real<lower=0, upper=1> alphaAct[nParts, nSes, nCond];   // Individual Learning rate in  Action Learning Value
+    real<lower=0, upper=1> alphaClr[nParts, nSes, nCond];   // Individual Learning rate in Color Learning Value
+    real<lower=0, upper=1> weightAct[nParts, nSes, nCond];  // Individual Wieghtening in Action Learning Value against to Color Learnig Value
+    real<lower=0, upper=1> sensitivity[nParts, nSes];  // Individual Sensitivity,  With a higher sensitivity value θ, choices are more sensitive to value differences 
 }
 transformed parameters {
    real<lower=0, upper=1> p_push;  // Probability of reward for pushing responce
@@ -71,19 +60,19 @@ transformed parameters {
    for (i in 1:N) {
        // RL rule update
        if (pushed[i] == 1){
-            p_push = p_push + alphaAct_[participant[i], session[i], cond[i]]*(rewarded[i] - p_push); 
+            p_push = p_push + alphaAct[participant[i], session[i], condition[i]]*(rewarded[i] - p_push); 
             p_pull = 1 - p_push;
         }
        else{
-            p_pull = p_pull + alphaAct_[participant[i], session[i], cond[i]]*(rewarded[i] - p_pull);
+            p_pull = p_pull + alphaAct[participant[i], session[i], condition[i]]*(rewarded[i] - p_pull);
             p_push = 1 - p_pull;
        }    
        if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaClr_[participant[i], session[i], cond[i]]*(rewarded[i] - p_yell);
+           p_yell = p_yell + alphaClr[participant[i], session[i], condition[i]]*(rewarded[i] - p_yell);
            p_blue = 1 - p_yell;
        }    
        else{
-           p_blue = p_blue + alphaClr_[participant[i], session[i], cond[i]]*(rewarded[i] - p_blue);
+           p_blue = p_blue + alphaClr[participant[i], session[i], condition[i]]*(rewarded[i] - p_blue);
            p_yell = 1 - p_blue;           
        }
        // Calculating the Standard Expected Value
@@ -93,59 +82,55 @@ transformed parameters {
        EV_blue = p_blue*(100 - winAmtYellow[i]);
        
        // Relative contribution of Action Value Learning verus Color Value Learning
-       EV_push_yell = weightAct_[participant[i], session[i], cond[i]]*EV_push + (1 - weightAct_[participant[i], session[i], cond[i]])*EV_yell;
-       EV_push_blue = weightAct_[participant[i], session[i], cond[i]]*EV_push + (1 - weightAct_[participant[i], session[i], cond[i]])*EV_blue;
-       EV_pull_yell = weightAct_[participant[i], session[i], cond[i]]*EV_pull + (1 - weightAct_[participant[i], session[i], cond[i]])*EV_yell;
-       EV_pull_blue = weightAct_[participant[i], session[i], cond[i]]*EV_pull + (1 - weightAct_[participant[i], session[i], cond[i]])*EV_blue;
+       EV_push_yell = weightAct[participant[i], session[i], condition[i]]*EV_push + (1 - weightAct[participant[i], session[i], condition[i]])*EV_yell;
+       EV_push_blue = weightAct[participant[i], session[i], condition[i]]*EV_push + (1 - weightAct[participant[i], session[i], condition[i]])*EV_blue;
+       EV_pull_yell = weightAct[participant[i], session[i], condition[i]]*EV_pull + (1 - weightAct[participant[i], session[i], condition[i]])*EV_yell;
+       EV_pull_blue = weightAct[participant[i], session[i], condition[i]]*EV_pull + (1 - weightAct[participant[i], session[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function ovwer weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(beta_[participant[i], session[i]]*EV_push_yell)/(exp(beta_[participant[i], session[i]]*EV_push_yell) + exp(beta_[participant[i], session[i]]*EV_pull_blue));
+            soft_max_EV[i] = exp(sensitivity[participant[i], session[i]]*EV_push_yell)/(exp(sensitivity[participant[i], session[i]]*EV_push_yell) + exp(sensitivity[participant[i], session[i]]*EV_pull_blue));
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(beta_[participant[i], session[i]]*EV_push_blue)/(exp(beta_[participant[i], session[i]]*EV_push_blue) + exp(beta_[participant[i], session[i]]*EV_pull_yell));      
+            soft_max_EV[i] = exp(sensitivity[participant[i], session[i]]*EV_push_blue)/(exp(sensitivity[participant[i], session[i]]*EV_push_blue) + exp(sensitivity[participant[i], session[i]]*EV_pull_yell));      
     }   
 }
 model {
   
-  
     /* sigma paameter*/
-    alphaAct_sd ~ gamma(1,1); 
-    alphaClr_sd ~ gamma(1,1); 
-    weightAct_sd ~ gamma(1,1); 
-    beta_sd ~ gamma(.1,1);    
-
+    alphaAct_sd ~ gamma(.1, .1); 
+    alphaClr_sd ~ gamma(.1, .1); 
+    weightAct_sd ~ gamma(.1, .1); 
+    sensitivity_sd ~ gamma(1, 1);     
    
      /* Hierarchical mu parameter*/                               
     for (s in 1:nSes) {
-      for (r in 1:nCond) {
-        alphaAct_hier[s, r] ~ beta(3,3); 
-        alphaClr_hier[s, r] ~ beta(3,3);
-        weightAct_hier[s, r] ~ beta(3,3); 
+      for (c in 1:nCond) {
+        alphaAct_hier[s, c] ~ beta(5, 5); 
+        alphaClr_hier[s, c] ~ beta(5, 5);
+        weightAct_hier[s, c] ~ beta(5, 5); 
        }
-      beta_hier[s] ~ gamma(1,1) T[0, 10];   
-    }
-    
-    
+      sensitivity_hier[s] ~ beta(5, 5);   
+    } 
        
     /* participant-level main paameter*/
-    for (p in 1:nparts) {
+    for (p in 1:nParts) {
       for (s in 1:nSes) {
-        for (r in 1:nCond) {
-          alphaAct_[p, s, r] ~ normal(alphaAct_hier[s, r], alphaAct_sd) T[0, 1]; 
-          alphaClr_[p, s, r] ~ normal(alphaClr_hier[s, r], alphaClr_sd) T[0, 1]; 
-          weightAct_[p, s, r] ~ normal(weightAct_hier[s, r], weightAct_sd) T[0, 1]; 
+        for (c in 1:nCond) {
+          alphaAct[p, s, c] ~ normal(alphaAct_hier[s, c], alphaAct_sd) T[0,1]; 
+          alphaClr[p, s, c] ~ normal(alphaClr_hier[s, c], alphaClr_sd) T[0,1]; 
+          weightAct[p, s, c] ~ normal(weightAct_hier[s, c], weightAct_sd) T[0,1]; 
        }
-       beta_[p, s] ~ normal(alphaAct_hier[s], beta_sd) T[0, 10];   
+       sensitivity[p, s] ~ normal(sensitivity_hier[s], sensitivity_sd) T[0,1];   
       }
     }
     
     
     /* RL likelihood */
     for (i in 1:N) { 
-        resActClr[i] ~ bernoulli(soft_max_EV[i]);
+        pushed[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
 generated quantities { 
@@ -153,6 +138,6 @@ generated quantities {
    
     /*  RL Log density likelihood */
     for (i in 1:N) {
-         log_lik[i] = bernoulli_lpmf(resActClr[i] | soft_max_EV[i]);
+         log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
    }
 }

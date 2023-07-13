@@ -45,7 +45,7 @@ def trueParamAllParts(alphaAct_mu, alphaAct_sd,
                                                   weghtAct_mu = weghtAct_mu, weghtAct_sd = weghtAct_sd,
                                                   beta_mu = beta_mu, beta_sd = beta_sd) 
             # Save task design plus true parameters for each participant
-            parent_dir  = '../data/simulation/'
+            parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/'
             if not os.path.isdir(parent_dir + subName):
                 os.mkdir(parent_dir + subName) 
 
@@ -57,13 +57,13 @@ def trueParamAllParts(alphaAct_mu, alphaAct_sd,
         # Save hierarchical true parameters
         dicHierMeanStdParam= ({'label':['Act-session1', 'Stim-session1', 'Act-session2', 'Stim-session2'],
                                'hierAlphaAct_mu':alphaAct_mu.flatten(),
-                               'hierAlphaAct_sd': alphaAct_sd.flatten(),
+                               'hierAlphaAct_sd': np.repeat(alphaAct_sd, 4),
                                'hierAlphaClr_mu': alphaClr_mu.flatten(),
-                               'hierAlphaClr_sd': alphaClr_sd.flatten(),
+                               'hierAlphaClr_sd': np.repeat(alphaClr_sd, 4),
                                'hierWeghtAct_mu': weghtAct_mu.flatten(),
-                               'hieWeghtAct_sd': weghtAct_sd.flatten(),
-                               'hierbeta_mu': beta_mu.flatten(),
-                               'hieBeta_sd': beta_sd.flatten()})
+                               'hieWeghtAct_sd': np.repeat(weghtAct_sd, 4),
+                               'hierbeta_mu': np.repeat(beta_mu,2),
+                               'hieBeta_sd': np.repeat(beta_sd, 4)})
         dataHierMeanStdParam = pd.DataFrame(dicHierMeanStdParam)
 
         if not os.path.isdir(parent_dir + 'hierParam'):
@@ -89,7 +89,7 @@ def getTaskDesign(subName = 'sub-092'):
              '/ses-03achieva7t/' + subName + '_ses-03achieva7t_task-DA_run-1_beh.csv',
              '/ses-03achieva7t/' + subName + '_ses-03achieva7t_task-DA_run-2_beh.csv']
     # Main directory of the subject
-    subMainDirec = '../data/originalfMRIbehFiles/'
+    subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
     # Making empty Dataframe to be concatenated in all four .csv file of the subject
     data = pd.DataFrame([])
     for i in range(len(files)):
@@ -146,31 +146,34 @@ def hierTrueParam(task_design,
     # Get random sample for each unkhown parameters from a truncated normal distribution
     # True parameters are generated for each conition and session independently
     for s in range(nses):
+        
+        while (True):
+            # Sensitivity parameter chnage across session not condition
+            beta = np.round(np.random.normal(beta_mu[s], beta_sd), 2)
+            if beta > 0 and beta <= 10:
+                break
+        task_design.loc[task_design['session'] == s+1, 'beta'] = beta 
+            
         for c in range(ncond):
             while (True):
-                alphaAct = np.round(np.random.normal(alphaAct_mu[s, c], alphaAct_sd[s, c]), 2)
+                alphaAct = np.round(np.random.normal(alphaAct_mu[s, c], alphaAct_sd), 2)
                 if alphaAct > 0 and alphaAct < 1:
                     break
                     
             while (True):
-                alphaClr = np.round(np.random.normal(alphaClr_mu[s, c], alphaClr_sd[s, c]), 2)
+                alphaClr = np.round(np.random.normal(alphaClr_mu[s, c], alphaClr_sd), 2)
                 if alphaClr > 0 and alphaClr < 1:
                     break
             
             while (True):
-                weghtAct = np.round(np.random.normal(weghtAct_mu[s, c], weghtAct_sd[s, c]), 2)
+                weghtAct = np.round(np.random.normal(weghtAct_mu[s, c], weghtAct_sd), 2)
                 if weghtAct > 0 and weghtAct < 1:
                     break
-            
-            while (True):
-                beta = np.round(np.random.normal(beta_mu[s, c], beta_sd[s, c]), 2)
-                if beta > 0 and beta <= 10:
-                    break
+
             # Put generated true parameters within the origonal task design dataframe
             task_design.loc[(task_design['session'] == s+1) & (task_design['block'] == condition[c]), 'alphaAct'] = alphaAct
             task_design.loc[(task_design['session'] == s+1) & (task_design['block'] == condition[c]), 'alphaClr'] = alphaClr
             task_design.loc[(task_design['session'] == s+1) & (task_design['block'] == condition[c]), 'weghtAct'] = weghtAct
-            task_design.loc[(task_design['session'] == s+1) & (task_design['block'] == condition[c]), 'beta'] = beta      
                     
     return task_design
 
@@ -306,7 +309,7 @@ def simulateActClrAllParts(simNumber = 1):
         # Simulation for participant
         for subName in subList:
 
-            parent_dir  = '../data/simulation/'+ subName + '/' + str(simNumber) + '/'
+            parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/'+ subName + '/' + str(simNumber) + '/'
             # Read predefined task design with true parameters
             task_design_param = pd.read_csv(parent_dir + subName +'-task-design-true-param.csv')
 
