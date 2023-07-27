@@ -1,0 +1,336 @@
+nohup: ignoring input
+Building...
+
+Building: 22.5s, done.Messages from stanc:
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 9, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 10, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 11, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 15, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 115, column 49: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan__h3ifbf7/model_vgsvm6qc.stan', line 107, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Sampling:   0%
+Sampling:   0% (100/50000)
+Sampling:   0% (200/50000)
+Sampling:   1% (400/50000)
+Sampling:   1% (500/50000)
+Sampling:   1% (600/50000)
+Sampling:   1% (700/50000)
+Sampling:   2% (800/50000)
+Sampling:   2% (900/50000)
+Sampling:   2% (1000/50000)
+Sampling:   2% (1100/50000)
+Sampling:   3% (1300/50000)
+Sampling:   3% (1600/50000)
+Sampling:   4% (1900/50000)
+Sampling:   4% (2200/50000)
+Sampling:   5% (2500/50000)
+Sampling:   6% (2800/50000)
+Sampling:   6% (3100/50000)
+Sampling:   7% (3300/50000)
+Sampling:   7% (3600/50000)
+Sampling:   8% (3900/50000)
+Sampling:   8% (4100/50000)
+Sampling:   9% (4300/50000)
+Sampling:   9% (4700/50000)
+Sampling:  10% (4900/50000)
+Sampling:  10% (5200/50000)
+Sampling:  11% (5400/50000)
+Sampling:  11% (5700/50000)
+Sampling:  12% (6000/50000)
+Sampling:  13% (6300/50000)
+Sampling:  13% (6600/50000)
+Sampling:  14% (7000/50000)
+Sampling:  15% (7600/50000)
+Sampling:  18% (8900/50000)
+Sampling:  21% (10700/50000)
+Sampling:  24% (11800/50000)
+Sampling:  27% (13500/50000)
+Sampling:  31% (15400/50000)
+Sampling:  37% (18700/50000)
+Sampling:  46% (23000/50000)
+Sampling:  48% (24200/50000)
+Sampling:  51% (25500/50000)
+Sampling:  58% (29100/50000)
+Sampling:  64% (31900/50000)
+Sampling:  69% (34500/50000)
+Sampling:  74% (37100/50000)
+Sampling:  80% (39800/50000)
+Sampling:  84% (42200/50000)
+Sampling:  87% (43300/50000)
+Sampling:  90% (45100/50000)
+Sampling:  93% (46500/50000)
+Sampling:  93% (46700/50000)
+Sampling:  95% (47300/50000)
+Sampling:  95% (47500/50000)
+Sampling:  96% (48200/50000)
+Sampling:  97% (48600/50000)
+Sampling:  97% (48700/50000)
+Sampling:  98% (49000/50000)
+Sampling:  99% (49300/50000)
+Sampling:  99% (49400/50000)
+Sampling:  99% (49500/50000)
+Sampling:  99% (49600/50000)
+Sampling: 100% (49800/50000)
+Sampling: 100% (49900/50000)
+Sampling: 100% (50000/50000)
+Sampling: 100% (50000/50000), done.
+Messages received during sampling:
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000689 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 6.89 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000534 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.34 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000752 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 7.52 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000754 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 7.54 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.00052 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.2 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000542 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.42 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.000791 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 7.91 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000535 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.35 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000761 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 7.61 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000754 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 7.54 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_4lbfly5o/model_vgsvm6qc.stan', line 107, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/sub-004/3/sub-004_RL_indv_2_sim.pkl

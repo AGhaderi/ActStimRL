@@ -20,15 +20,13 @@ parameters {
     matrix[nSes, nCond] alphaAct; // Learning rate for Action Learning Value
     matrix[nSes, nCond] alphaClr; // Learning rate for Color Learning Value
     matrix[nSes, nCond] weightAct;  // Wieghtening of Action Learning Value against to Color Learnig Value
-    vector[nSes] sensitivity; // With a higher sensitivity value θ, choices are more sensitive to value differences 
- 
+
 }
 transformed parameters {
     matrix[nSes, nCond] transf_alphaAct = Phi(alphaAct);
     matrix[nSes, nCond] transf_alphaClr = Phi(alphaClr);
     matrix[nSes, nCond] transf_weightAct = Phi(weightAct);
-	  vector[nSes] transf_sensitivity = log(1+exp(sensitivity)); 
-  
+
    real<lower=0, upper=1> p_push;  // Probability of reward for pushing responce
    real<lower=0, upper=1> p_pull;  // Probability of reward for pulling responce
    real<lower=0, upper=1> p_yell;  // Probability of reward for yrllow responce
@@ -81,27 +79,23 @@ transformed parameters {
         /* Calculating the soft-max function ovwer weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(transf_sensitivity[session[i]]*EV_push_yell)/(exp(transf_sensitivity[session[i]]*EV_push_yell) + exp(transf_sensitivity[session[i]]*EV_pull_blue));
+            soft_max_EV[i] = exp(.01*EV_push_yell)/(exp(.01*EV_push_yell) + exp(.01*EV_pull_blue));
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(transf_sensitivity[session[i]]*EV_push_blue)/(exp(transf_sensitivity[session[i]]*EV_push_blue) + exp(transf_sensitivity[session[i]]*EV_pull_yell));      
+            soft_max_EV[i] = exp(.01*EV_push_blue)/(exp(.01*EV_push_blue) + exp(.01*EV_pull_yell));      
     }   
 }
 model {
-     /* sensitivity parameter prior */
      /* learning rate parameters prior */
     /* Wieghtening parameter prior */   
     for (s in 1:nSes) {
-      sensitivity[s] ~ normal(1, .5); 
-      
       for (c in 1:nCond) {
         alphaAct[s, c] ~ normal(.5,.5);
         alphaClr[s, c] ~ normal(.5,.5);
         weightAct[s, c] ~ normal(.5,.5);
        }
     }
-    
     /* RL likelihood */
     for (i in 1:N) { 
         pushed[i] ~ bernoulli(soft_max_EV[i]);

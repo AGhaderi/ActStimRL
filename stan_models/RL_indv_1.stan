@@ -12,7 +12,7 @@ data {
     int winAmtYellow[N];   // The amount of values feedback when yellow chosen is correct response 
     int rewarded[N];         // 1 for rewarding and 0 for punishment
     int session[N];         // Indices of session for each trials
-    int cond[N];            // Indices of cindition for each trials, 1: Action, 2: Stimulus
+    int condition[N];            // Indices of cindition for each trials, 1: Action, 2: Stimulus
     real p_push_init;        // Initial value of reward probability for pushed responce
     real p_yell_init;        // Initial value of reward probability for Color responce
  }
@@ -46,19 +46,19 @@ transformed parameters {
    for (i in 1:N) {
        // RL rule update
        if (pushed[i] == 1){
-            p_push = p_push + alphaAct[session[i], cond[i]]*(rewarded[i] - p_push); 
+            p_push = p_push + alphaAct[session[i], condition[i]]*(rewarded[i] - p_push); 
             p_pull = 1 - p_push;
         }
        else{
-            p_pull = p_pull + alphaAct[session[i], cond[i]]*(rewarded[i] - p_pull);
+            p_pull = p_pull + alphaAct[session[i], condition[i]]*(rewarded[i] - p_pull);
             p_push = 1 - p_pull;
        }    
        if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaClr[session[i], cond[i]]*(rewarded[i] - p_yell);
+           p_yell = p_yell + alphaClr[session[i], condition[i]]*(rewarded[i] - p_yell);
            p_blue = 1 - p_yell;
        }    
        else{
-           p_blue = p_blue + alphaClr[session[i], cond[i]]*(rewarded[i] - p_blue);
+           p_blue = p_blue + alphaClr[session[i], condition[i]]*(rewarded[i] - p_blue);
            p_yell = 1 - p_blue;           
        }
        // Calculating the Standard Expected Value
@@ -68,10 +68,10 @@ transformed parameters {
        EV_blue = p_blue*(100 - winAmtYellow[i]);
        
        // Relative contribution of Action Value Learning verus Color Value Learning
-       EV_push_yell = weightAct[session[i], cond[i]]*EV_push + (1 - weightAct[session[i], cond[i]])*EV_yell;
-       EV_push_blue = weightAct[session[i], cond[i]]*EV_push + (1 - weightAct[session[i], cond[i]])*EV_blue;
-       EV_pull_yell = weightAct[session[i], cond[i]]*EV_pull + (1 - weightAct[session[i], cond[i]])*EV_yell;
-       EV_pull_blue = weightAct[session[i], cond[i]]*EV_pull + (1 - weightAct[session[i], cond[i]])*EV_blue;
+       EV_push_yell = weightAct[session[i], condition[i]]*EV_push + (1 - weightAct[session[i], condition[i]])*EV_yell;
+       EV_push_blue = weightAct[session[i], condition[i]]*EV_push + (1 - weightAct[session[i], condition[i]])*EV_blue;
+       EV_pull_yell = weightAct[session[i], condition[i]]*EV_pull + (1 - weightAct[session[i], condition[i]])*EV_yell;
+       EV_pull_blue = weightAct[session[i], condition[i]]*EV_pull + (1 - weightAct[session[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function ovwer weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue

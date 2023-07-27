@@ -1,4 +1,4 @@
-/* Model RL in addditon to weightening parameter to modele both Action and Color values learning at the same time
+/* R-W Model RL in addditon to weightening parameter to modele both Action and Color values learning at the same time
    This code can only model each singel data for instance one condition in one specific session and run.
    Therefore, this code conducts the individual level nanalysis
 */ 
@@ -29,7 +29,7 @@ parameters {
     real<lower=0, upper=1> alphaAct_hier[nSes, nCond];      // Hierarchical Learning rate in  Action Learning Value
     real<lower=0, upper=1> alphaClr_hier[nSes, nCond];      // Hierarchical Learning rate in  Color Learning Value  
     real<lower=0, upper=1> weightAct_hier[nSes, nCond];     // Hierarchical Wieghtening in  Action Learning Value against to Color Learnig Value
-    real<lower=0, upper=1> sensitivity_hier[nSes];          // Hierarchical variability Sensitivity
+    real<lower=0, upper=10> sensitivity_hier[nSes];          // Hierarchical variability Sensitivity
 
     /* participant-level main paameter*/
     real<lower=0, upper=1> alphaAct[nParts, nSes, nCond];   // Individual Learning rate in  Action Learning Value
@@ -44,7 +44,7 @@ transformed parameters {
     real transf_weightAct_sd;
     real transf_sensitivity_sd;
 	 
-	  transf_alphaAct_sd = log(1+exp(alphaAct_sd));
+	transf_alphaAct_sd = log(1+exp(alphaAct_sd));
     transf_alphaClr_sd = log(1+exp(alphaClr_sd));
     transf_weightAct_sd = log(1+exp(weightAct_sd));
     transf_sensitivity_sd = log(1+exp(sensitivity_sd));

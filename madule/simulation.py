@@ -22,7 +22,7 @@ def trueParamAllParts(alphaAct_mu, alphaAct_sd,
                       alphaClr_mu, alphaClr_sd,
                       weghtAct_mu, weghtAct_sd,
                       beta_mu, beta_sd, simNumber = 1):
-    """Put heirarchical true parameters to task desgin for each participant"""
+    """generate and put individual and heirarchical true parameters into task desgin for each participant"""
     
     # List of subjects
     subList = ['sub-004', 'sub-020', 'sub-012', 'sub-020', 'sub-025', 'sub-026', 'sub-029',
@@ -35,20 +35,19 @@ def trueParamAllParts(alphaAct_mu, alphaAct_sd,
     try:
         # Set true parameters for each session and conditions realted to unkown parameters
         for subName in subList:
-
             # Get the partisipant's task design from the original behavioral dataset 'originalfMRIbehFiles'
             task_design = getTaskDesign(subName=subName)
             # Put true parameters into the task design
-            task_desin_parameters = hierTrueParam(task_design = task_design,
-                                                  alphaAct_mu = alphaAct_mu, alphaAct_sd = alphaAct_sd,
-                                                  alphaClr_mu = alphaClr_mu, alphaClr_sd = alphaClr_sd,
-                                                  weghtAct_mu = weghtAct_mu, weghtAct_sd = weghtAct_sd,
-                                                  beta_mu = beta_mu, beta_sd = beta_sd) 
+            task_desin_parameters = trueParam(task_design = task_design,
+                                              alphaAct_mu = alphaAct_mu, alphaAct_sd = alphaAct_sd,
+                                              alphaClr_mu = alphaClr_mu, alphaClr_sd = alphaClr_sd,
+                                              weghtAct_mu = weghtAct_mu, weghtAct_sd = weghtAct_sd,
+                                              beta_mu = beta_mu, beta_sd = beta_sd) 
             # Save task design plus true parameters for each participant
             parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/'
+            # Check directory of subject name forlder and simulation number
             if not os.path.isdir(parent_dir + subName):
                 os.mkdir(parent_dir + subName) 
-
             if not os.path.isdir(parent_dir + subName + '/' + str(simNumber)):
                 os.mkdir(parent_dir + subName + '/' + str(simNumber))
 
@@ -104,11 +103,11 @@ def getTaskDesign(subName = 'sub-092'):
     return task_design
 
 
-def hierTrueParam(task_design,
-                alphaAct_mu, alphaAct_sd,
-                alphaClr_mu, alphaClr_sd,
-                weghtAct_mu, weghtAct_sd,
-                beta_mu, beta_sd): 
+def trueParam(task_design,
+              alphaAct_mu, alphaAct_sd,
+              alphaClr_mu, alphaClr_sd,
+              weghtAct_mu, weghtAct_sd,
+              beta_mu, beta_sd): 
     
     """
     Set true parameters in each condition and session independently.
@@ -150,9 +149,9 @@ def hierTrueParam(task_design,
         while (True):
             # Sensitivity parameter chnage across session not condition
             beta = np.round(np.random.normal(beta_mu[s], beta_sd), 2)
-            if beta > 0 and beta <= 10:
+            if beta > 0 and beta <= 3:
                 break
-        task_design.loc[task_design['session'] == s+1, 'beta'] = beta 
+        task_design.loc[task_design['session'] == s+1, 'beta'] = beta
             
         for c in range(ncond):
             while (True):
@@ -312,7 +311,7 @@ def simulateActClrAllParts(simNumber = 1):
             parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/'+ subName + '/' + str(simNumber) + '/'
             # Read predefined task design with true parameters
             task_design_param = pd.read_csv(parent_dir + subName +'-task-design-true-param.csv')
-
+            # simulate data
             simulated_data = simulateActClr(task_design_param)
             simulated_data.to_csv(parent_dir + subName +'-simulated-data-with-task-design-true-param.csv', index=False)
             
