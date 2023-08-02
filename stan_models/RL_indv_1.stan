@@ -44,23 +44,7 @@ transformed parameters {
    p_yell = p_yell_init;
    p_blue = 1 - p_yell_init;
    for (i in 1:N) {
-       // RL rule update
-       if (pushed[i] == 1){
-            p_push = p_push + alphaAct[session[i], condition[i]]*(rewarded[i] - p_push); 
-            p_pull = 1 - p_push;
-        }
-       else{
-            p_pull = p_pull + alphaAct[session[i], condition[i]]*(rewarded[i] - p_pull);
-            p_push = 1 - p_pull;
-       }    
-       if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaClr[session[i], condition[i]]*(rewarded[i] - p_yell);
-           p_blue = 1 - p_yell;
-       }    
-       else{
-           p_blue = p_blue + alphaClr[session[i], condition[i]]*(rewarded[i] - p_blue);
-           p_yell = 1 - p_blue;           
-       }
+
        // Calculating the Standard Expected Value
        EV_push = p_push*winAmtPushable[i];
        EV_pull = p_pull*(100 - winAmtPushable[i]);
@@ -80,7 +64,26 @@ transformed parameters {
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(sensitivity[session[i]]*EV_push_blue)/(exp(sensitivity[session[i]]*EV_push_blue) + exp(sensitivity[session[i]]*EV_pull_yell));      
+            soft_max_EV[i] = exp(sensitivity[session[i]]*EV_push_blue)/(exp(sensitivity[session[i]]*EV_push_blue) + exp(sensitivity[session[i]]*EV_pull_yell));  
+          
+      // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
+       if (pushed[i] == 1){
+            p_push = p_push + alphaAct[session[i], condition[i]]*(rewarded[i] - p_push); 
+            p_pull = 1 - p_push;
+        }
+       else{
+            p_pull = p_pull + alphaAct[session[i], condition[i]]*(rewarded[i] - p_pull);
+            p_push = 1 - p_pull;
+       }    
+       if (yellowChosen[i] == 1){
+           p_yell = p_yell + alphaClr[session[i], condition[i]]*(rewarded[i] - p_yell);
+           p_blue = 1 - p_yell;
+       }    
+       else{
+           p_blue = p_blue + alphaClr[session[i], condition[i]]*(rewarded[i] - p_blue);
+           p_yell = 1 - p_blue;           
+       }
+       
     }   
 }
 model {

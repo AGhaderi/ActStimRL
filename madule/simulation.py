@@ -60,9 +60,9 @@ def trueParamAllParts(alphaAct_mu, alphaAct_sd,
                                'hierAlphaClr_mu': alphaClr_mu.flatten(),
                                'hierAlphaClr_sd': np.repeat(alphaClr_sd, 4),
                                'hierWeghtAct_mu': weghtAct_mu.flatten(),
-                               'hieWeghtAct_sd': np.repeat(weghtAct_sd, 4),
+                               'hierWeghtAct_sd': np.repeat(weghtAct_sd, 4),
                                'hierbeta_mu': np.repeat(beta_mu,2),
-                               'hieBeta_sd': np.repeat(beta_sd, 4)})
+                               'hierBeta_sd': np.repeat(beta_sd, 4)})
         dataHierMeanStdParam = pd.DataFrame(dicHierMeanStdParam)
 
         if not os.path.isdir(parent_dir + 'hierParam'):
@@ -166,7 +166,7 @@ def trueParam(task_design,
             
             while (True):
                 weghtAct = np.round(np.random.normal(weghtAct_mu[s, c], weghtAct_sd), 2)
-                if weghtAct > 0 and weghtAct < 1:
+                if weghtAct >= 0 and weghtAct <= 1:
                     break
 
             # Put generated true parameters within the origonal task design dataframe
