@@ -16,12 +16,15 @@ import nest_asyncio
 modelFit = True
 
 # Number of simulation
-simNumber = 1
+simNumber = 5
+# name of stand plus simuluation number
+fileName = 'RLhier3_sim5'
+stanName = 'RLhier3'
 
 # Number of chains in MCMC procedure
-nChains = 10
+nChains = 4
 # The number of iteration or samples for each chain in MCM procedure
-nSamples = 3000
+nSamples = 2000
 # Main directory of simulated data
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/' 
 # Directory of the simulated subject
@@ -30,7 +33,7 @@ dirc = subMainDirec + 'hierParam/'  + str(simNumber) + '/' +'hier-simulated-data
 data = pd.read_csv(dirc)
     
 # The adrees name of pickle file
-pickelDir = subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier_RL_hier_3_sim.pkl'
+pickelDir = subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +fileName + '.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # data from group label 2 particiapnt
@@ -67,23 +70,23 @@ if modelFit == True:
     initials = [] 
     for c in range(0, nChains):
         chaininit = {
-            'alphaAct_sd': np.random.uniform(.05, .2),
-            'alphaClr_sd': np.random.uniform(.05, .2),        
-            'weightAct_sd': np.random.uniform(.05, .2),
-            'sensitivity_sd': np.random.uniform(.05, .2),
-            'alphaAct_hier': np.random.uniform(.3, .7, size=(nSes, nCond)),
-            'alphaClr_hier': np.random.uniform(.3, .7, size=(nSes, nCond)),
-            'weightAct_hier': np.random.uniform(.3, .7, size=(nSes, nCond)),        
-            'sensitivity_hier': np.random.uniform(.1, .1, size=(nSes)),
-            'alphaAct': np.random.uniform(.1, .9, size=(nParts, nSes, nCond)),       
-            'alphaClr': np.random.uniform(.1, .9, size=(nParts, nSes, nCond)),
-            'weightAct': np.random.uniform(.1, .9, size=(nParts, nSes, nCond)),   
-            'sensitivity': np.random.uniform(.1, .2, size=(nParts, nSes))
+            'alphaAct_sd': np.random.uniform(.01, .03),
+            'alphaClr_sd': np.random.uniform(.01, .03),        
+            'weightAct_sd': np.random.uniform(.01, .03),
+            'sensitivity_sd': np.random.uniform(.01, .03),
+            'alphaAct_hier': np.random.uniform(.4, .6, size=(nSes, nCond)),
+            'alphaClr_hier': np.random.uniform(.4, .6, size=(nSes, nCond)),
+            'weightAct_hier': np.random.uniform(.4, .6, size=(nSes, nCond)),        
+            'sensitivity_hier': np.random.uniform(-6, -2, size=(nSes)),
+            'alphaAct': np.random.uniform(.4, .6, size=(nParts, nSes, nCond)),       
+            'alphaClr': np.random.uniform(.4, .6, size=(nParts, nSes, nCond)),
+            'weightAct': np.random.uniform(.4, .6, size=(nParts, nSes, nCond)),   
+            'sensitivity': np.random.uniform(-6, -2, size=(nParts, nSes))
         }
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '../stan_models/RL_hier_3.stan' 
+    file_name = '../stan_models/' + stanName + '.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -100,10 +103,10 @@ else:
     fit = loadPkl['fit']
     
 # Extracting posterior distributions for each of four main unkhown parameters
-weightAct = fit["weightAct_hier"] 
-sensitivity = fit["sensitivity_hier"] 
-alphaAct = fit["alphaAct_hier"] 
-alphaClr = fit["alphaClr_hier"] 
+weightAct = fit["transf_weightAct_hier"] 
+sensitivity = fit["transf_sensitivity_hier"] 
+alphaAct = fit["transf_alphaAct_hier"] 
+alphaClr = fit["transf_alphaClr_hier"] 
 
 # Read hierarchical true parameters
 hierFile = subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier-Mean-Std-True-Param.csv'
@@ -117,7 +120,7 @@ columns = 2
 fig.add_subplot(rows, columns, 1)
 ax = plt.gca()
 # Get ground truth
-trueValue = dataHier['hierAlphaAct_mu'][0]
+trueValue = dataHier['hierWeghtAct_mu'][0]
 plots.plot_posterior(x=weightAct[0,0], 
                      ax=ax, 
                      trueValue=trueValue, 
@@ -126,7 +129,7 @@ plots.plot_posterior(x=weightAct[0,0],
                      xlabel = '$w_{(A)}$')
 fig.add_subplot(rows, columns, 2)
 ax = plt.gca()
-trueValue = dataHier['hierAlphaAct_mu'][1]
+trueValue = dataHier['hierWeghtAct_mu'][1]
 plots.plot_posterior(x=weightAct[0,1], 
                      ax=ax, 
                      trueValue=trueValue, 
@@ -135,7 +138,7 @@ plots.plot_posterior(x=weightAct[0,1],
                      xlabel = '$w_{(A)}$')
 fig.add_subplot(rows, columns, 3)
 ax = plt.gca()
-trueValue = dataHier['hierAlphaAct_mu'][2]
+trueValue = dataHier['hierWeghtAct_mu'][2]
 plots.plot_posterior(x=weightAct[1,0], 
                      ax=ax, 
                      trueValue=trueValue, 
@@ -144,7 +147,7 @@ plots.plot_posterior(x=weightAct[1,0],
                      xlabel = '$w_{(A)}$')
 fig.add_subplot(rows, columns, 4)
 ax = plt.gca()
-trueValue = dataHier['hierAlphaAct_mu'][3]
+trueValue = dataHier['hierWeghtAct_mu'][3]
 plots.plot_posterior(x=weightAct[1,1], 
                      ax=ax, 
                      trueValue=trueValue, 
@@ -152,7 +155,7 @@ plots.plot_posterior(x=weightAct[1,1],
                      ylabel = 'Density',
                      xlabel = '$w_{(A)}$')
 
-fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier_RL_hier_3_weightening_sim.png', dpi=300)
+fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_weightening.png', dpi=300)
  
 # sensitivity Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
@@ -171,7 +174,7 @@ plots.plot_posterior(x=sensitivity[0],
                      xlabel = '$w_{(A)}$')
 fig.add_subplot(rows, columns, 2)
 ax = plt.gca()
-trueValue = dataHier['hierbeta_mu'][1]
+trueValue = dataHier['hierbeta_mu'][2]
 plots.plot_posterior(x=sensitivity[1], 
                      ax=ax, 
                      trueValue=trueValue, 
@@ -179,7 +182,7 @@ plots.plot_posterior(x=sensitivity[1],
                      ylabel = 'Density',
                      xlabel = '$w_{(A)}$')
 
-fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier_RL_hier_3_sim.png', dpi=300)
+fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_beta.png', dpi=300)
 
 
 # Action Learning Rate Figure of model fit results in two column and two rows
@@ -225,7 +228,7 @@ plots.plot_posterior(x=alphaAct[1,1],
                      ylabel = 'Density',
                      xlabel = '$w_{(A)}$')
 
-fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier_RL_hier_3_alphaAct_sim.png', dpi=300)
+fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_alphaAct.png', dpi=300)
 
 
 
@@ -272,4 +275,4 @@ plots.plot_posterior(x=alphaClr[1,1],
                      ylabel = 'Density',
                      xlabel = '$w_{(A)}$')
 
-fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  +'hier_RL_hier_3_alphaClr_sim.png', dpi=300)
+fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_alphaClr.png', dpi=300)
