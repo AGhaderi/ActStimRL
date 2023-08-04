@@ -110,7 +110,7 @@ def trueParam(task_design,
         # Sensitivity parameter chnages across session but not condition
         while (True):
             beta = np.round(np.random.normal(beta_mu[s], beta_sd), 2)
-            if beta > 0 and beta <= 3:
+            if beta > 0 and beta <1:
                 break
         # Put generated true parameter of beta within the predefined task design dataframe
         task_design.loc[task_design['session'] == s+1, 'beta'] = beta

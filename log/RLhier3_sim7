@@ -1,132 +1,132 @@
 nohup: ignoring input
 Building...
 
-Building: 31.0s, done.Messages from stanc:
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 8, column 4: Declaration
+Building: 98.5s, done.Messages from stanc:
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 8, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 9, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 9, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 10, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 10, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 11, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 11, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 12, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 12, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 15, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 15, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 16, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 16, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 17, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 17, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 27, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 27, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 28, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 28, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 29, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 29, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 30, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 30, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 33, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 33, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 34, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 34, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 35, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 35, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 36, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 36, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 40, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 40, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 41, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 41, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 42, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 42, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 43, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 43, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 46, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 46, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 47, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 47, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 48, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 48, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 49, column 4: Declaration
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 49, column 4: Declaration
     of arrays by placing brackets after a variable name is deprecated and
     will be removed in Stan 2.33.0. Instead use the array keyword before the
     type. This can be changed automatically using the auto-format flag to
     stanc
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 175, column 49: The
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 175, column 49: The
     variable soft_max_EV may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 166, column 27: The
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 168, column 27: The
     variable soft_max_EV may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 140, column 27: There
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 142, column 27: There
     is a gamma or inverse-gamma distribution with parameters that are equal
     to each other and set to values less than 1. This is mathematically
     acceptable and can make sense in some problems, but typically we see this
@@ -135,7 +135,7 @@ Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 140, column 27: Th
     explained by Gelman (2006). Instead we recommend something like a
     normal(0,1) or student_t(4,0,1), with parameter constrained to be
     positive.
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 139, column 25: There
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 141, column 25: There
     is a gamma or inverse-gamma distribution with parameters that are equal
     to each other and set to values less than 1. This is mathematically
     acceptable and can make sense in some problems, but typically we see this
@@ -144,7 +144,7 @@ Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 139, column 25: Th
     explained by Gelman (2006). Instead we recommend something like a
     normal(0,1) or student_t(4,0,1), with parameter constrained to be
     positive.
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 138, column 24: There
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 140, column 24: There
     is a gamma or inverse-gamma distribution with parameters that are equal
     to each other and set to values less than 1. This is mathematically
     acceptable and can make sense in some problems, but typically we see this
@@ -153,7 +153,7 @@ Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 138, column 24: Th
     explained by Gelman (2006). Instead we recommend something like a
     normal(0,1) or student_t(4,0,1), with parameter constrained to be
     positive.
-Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 137, column 24: There
+Warning in '/tmp/httpstan_sn_q3kqz/model_7m5hbtww.stan', line 139, column 24: There
     is a gamma or inverse-gamma distribution with parameters that are equal
     to each other and set to values less than 1. This is mathematically
     acceptable and can make sense in some problems, but typically we see this
@@ -163,95 +163,8 @@ Warning in '/tmp/httpstan_voplirfo/model_ngyftuuc.stan', line 137, column 24: Th
     normal(0,1) or student_t(4,0,1), with parameter constrained to be
     positive.
 Sampling:   0%
-Sampling:   0% (1/12000)
-Sampling:   0% (2/12000)
-Sampling:   0% (3/12000)
-Sampling:   0% (4/12000)
-Sampling:   1% (103/12000)
-Sampling:   2% (202/12000)
-Sampling:   3% (301/12000)
-Sampling:   3% (400/12000)
-Sampling:   4% (500/12000
-Sampling:  30% (300/1010)
-Sampling:  40% (400/1010)
-Sampling:  50% (500/1010)
-Sampling:  59% (600/1010)
-Sampling:  69% (700/1010)
-Sampling:  79% (800/1010)
-Sampling:  89% (900/1010)
-Sampling:  99% (1000/1010)
-Sampling:  99% (1001/1010)
-Sampling: 100% (1010/1010)% (1500/12000)
-Sampling:  13% (1600/12000)
-Sampling:  14% (1700/12000)
-Sampling:  15% (1800/12000)
-Sampling:  16% (1900/12000)
-Sampling:  17% (2000/12000)
-Sampling:  18% (2100/12000)
-Sampling:  18% (2200/12000)
-Sampling:  19% (2300/12000)
-Sampling:  20% (2400/12000)
-Sampling:  21% (2500/12000)
-Sampling:  22% (2600/12000)
-Sampling:  22% (2700/12000)
-Sampling:  23% (2800/12000)
-Sampling:  24% (2900/12000)
-Sampling:  25% (3000/12000)
-Sampling:  26% (3100/12000)
-Sampling:  27% (3200/12000)
-Sampling:  28% (3300/12000)
-Sampling:  28% (3400/12000)
-Sampling:  29% (3500/12000)
-Sampling:  30% (3600/12000)
-Sampling:  31% (3700/12000)
-Sampling:  31% (3701/12000)
-Sampling:  32% (3801/12000)
-Sampling:  32% (3802/12000)
-Sampling:  33% (3902/12000)
-Sampling:  33% (3903/12000)
-Sampling:  33% (4003/12000)
-Sampling:  33% (4004/12000)
-Sampling:  34% (4103/12000)
-Sampling:  35% (4202/12000)
-Sampling:  36% (4301/12000)
-Sampling:  37% (4400/12000)
-Sampling:  38% (4500/12000)
-Sampling:  38% (4600/12000)
-Sampling:  39% (4700/12000)
-Sampling:  40% (4800/12000)
-Sampling:  41% (4900/12000)
-Sampling:  42% (5000/12000)
-Sampling:  42% (5100/12000)
-Sampling:  43% (5200/12000)
-Sampling:  44% (5300/12000)
-Sampling:  45% (5400/12000)
-Sampling:  46% (5500/12000)
-Sampling:  47% (5600/12000)
-Sampling:  48% (5700/12000)
-Sampling:  48% (5800/12000)
-Sampling:  49% (5900/12000)
-Sampling:  50% (6000/12000)
-Sampling:  51% (6100/12000)
-Sampling:  52% (6200/12000)
-Sampling:  52% (6300/12000)
-Sampling:  53% (6400/12000)
-Sampling:  54% (6500/12000)
-Sampling:  55% (6600/12000)
-Sampling:  56% (6700/12000)
-Sampling:  57% (6800/12000)
-Sampling:  58% (6900/12000)
-Sampling:  58% (7000/12000)
-Sampling:  59% (7100/12000)
-Sampling:  60% (7200/12000)
-Sampling:  61% (7300/12000)
-Sampling:  62% (7400/12000)
-Sampling:  62% (7500/12000)
-Sampling:  63% (7600/12000)
-Sampling:  64% (7700/12000)
-Sampling:  65% (7800/12000)
-Sampling:  66% (7900/12000)
-Sampling:  67% (8000/12000)
-Sampling:  68% (8100/12000)
-Sampling:  68% (8200/12000)
-Sampling:  69% (8300/12000)
-Sampling:  70% (8400/12000)
+Sampling:   0% (1/2000)
+Sampling:   5% (100/2000)
+Sampling:  10% (200/2000)
+Sampling:  15% (300/2000)
+Sampling:  20% (400/2000)
