@@ -1,0 +1,105 @@
+nohup: ignoring input
+Building...
+
+Building: 32.6s, done.Messages from stanc:
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 9, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 10, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 11, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 15, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 116, column 49: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_t3eloioc/model_pwqz3mrq.stan', line 108, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Sampling:   0%
+Sampling:   0% (1/9000)
+Sampling:   0% (2/9000)
+Sampling:   0% (3/9000)
+Sampling:   1% (102/9000)
+Sampling:   2% (201/9000)
+Sampling:   3% (300/9000)
+Sampling:   4% (400/9000)
+Sampling:   6% (500/9000)
+Sampling:   7% (600/9000)
+Sampling:   8% (700/9000)
+Sampling:   9% (800/9000)
+Sampling:  10% (900/9000)
+Sampling:  11% (1000/9000)
+Sampling:  12% (1100/9000)
+Sampling:  13% (1200/9000)
+Sampling:  14% (1300/9000)
+Sampling:  16% (1400/9000)
+Sampling:  17% (1500/9000)
+Sampling:  18% (1600/9000)
+Sampling:  19% (1700/9000)
+Sampling:  20% (1800/9000)
+Sampling:  21% (1900/9000)
+Sampling:  22% (2000/9000)
+Sampling:  23% (2100/9000)
+Sampling:  24% (2200/9000)
+Sampling:  26% (2300/9000)
+Sampling:  29% (2601/9000)
+Sampling:  52% (4701/9000)
+Sampling:  67% (6001/9000)
+Sampling:  88% (7900/9000)
+Sampling:  94% (8500/9000)
+Sampling:  96% (8600/9000)
+Sampling: 100% (9000/9000)
+Sampling: 100% (9000/9000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.000561 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.61 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.000542 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.42 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_tteczsp4/model_pwqz3mrq.stan', line 108, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.000547 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 5.47 seconds.
+  Adjust your expectations accordingly!
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/sub-004/5/sub-004_RL2_sim5.pkl

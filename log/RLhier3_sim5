@@ -255,3 +255,214 @@ Sampling:  68% (8100/12000)
 Sampling:  68% (8200/12000)
 Sampling:  69% (8300/12000)
 Sampling:  70% (8400/12000)
+Sampling:  71% (8500/12000)
+Sampling:  72% (8600/12000)
+Sampling:  72% (8700/12000)
+Sampling:  73% (8800/12000)
+Sampling:  74% (8900/12000)
+Sampling:  75% (9000/12000)
+Sampling:  76% (9100/12000)
+Sampling:  77% (9200/12000)
+Sampling:  78% (9300/12000)
+Sampling:  78% (9400/12000)
+Sampling:  79% (9500/12000)
+Sampling:  80% (9600/12000)
+Sampling:  81% (9700/12000)
+Sampling:  82% (9800/12000)
+Sampling:  82% (9900/12000)
+Sampling:  83% (10000/12000)
+Sampling:  84% (10100/12000)
+Sampling:  85% (10200/12000)
+Sampling:  86% (10300/12000)
+Sampling:  87% (10400/12000)
+Sampling:  88% (10500/12000)
+Sampling:  88% (10600/12000)
+Sampling:  89% (10700/12000)
+Sampling:  90% (10800/12000)
+Sampling:  91% (10900/12000)
+Sampling:  92% (11000/12000)
+Sampling:  92% (11100/12000)
+Sampling:  93% (11200/12000)
+Sampling:  94% (11300/12000)
+Sampling:  95% (11400/12000)
+Sampling:  96% (11500/12000)
+Sampling:  97% (11600/12000)
+Sampling:  98% (11700/12000)
+Sampling:  98% (11800/12000)
+Sampling:  99% (11900/12000)
+Sampling: 100% (12000/12000)
+Sampling: 100% (12000/12000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.048838 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 488.38 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.0485 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 485 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 138, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.06004 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 600.4 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.048563 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 485.63 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 140, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_ehl1e12h/model_ngyftuuc.stan', line 137, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/hierParam/5/RLhier3_sim5.pkl

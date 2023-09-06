@@ -1,0 +1,169 @@
+nohup: ignoring input
+Building...
+
+Building: found in cache, done.Messages from stanc:
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 10, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 11, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 17, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 18, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 19, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 29, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 30, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 31, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 32, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 35, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 36, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 37, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 38, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 42, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 43, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 44, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 45, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 55, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 56, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 57, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 58, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 174, column 49: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 166, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 159, column 55: A
+    normal distribution is given parameter sensitivity_sd as a scale
+    parameter (argument 2), but sensitivity_sd was not constrained to be
+    strictly positive.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 157, column 60: A
+    normal distribution is given parameter weightAct_sd as a scale parameter
+    (argument 2), but weightAct_sd was not constrained to be strictly
+    positive.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 156, column 58: A
+    normal distribution is given parameter alphaClr_sd as a scale parameter
+    (argument 2), but alphaClr_sd was not constrained to be strictly
+    positive.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 155, column 58: A
+    normal distribution is given parameter alphaAct_sd as a scale parameter
+    (argument 2), but alphaAct_sd was not constrained to be strictly
+    positive.
+Warning in '/tmp/httpstan_bjwgjalt/model_6sel7lku.stan', line 112, column 37: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Sampling:   0%
+Sampling:   0% (1/2000)
+Sampling:   5% (100/2000)
+Sampling:  10% (200/2000)
+Sampling:  15% (300/2000)
+Sampling:  20% (400/2000)
+Sampling:  25% (500/2000)
+Sampling:  30% (600/2000)
+Sampling:  35% (700/2000)
+Sampling:  40% (800/2000)
+Sampling:  45% (900/2000)
+Sampling:  50% (1000/2000)
+Sampling:  50% (1001/2000)
+Sampling:  55% (1100/2000)
+Sampling:  60% (1200/2000)
+Sampling:  65% (1300/2000)
+Sampling:  70% (1400/2000)
+Sampling:  75% (1500/2000)
+Sampling:  80% (1600/2000)
+Sampling:  85% (1700/2000)
+Sampling:  90% (1800/2000)
+Sampling:  95% (1900/2000)
+Sampling: 100% (2000/2000)

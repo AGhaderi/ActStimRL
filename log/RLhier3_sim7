@@ -168,3 +168,85 @@ Sampling:   5% (100/2000)
 Sampling:  10% (200/2000)
 Sampling:  15% (300/2000)
 Sampling:  20% (400/2000)
+Sampling:  25% (500/2000)
+Sampling:  30% (600/2000)
+Sampling:  35% (700/2000)
+Sampling:  40% (800/2000)
+Sampling:  45% (900/2000)
+Sampling:  50% (1000/2000)
+Sampling:  50% (1001/2000)
+Sampling:  55% (1100/2000)
+Sampling:  60% (1200/2000)
+Sampling:  65% (1300/2000)
+Sampling:  70% (1400/2000)
+Sampling:  75% (1500/2000)
+Sampling:  80% (1600/2000)
+Sampling:  85% (1700/2000)
+Sampling:  90% (1800/2000)
+Sampling:  95% (1900/2000)
+Sampling: 100% (2000/2000)
+Sampling: 100% (2000/2000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.116642 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 1166.42 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 139, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 139, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 139, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 139, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 139, column 4 to column 32)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_9adfmkjz/model_7m5hbtww.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/simulation/hierParam/7/RLhier3_sim7.pkl
+Traceback (most recent call last):
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3802, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 138, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 165, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5745, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 5753, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'hierWeghtAct_mu'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/amingk/Documents/T7PD/ActStimRL/run_simulation/./RLhier3_sim7.py", line 123, in <module>
+    trueValue = dataHier['hierWeghtAct_mu'][0]
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/pandas/core/frame.py", line 3807, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/pandas/core/indexes/base.py", line 3804, in get_loc
+    raise KeyError(key) from err
+KeyError: 'hierWeghtAct_mu'

@@ -169,7 +169,7 @@ trueValue = dataHier['hierbeta_mu'][0]
 plots.plot_posterior(x=sensitivity[0], 
                      ax=ax, 
                      trueValue=trueValue, 
-                     title = 'Ses 1, Hierarchical Weightening',
+                     title = 'Ses 1, Hierarchical Sensitivity',
                      ylabel = 'Density',
                      xlabel = '$w_{(A)}$')
 fig.add_subplot(rows, columns, 2)
@@ -178,9 +178,9 @@ trueValue = dataHier['hierbeta_mu'][2]
 plots.plot_posterior(x=sensitivity[1], 
                      ax=ax, 
                      trueValue=trueValue, 
-                     title = 'Ses 1, Hierarchical Weightening',
+                     title = 'Ses 1, Hierarchical Sensitivity',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\beta$')
 
 fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_beta.png', dpi=300)
 
@@ -199,7 +199,7 @@ plots.plot_posterior(x=alphaAct[0,0],
                      trueValue=trueValue, 
                      title = 'Ses 1 Act, Hierarchical Action Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(A)}$')
 fig.add_subplot(rows, columns, 2)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaAct_mu'][1]
@@ -208,7 +208,7 @@ plots.plot_posterior(x=alphaAct[0,1],
                      trueValue=trueValue, 
                      title = 'Ses 1 Clr, Hierarchical Action Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(A)}$')
 fig.add_subplot(rows, columns, 3)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaAct_mu'][2]
@@ -217,7 +217,7 @@ plots.plot_posterior(x=alphaAct[1,0],
                      trueValue=trueValue, 
                      title = 'Ses 2 Act, Hierarchical Action Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(A)}$')
 fig.add_subplot(rows, columns, 4)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaAct_mu'][3]
@@ -226,7 +226,7 @@ plots.plot_posterior(x=alphaAct[1,1],
                      trueValue=trueValue, 
                      title = 'Ses 2 Clr, Hierarchical Action Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alha_{(A)}$')
 
 fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_alphaAct.png', dpi=300)
 
@@ -246,7 +246,7 @@ plots.plot_posterior(x=alphaClr[0,0],
                      trueValue=trueValue, 
                      title = 'Ses 1 Act, Hierarchical Color Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(C)}$')
 fig.add_subplot(rows, columns, 2)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaClr_mu'][1]
@@ -255,7 +255,7 @@ plots.plot_posterior(x=alphaClr[0,1],
                      trueValue=trueValue, 
                      title = 'Ses 1 Clr, Hierarchical Color Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(C)}$')
 fig.add_subplot(rows, columns, 3)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaClr_mu'][2]
@@ -264,7 +264,7 @@ plots.plot_posterior(x=alphaClr[1,0],
                      trueValue=trueValue, 
                      title = 'Ses 2 Act, Hierarchical Color Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(C)}$')
 fig.add_subplot(rows, columns, 4)
 ax = plt.gca()
 trueValue = dataHier['hierAlphaClr_mu'][3]
@@ -273,6 +273,6 @@ plots.plot_posterior(x=alphaClr[1,1],
                      trueValue=trueValue, 
                      title = 'Ses 2 Clr, Hierarchical Color Learning Rate',
                      ylabel = 'Density',
-                     xlabel = '$w_{(A)}$')
+                     xlabel = '$\alpha_{(A)}$')
 
 fig.savefig(subMainDirec + 'hierParam/'  + str(simNumber) + '/'  + fileName + '_alphaClr.png', dpi=300)

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import gaussian_kde
 
-def plotChosenCorrect(data, subName, saveFile):
+def plotChosenCorrect(data, blocks, subName, saveFile):
     """Plot of chosen and correct response for all runs and sessions"""
     # First type of learning in sesion 1 and run 1    
     firstActOrClr = data.iloc[0]['stimActFirst']
@@ -12,48 +12,21 @@ def plotChosenCorrect(data, subName, saveFile):
     fig = plt.figure(figsize=(10, 10), tight_layout=True)
     rows = 4
     columns = 2
-    # Positionm marker type and colors of Action adn Color Value Learning
-    y = [3.2 ,3, 2.1 , 1.2, 1] 
+    # Position marker type and colors of Action adn Color Value Learning
+    y = [1.2 ,1.1, .6 ,.2, .1] 
     markers = ['v', 'o', 'o' , 'o', '^']
     colorsAct =['#2ca02c','#2ca02c', '#d62728', '#9467bd', '#9467bd']
     colorsClr =['#bcbd22','#bcbd22', '#d62728', '#1f77b4', '#1f77b4']
-    # List of session and run for Action First in Session 1
-    titlesAct = [subName + ' - Ses 1 - Run 1 - Act Learning', 
-                 subName + ' - Ses 1 - Run 1 - Clr Learning',
-                 subName + ' - Ses 1 - Run 2 - Clr Learning',
-                 subName + ' - Ses 1 - Run 2 - Act Learning',
-                 subName + ' - Ses 2 - Run 1 - Clr Learning', 
-                 subName + ' - Ses 2 - Run 1 - Act Learning',
-                 subName + ' - Ses 2 - Run 2 - Act Learning',
-                 subName + ' - Ses 2 - Run 2 - Clr Learning']
-    # List of session and run for Stimulus First in Session 1
-    titlesClr = [subName + ' - Ses 1 - Run 1 - Clr Learning', 
-                 subName + ' - Ses 1 - Run 1 - Act Learning',
-                 subName + ' - Ses 1 - Run 2 - Act Learning',
-                 subName + ' - Ses 1 - Run 2 - Clr Learning',
-                 subName + ' - Ses 2 - Run 1 - Act Learning', 
-                 subName + ' - Ses 2 - Run 1 - Clr Learning',
-                 subName + ' - Ses 2 - Run 2 - Clr Learning',
-                 subName + ' - Ses 2 - Run 2 - Act Learning']
-    # Order of Action and Stimulus for sessions and runs
-    orderAct = ['Act', 'Stim', 'Stim', 'Act', 'Stim', 'Act', 'Act', 'Stim']
-    orderClr = ['Stim', 'Act', 'Act', 'Stim', 'Act', 'Stim', 'Stim', 'Act']
-    if firstActOrClr == 'Act':
-        titles = titlesAct
-        order = orderAct
-    elif firstActOrClr=='Stim':
-        titles = titlesClr
-        order = orderClr
-
+    
     idx = 0
     for s in range(1, 3):
         for r in range(1, 3):
             for b in range(1, 3):
                 fig.add_subplot(rows, columns, idx+1) 
                 # Action block
-                if order[idx] == 'Act':
+                if blocks[idx] == 'Act':
                     # Seperate data taken from a session, run and Action block
-                    dataCondAct = data[(data.session==s) & (data.run==r) & (data.block==order[idx])]
+                    dataCondAct = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
                     # Seperate the index of pushed and pulled responses
                     resAct = dataCondAct['pushed'].to_numpy().astype(int)
                     pushed = np.where(resAct==1)[0] + 1
@@ -74,12 +47,12 @@ def plotChosenCorrect(data, subName, saveFile):
                     # show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.xlabel('Trials', fontsize=12)
-                    plt.title(titles[idx], fontsize=10)    
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blocks[idx] + ' Value Learning' , fontsize=10)    
                     plt.legend(dfPlotAct.label, fontsize=8)      
                 # Color block
-                elif order[idx] == 'Stim':
+                elif blocks[idx] == 'Stim':
                     # Seperate data taken from a session, run and Color block
-                    dataCondClr = data[(data.session==s) & (data.run==r) & (data.block==order[idx])]
+                    dataCondClr = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
                     # Seperate the index of yellow and blue responses
                     resClr = dataCondClr['yellowChosen'].to_numpy().astype(int)
                     yellChosen = np.where(resClr==1)[0] + 1
@@ -100,18 +73,22 @@ def plotChosenCorrect(data, subName, saveFile):
                     # Show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.xlabel('Trials', fontsize=12) 
-                    plt.title(titles[idx], fontsize=10)   
-                    plt.legend(dfPlotClr.label, fontsize=8)          
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blocks[idx] + ' Value Learning', fontsize=10)   
+                    plt.legend(dfPlotClr.label, fontsize=8) 
+                    
+                # Determine Reversal point for each condition 
+                reverse = data.loc[(data['session']==s)&(data['run']==r)&(data['block']==blocks[idx]), 'reverse'].unique()[0]
                 # Draw vertical lines for one or two reversal points learning during runs
-                if idx%2==1:
+                if reverse==21:
                     plt.axvline(x = 21, color='#ff7f0e', linewidth=1, alpha=.5)
-                else:
+                elif reverse==14:
                     plt.axvline(x = 14, color='#ff7f0e', linewidth=1, alpha=.7)
                     plt.axvline(x = 28, color='#ff7f0e', linewidth=1, alpha=.7)
 
                 idx += 1
     # Save plot of chosen and correct response 
     fig.savefig(saveFile + '.png', dpi=300)
+    plt.close()
      
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
 def bci(x, alpha=0.05):
