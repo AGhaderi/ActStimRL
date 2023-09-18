@@ -47,7 +47,12 @@ def plotChosenCorrect(data, blocks, subName, saveFile):
                     # show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.xlabel('Trials', fontsize=12)
-                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blocks[idx] + ' Value Learning' , fontsize=10)    
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
                     plt.legend(dfPlotAct.label, fontsize=8)      
                 # Color block
                 elif blocks[idx] == 'Stim':
@@ -73,7 +78,13 @@ def plotChosenCorrect(data, blocks, subName, saveFile):
                     # Show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.xlabel('Trials', fontsize=12) 
-                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blocks[idx] + ' Value Learning', fontsize=10)   
+                    plt.xlabel('Trials', fontsize=12)
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
                     plt.legend(dfPlotClr.label, fontsize=8) 
                     
                 # Determine Reversal point for each condition 
