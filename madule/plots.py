@@ -98,7 +98,7 @@ def plotChosenCorrect(data, blocks, subName, saveFile):
 
                 idx += 1
     # Save plot of chosen and correct response 
-    fig.savefig(saveFile + '.png', dpi=300)
+    fig.savefig(saveFile, dpi=300)
     plt.close()
      
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
