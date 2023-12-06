@@ -1,4 +1,6 @@
-"""Simulation study with Value-Maximizing policy"""
+"""Simulation study with Value-Maximizing policy.
+Consirering two alpha parameters for two stable and volatile environemnt
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -8,6 +10,8 @@ import seaborn as sns
 rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/rawBehAll.csv')
 # Rename an column label
 rawBehAll = rawBehAll.rename(columns={'wonAmount                ':'wonAmount'})
+#slecect one reversal point environemnt
+rawBehAll = rawBehAll[rawBehAll['reverse']==14]
 
 # This function generates choice and rewarded choice based in alpha parameters defined in each trial 
 # Simulation chooses push and pull in Action value learning condition and yellow and blue in COlor value leanring condition
@@ -99,8 +103,8 @@ def simulateActClr(task_design, simName):
     return task_design 
 
 # Set the value of alpha parameters for simulating data from RL model
-for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
+for i in np.linspace(0, .5, 16):
+    n = round(i, 2)
     # Put the alpha value into a new column
     rawBehAll['alpha'+str(n)] = n
     # Call simulation function
@@ -111,11 +115,11 @@ fig = plt.figure(figsize=(15, 15), tight_layout = True)
 nrows= 4
 ncols=4
 idx = 1
-for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
+for i in np.linspace(0, .5, 16):
+    n = round(i, 2)
     fig.add_subplot(nrows, ncols, idx)
     plt.title('Alpha '+ str(n), fontsize='12')
-    plt.ylim(0, 3300)
+    plt.ylim(0, 1700)
 
     # toral amount od simulated data by RL
     rawBehAll_wonAmount_agent = rawBehAll.groupby(['group', 'block', 'sub_ID'], as_index=False)['wonAmount_'+ str(n)].sum()
@@ -141,5 +145,5 @@ fig.text(0.5, 0, 'Group label', ha='center', fontsize='12')
 fig.text(0, 0.5, 'Total amount', va='center', rotation='vertical', fontsize='12')
 
 # Save figure
-plt.savefig('../figures/simulation_rl_alpha_won_ammount.png', dpi=300)
+plt.savefig('../figures/simulation_rl_alpha_won_ammount_volatile.png', dpi=300)
 plt.show()

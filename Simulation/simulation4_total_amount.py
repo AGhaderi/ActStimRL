@@ -51,8 +51,8 @@ for t, l in zip(sn.legend_.texts,['Observed Act','Observed Clr', 'Agent 4 Act','
     t.set_text(l)
 
 plt.title('winStay/loseShift regarding Act and Clr conditions')
-plt.ylabel('Total amount')
-plt.xlabel('Group label')
+plt.ylabel('Total amount', fontsize=12)
+plt.xlabel('Group label', fontsize=12)
 plt.savefig('../figures/simulation4_total_ammount.png', dpi=300)
 plt.show()
 

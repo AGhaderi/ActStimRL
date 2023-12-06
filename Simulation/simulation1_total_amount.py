@@ -131,3 +131,6 @@ fig.text(0, 0.5, 'Total amount', va='center', rotation='vertical', fontsize='12'
 
 plt.savefig('../figures/simulation1_total_ammount.png', dpi=300)
 plt.show()
+# proportiona of left, push and yellow across participants
+propFeatures = rawBehAll.groupby(['group'])['leftCorrect', 'pushCorrect', 'yellowCorrect'].mean()
+print(propFeatures)

@@ -14,14 +14,14 @@ leftCorrect = rawBehAll['leftCanBePushed']*rawBehAll.pushCorrect + (1-rawBehAll[
 rawBehAll['leftCorrect'] = leftCorrect
  
 # Select option with higher amount 
-pushCorrect_higher_amt = rawBehAll['pushCorrect']*(rawBehAll['winAmtPushable']>=50)*rawBehAll['winAmtPushable']
-pullCorrect_higher_amt  = (1-rawBehAll['pushCorrect'])*(rawBehAll['winAmtPullable']>=50)*rawBehAll['winAmtPullable']
-agent_higher_ammount = pushCorrect_higher_amt + pullCorrect_higher_amt
+leftCorrect_higher_amt = rawBehAll['leftCorrect']*(rawBehAll['winAmtLeft']>=50)*rawBehAll['winAmtLeft']
+rightCorrect_higher_amt  = (1-rawBehAll['leftCorrect'])*(rawBehAll['winAmtBlue']>=50)*rawBehAll['winAmtBlue']
+agent_higher_ammount = leftCorrect_higher_amt + rightCorrect_higher_amt
 rawBehAll['agent_higher_ammount'] = agent_higher_ammount 
 # Select option with lower amount 
-pushCorrect_lower_amt = rawBehAll['pushCorrect']*(rawBehAll['winAmtPushable']<50)*rawBehAll['winAmtPushable']
-pullCorrect_lower_amt  = (1-rawBehAll['yellowCorrect'])*(rawBehAll['winAmtPullable']<50)*rawBehAll['winAmtPullable']
-agent_lower_ammount = pushCorrect_lower_amt + pullCorrect_lower_amt
+leftCorrect_lower_amt = rawBehAll['leftCorrect']*(rawBehAll['winAmtLeft']<50)*rawBehAll['winAmtLeft']
+rightCorrect_lower_amt  = (1-rawBehAll['leftCorrect'])*(rawBehAll['winAmtBlue']<50)*rawBehAll['winAmtBlue']
+agent_lower_ammount = leftCorrect_lower_amt + rightCorrect_lower_amt
 rawBehAll['agent_lower_ammount'] = agent_lower_ammount
 
 fig = plt.figure(figsize=(15, 5), tight_layout = True)
@@ -44,7 +44,8 @@ for t, l in zip(sn.legend_.texts,['Agent 2 Act','Agent 2 Clr', 'Observed Act','O
 plt.title('Choosing high-amount options constantly')
 plt.ylabel('Total amount', fontsize=12)
 plt.xlabel('Group label', fontsize=12)
- 
+plt.ylim(0, 3300)
+
 #Plot of right choice
 fig.add_subplot(rows, columns, 2)
 rawBehAll_wonAmount = rawBehAll.groupby(['group', 'block', 'sub_ID'], as_index=False)['wonAmount'].sum()
@@ -61,7 +62,14 @@ for t, l in zip(sn.legend_.texts,['Observed Act','Observed Clr', 'Agent 2 Act','
 plt.title('Choosing low-amount options constantly')
 plt.ylabel('Total amount', fontsize=12)
 plt.xlabel('Group label', fontsize=12)
+plt.ylim(0, 3300)
 
 # save plot
 plt.savefig('../figures/simulation2_total_ammount.png', dpi=300)
 plt.show()
+
+# proportiona of  rewarded higher and lowe amount
+rawBehAll['higherCorrect'] = rawBehAll['leftCorrect']*(rawBehAll['winAmtLeft']>=50) + (1-rawBehAll['leftCorrect'])*(rawBehAll['winAmtLeft']>=50)
+rawBehAll['lowerCorrect'] = rawBehAll['leftCorrect']*(rawBehAll['winAmtLeft']<50) + (1-rawBehAll['leftCorrect'])*(rawBehAll['winAmtLeft']<50)
+propFeatures = rawBehAll.groupby(['group'])['higherCorrect', 'lowerCorrect'].mean()
+print(propFeatures)

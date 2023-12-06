@@ -36,8 +36,10 @@ def simulateActClr(task_design, simName):
             # Predefined Correct responces for Action and color options
             pushCorrect = task_sub_ses.pushCorrect.to_numpy()
             yellowCorrect = task_sub_ses.yellowCorrect.to_numpy()
-            # Predefined Ground truth Parameters
-            alpha = task_sub_ses['alpha'+ simName].to_numpy()
+            # Predefined psotivie alpha Parameters
+            alpha_pos = task_sub_ses['alpha_pos_'+ simName].to_numpy()
+            # Predefined psotivie alpha Parameters
+            alpha_neg = task_sub_ses['alpha_neg_'+ simName].to_numpy()
             # Output of simulation for correct choice and Action and Color chosen
             correctChoice = np.zeros(n_trials).astype(int)
             choice = np.zeros(n_trials).astype(int)
@@ -66,11 +68,11 @@ def simulateActClr(task_design, simName):
                         wonAmount[i] = correctChoice[i]*winAmtPullable[i]
                     # Rl rule update over Action Learning Values for the next trial, fourth step
                     if choice[i] == 1:
-                        probPush = probPush + alpha[i]*(correctChoice[i] - probPush)
-                        probPull = 1 - probPush           
+                        probPush = probPush + alpha_pos[i]*(correctChoice[i] - probPush)
+                        #probPull = 1 - probPush           
                     elif choice[i] == 0:
-                        probPull = probPull + alpha[i]*(correctChoice[i] - probPull)
-                        probPush = 1 - probPull                      
+                        probPull = probPull + alpha_neg[i]*(correctChoice[i] - probPull)
+                        #probPush = 1 - probPull                      
                 elif block[i]=='Stim':
                     # Compute the Standard Expected Value of each seperated option 
                     expValue1 = probYell*winAmtYellow[i]
@@ -87,11 +89,11 @@ def simulateActClr(task_design, simName):
                         wonAmount[i] = correctChoice[i]*winAmtBlue[i]
                     # Rl rule update Color Action Learning values for the next trial
                     if y == 1:
-                        probYell = probYell + alpha[i]*(correctChoice[i] - probYell)
-                        probBlue = 1 - probYell
+                        probYell = probYell + alpha_pos[i]*(correctChoice[i] - probYell)
+                        #probBlue = 1 - probYell
                     elif y == 0:
-                        probBlue = probBlue + alpha[i]*(correctChoice[i] - probBlue)
-                        probYell = 1 - probBlue  
+                        probBlue = probBlue + alpha_neg[i]*(correctChoice[i] - probBlue)
+                        #probYell = 1 - probBlue  
             # output results
             task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses), 'correctChoice_'+simName] = correctChoice
             task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses),'choice_'+simName] = choice
@@ -99,10 +101,12 @@ def simulateActClr(task_design, simName):
     return task_design 
 
 # Set the value of alpha parameters for simulating data from RL model
-for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
-    # Put the alpha value into a new column
-    rawBehAll['alpha'+str(n)] = n
+for i in np.linspace(0, .5, 16):
+    n = round(i, 2)
+    # Put the positive alpha value into a new column
+    rawBehAll['alpha_pos_'+str(n)] = n
+    # Put the negative alpha value into a new column
+    rawBehAll['alpha_neg_'+str(n)] = .1
     # Call simulation function
     rawBehAll = simulateActClr(task_design = rawBehAll, simName=str(n))
  
@@ -111,8 +115,8 @@ fig = plt.figure(figsize=(15, 15), tight_layout = True)
 nrows= 4
 ncols=4
 idx = 1
-for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
+for i in np.linspace(0, .5, 16):
+    n = round(i, 2)
     fig.add_subplot(nrows, ncols, idx)
     plt.title('Alpha '+ str(n), fontsize='12')
     plt.ylim(0, 3300)
@@ -141,5 +145,5 @@ fig.text(0.5, 0, 'Group label', ha='center', fontsize='12')
 fig.text(0, 0.5, 'Total amount', va='center', rotation='vertical', fontsize='12')
 
 # Save figure
-plt.savefig('../figures/simulation_rl_alpha_won_ammount.png', dpi=300)
+#plt.savefig('../figures/simulation_rl_alpha_won_ammount_pos_neg.png', dpi=300)
 plt.show()
