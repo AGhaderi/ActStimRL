@@ -66,5 +66,5 @@ plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .55)
 plt.ylim(0, .55)
 # save figure
-plt.savefig('../figures/rewarded_options_amount.png', dpi=300)
+#plt.savefig('../figures/rewarded_options_amount.png', dpi=300)
 plt.show()
