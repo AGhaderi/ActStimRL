@@ -101,7 +101,7 @@ def simulateActClr(task_design, simName):
     return task_design 
 
 # Set the value of alpha parameters for simulating data from RL model
-for i in np.linspace(0, .5, 16):
+for i in np.linspace(0, 1, 16):
     n = round(i, 2)
     # Put the positive alpha value into a new column
     rawBehAll['alpha_pos_'+str(n)] = n
@@ -115,7 +115,7 @@ fig = plt.figure(figsize=(15, 15), tight_layout = True)
 nrows= 4
 ncols=4
 idx = 1
-for i in np.linspace(0, .5, 16):
+for i in np.linspace(0, 1, 16):
     n = round(i, 2)
     fig.add_subplot(nrows, ncols, idx)
     plt.title('Alpha '+ str(n), fontsize='12')
@@ -145,5 +145,5 @@ fig.text(0.5, 0, 'Group label', ha='center', fontsize='12')
 fig.text(0, 0.5, 'Total amount', va='center', rotation='vertical', fontsize='12')
 
 # Save figure
-#plt.savefig('../figures/simulation_rl_alpha_won_ammount_pos_neg.png', dpi=300)
+plt.savefig('../figures/simulation_rl_alpha_won_ammount_pos_neg.png', dpi=300)
 plt.show()

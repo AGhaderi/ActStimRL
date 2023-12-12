@@ -6,8 +6,6 @@ from scipy.stats import gaussian_kde
 
 def plotChosenCorrect(data, blocks, subName, saveFile):
     """Plot of chosen and correct response for all runs and sessions"""
-    # First type of learning in sesion 1 and run 1    
-    firstActOrClr = data.iloc[0]['stimActFirst']
     # Figure of behavioral data in two column and four rows
     fig = plt.figure(figsize=(10, 10), tight_layout=True)
     rows = 4
@@ -86,6 +84,208 @@ def plotChosenCorrect(data, blocks, subName, saveFile):
                         
                     plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
                     plt.legend(dfPlotClr.label, fontsize=8) 
+                    
+                # Determine Reversal point for each condition 
+                reverse = data.loc[(data['session']==s)&(data['run']==r)&(data['block']==blocks[idx]), 'reverse'].unique()[0]
+                # Draw vertical lines for one or two reversal points learning during runs
+                if reverse==21:
+                    plt.axvline(x = 21, color='#ff7f0e', linewidth=1, alpha=.5)
+                elif reverse==14:
+                    plt.axvline(x = 14, color='#ff7f0e', linewidth=1, alpha=.7)
+                    plt.axvline(x = 28, color='#ff7f0e', linewidth=1, alpha=.7)
+
+                idx += 1
+    # Save plot of chosen and correct response 
+    fig.savefig(saveFile, dpi=300)
+    plt.close()
+     
+def plotChosenCorrect_modofied1(data, blocks, subName, saveFile):
+    """Plot of chosen and correct response for all runs and sessions.
+       In this plot we combine both correct option and choices """
+    # Figure of behavioral data in two column and four rows
+    fig = plt.figure(figsize=(10, 10), tight_layout=True)
+    rows = 4
+    columns = 2
+    # Position marker type and colors of Action adn Color Value Learning
+    y = [1 ,1, .5 ,.0, .0] 
+    markers = ['$\u25EF$', 'o', 'o' , 'o', '$\u25EF$']
+    colorsAct =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    colorsClr =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    size = [30, 5, 10, 10, 30]
+    idx = 0
+    for s in range(1, 3):
+        for r in range(1, 3):
+            for b in range(1, 3):
+                fig.add_subplot(rows, columns, idx+1) 
+                # Action block
+                if blocks[idx] == 'Act':
+                    # Seperate data taken from a session, run and Action block
+                    dataCondAct = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+                    # Seperate the index of pushed and pulled responses
+                    resAct = dataCondAct['pushed'].to_numpy().astype(int)
+                    pushed = np.where(resAct==1)[0] + 1
+                    pulled = np.where(resAct==0)[0] + 1
+                    noRes  = np.where(resAct < 0)[0] + 1
+                    # Seperate the index of pushed and pulled correct choices
+                    corrAct= dataCondAct['pushCorrect']
+                    pushCorr = np.where(corrAct==1)[0] + 1
+                    pulledCorr = np.where(corrAct==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataAct = ({'label': ['pushed', 'push correct', 'no response', 'pull correct', 'pulled'],
+                                'x': [pushed, pushCorr, noRes, pulledCorr, pulled]})
+                    dfPlotAct = pd.DataFrame(dicDataAct)
+                    # Create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotAct)):
+                        plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
+                                    s=size[i], facecolors=colorsAct[i], marker=markers[i])
+                    # show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.xlabel('Trials', fontsize=12)
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                    plt.legend(['Chosen', 'yellow correct', 'no response', 'blue correct'], fontsize=8)      
+                # Color block
+                elif blocks[idx] == 'Stim':
+                    # Seperate data taken from a session, run and Color block
+                    dataCondClr = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+                    # Seperate the index of yellow and blue responses
+                    resClr = dataCondClr['yellowChosen'].to_numpy().astype(int)
+                    yellChosen = np.where(resClr==1)[0] + 1
+                    blueChosen = np.where(resClr==0)[0] + 1
+                    noRes  = np.where(resClr < 0)[0] + 1
+                    # Seperate the index of yellow and blue correct choices
+                    corrClr= dataCondClr['yellowCorrect']
+                    yellCorr = np.where(corrClr==1)[0] + 1
+                    blueCorr = np.where(corrClr==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataClr = ({'label': ['yellow chosen', 'yellow correct', 'no response', 'blue correct', 'blue chosen'],
+                                'x': [yellChosen, yellCorr, noRes, blueCorr, blueChosen]})
+                    dfPlotClr = pd.DataFrame(dicDataClr)         
+                    #create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotClr)):
+                        plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
+                                    s=size[i], facecolors=colorsClr[i], marker=markers[i])
+                    # Show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.xlabel('Trials', fontsize=12) 
+                    plt.xlabel('Trials', fontsize=12)
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                    plt.legend(['Chosen', 'yellow correct', 'no response', 'blue correct'], fontsize=8) 
+                    
+                # Determine Reversal point for each condition 
+                reverse = data.loc[(data['session']==s)&(data['run']==r)&(data['block']==blocks[idx]), 'reverse'].unique()[0]
+                # Draw vertical lines for one or two reversal points learning during runs
+                if reverse==21:
+                    plt.axvline(x = 21, color='#ff7f0e', linewidth=1, alpha=.5)
+                elif reverse==14:
+                    plt.axvline(x = 14, color='#ff7f0e', linewidth=1, alpha=.7)
+                    plt.axvline(x = 28, color='#ff7f0e', linewidth=1, alpha=.7)
+
+                idx += 1
+    # Save plot of chosen and correct response 
+    fig.savefig(saveFile, dpi=300)
+    plt.close()
+     
+def plotChosenCorrect_modofied2(data, blocks, subName, saveFile):
+    """Plot of chosen and correct response for all runs and sessions.
+       In this plot we combine both correct option and choices and also use the amount of options"""
+    # Figure of behavioral data in two column and four rows
+    fig = plt.figure(figsize=(10, 10), tight_layout=True)
+    rows = 4
+    columns = 2
+    # Position marker type and colors of Action adn Color Value Learning
+    y = [1 ,1, .5 ,.0, .0] 
+    markers = ['$\u25EF$', 'o', 'o' , 'o', '$\u25EF$']
+    colorsAct =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    colorsClr =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    idx = 0
+    for s in range(1, 3):
+        for r in range(1, 3):
+            for b in range(1, 3):
+                fig.add_subplot(rows, columns, idx+1) 
+                # Action block
+                if blocks[idx] == 'Act':
+                    # Seperate data taken from a session, run and Action block
+                    dataCondAct = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+
+                    # Seperate the index of pushed and pulled responses
+                    resAct = dataCondAct['pushed'].to_numpy().astype(int)
+                    pushed = np.where(resAct==1)[0] + 1
+                    pulled = np.where(resAct==0)[0] + 1
+                    noRes  = np.where(resAct < 0)[0] + 1
+                    # Seperate the index of pushed and pulled correct choices
+                    corrAct= dataCondAct['pushCorrect']
+                    pushCorr = np.where(corrAct==1)[0] + 1
+                    pulledCorr = np.where(corrAct==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataAct = ({'label': ['pushed', 'push correct', 'no response', 'pull correct', 'pulled'],
+                                'x': [pushed, pushCorr, noRes, pulledCorr, pulled]})
+                    dfPlotAct = pd.DataFrame(dicDataAct)
+                    # amount of correct option 
+                    amtPushCorr = dataCondAct[dataCondAct['pushCorrect']==1]['winAmtPushable'].to_numpy()
+                    amtPullCorr = dataCondAct[dataCondAct['pushCorrect']==0]['winAmtPullable'].to_numpy()
+                    size = [50*np.ones(pushed.shape[0]), amtPushCorr/5, 10*np.ones(noRes.shape[0]),
+                             amtPullCorr/5, 50*np.ones(pulled.shape[0])]
+                    # Create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotAct)):
+                        plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
+                                    s=size[i], facecolors=colorsAct[i], marker=markers[i])
+                    # show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.xlabel('Trials', fontsize=12)
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                    plt.legend(['Chosen', 'yellow correct', 'no response', 'blue correct'], fontsize=8)      
+                # Color block
+                elif blocks[idx] == 'Stim':
+                    # Seperate data taken from a session, run and Color block
+                    dataCondClr = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+                    # Seperate the index of yellow and blue responses
+                    resClr = dataCondClr['yellowChosen'].to_numpy().astype(int)
+                    yellChosen = np.where(resClr==1)[0] + 1
+                    blueChosen = np.where(resClr==0)[0] + 1
+                    noRes  = np.where(resClr < 0)[0] + 1
+                    # Seperate the index of yellow and blue correct choices
+                    corrClr= dataCondClr['yellowCorrect']
+                    yellCorr = np.where(corrClr==1)[0] + 1
+                    blueCorr = np.where(corrClr==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataClr = ({'label': ['yellow chosen', 'yellow correct', 'no response', 'blue correct', 'blue chosen'],
+                                'x': [yellChosen, yellCorr, noRes, blueCorr, blueChosen]})
+                    dfPlotClr = pd.DataFrame(dicDataClr)         
+                    # amount of correct option 
+                    amtYellCorr = dataCondClr[dataCondClr['yellowCorrect']==1]['winAmtYellow'].to_numpy()
+                    amtBlueCorr = dataCondClr[dataCondClr['yellowCorrect']==0]['winAmtBlue'].to_numpy()
+                    size = [50*np.ones(yellChosen.shape[0]), amtYellCorr/5, 10*np.ones(noRes.shape[0]),
+                             amtBlueCorr/5, 50*np.ones(blueChosen.shape[0])]
+                    #create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotClr)):
+                        plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
+                                    s=size[i], facecolors=colorsClr[i], marker=markers[i])
+                    # Show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.xlabel('Trials', fontsize=12) 
+                    plt.xlabel('Trials', fontsize=12)
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                        
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                    plt.legend(['Chosen', 'yellow correct', 'no response', 'blue correct'], fontsize=8) 
                     
                 # Determine Reversal point for each condition 
                 reverse = data.loc[(data['session']==s)&(data['run']==r)&(data['block']==blocks[idx]), 'reverse'].unique()[0]

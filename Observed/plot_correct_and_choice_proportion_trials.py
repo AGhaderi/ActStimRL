@@ -241,10 +241,9 @@ plt.savefig('../figures/plot_correct_and_choice_proportion_trials_' +block+ '_'+
 plt.show()
 
 # print out the proportion of chising with higher probability reward 
-
 if reverse==21: 
     # select the first phase for 25 first trials
-    behAllCond_phase1 = behAllCond[behAllCond['trialNumber']<=26].groupby(['group', 'sub_ID'], as_index=False)['highRewardOption'].mean()
+    behAllCond_phase1 = behAllCond[(behAllCond['trialNumber']>=5)& (behAllCond['trialNumber']<=26)].groupby(['group', 'sub_ID'], as_index=False)['highRewardOption'].mean()
     behAllCond_phase1_mean = behAllCond_phase1.groupby( ['group'])['highRewardOption'].mean()
     behAllCond_phase1_se = behAllCond_phase1.groupby( ['group'])['highRewardOption'].sem()
     # select the second phase fpr remaining trials
@@ -258,7 +257,7 @@ if reverse==21:
     print( 'se proportion - ' + block + ' condition and phase 2 of stable environemnt', behAllCond_phase2_se)
 elif reverse==14:
     # select the first phase for 18 first trials
-    behAllCond_phase1 = behAllCond[(behAllCond['trialNumber']>=4)&(behAllCond['trialNumber']<=19)].groupby(['group', 'sub_ID'], as_index=False).mean()
+    behAllCond_phase1 = behAllCond[(behAllCond['trialNumber']>=5)&(behAllCond['trialNumber']<=19)].groupby(['group', 'sub_ID'], as_index=False).mean()
     behAllCond_phase1_mean = behAllCond_phase1.groupby( ['group'])['highRewardOption'].mean()
     behAllCond_phase1_se = behAllCond_phase1.groupby( ['group'])['highRewardOption'].sem()
     # select the second phase for between 18 to 33 trial

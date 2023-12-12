@@ -9,6 +9,7 @@ rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehMod
 # Rename an column label
 rawBehAll = rawBehAll.rename(columns={'wonAmount                ':'wonAmount'})
 
+
 # This function generates choice and rewarded choice based in alpha parameters defined in each trial 
 # Simulation chooses push and pull in Action value learning condition and yellow and blue in COlor value leanring condition
 def simulateActClr(task_design, simName):
@@ -23,88 +24,99 @@ def simulateActClr(task_design, simName):
     # Loop over participatns and session, each simulation RL starts from the sratch for each participants and session
     for subName in subList:
         for ses in [1, 2]:
-            task_sub_ses = task_design[(task_design['sub_ID']==subName) & (task_design['session']==ses)]
-             # Predefined Number of trials
-            n_trials = task_sub_ses.shape[0]
-            # Predefined conditions for each trial
-            block = task_sub_ses.block.to_numpy()
-            # Predefined Winning amout of reward for Action and Color options
-            winAmtPushable = task_sub_ses.winAmtPushable.to_numpy()
-            winAmtPullable = task_sub_ses.winAmtPullable.to_numpy()
-            winAmtYellow = task_sub_ses.winAmtYellow.to_numpy()
-            winAmtBlue = task_sub_ses.winAmtBlue.to_numpy()  
-            # Predefined Correct responces for Action and color options
-            pushCorrect = task_sub_ses.pushCorrect.to_numpy()
-            yellowCorrect = task_sub_ses.yellowCorrect.to_numpy()
-            # Predefined Ground truth Parameters
-            alpha = task_sub_ses['alpha'+ simName].to_numpy()
-            # Output of simulation for correct choice and Action and Color chosen
-            correctChoice = np.zeros(n_trials).astype(int)
-            choice = np.zeros(n_trials).astype(int)
-            wonAmount = np.zeros(n_trials).astype(int)
-            # Initial reward probability
-            
+            # Initial reward probability 
+            listpropopush = []
+            listpropopull = []
+            listpropyell = []
+            listpropblue = []
             probPush = .5
             probPull = .5
             probYell = .5
             probBlue = .5
-            # Loop over trials
-            for i in range(n_trials):
-                if block[i]=='Act':
-                # Compute the Standard Expected Value of each seperated option 
-                    expValue1 = probPush*winAmtPushable[i] 
-                    expValue2 = probPull*winAmtPullable[i]
-                    # Make a binary choice response with value-maximizing policy second step
-                    y = int(expValue1>=expValue2)
-                    choice[i] = y
-                    # Get reward based on the simulated response, third step
-                    correctChoice[i] = int(choice[i] == pushCorrect[i])
-                    # Get won amount based on the simulated response
-                    if choice[i]==1:
-                        wonAmount[i] = correctChoice[i]*winAmtPushable[i]
-                    elif choice[i] ==0:
-                        wonAmount[i] = correctChoice[i]*winAmtPullable[i]
-                    # Rl rule update over Action Learning Values for the next trial, fourth step
-                    if choice[i] == 1:
-                        probPush = probPush + alpha[i]*(correctChoice[i] - probPush)
-                        probPull = 1 - probPush           
-                    elif choice[i] == 0:
-                        probPull = probPull + alpha[i]*(correctChoice[i] - probPull)
-                        probPush = 1 - probPull                      
-                elif block[i]=='Stim':
-                    # Compute the Standard Expected Value of each seperated option 
-                    expValue1 = probYell*winAmtYellow[i]
-                    expValue2 = probBlue*winAmtBlue[i]
-                    # Make a binary choice response with value-maximizing policy
-                    y = int(expValue1>=expValue2)
-                    choice[i] = y
-                    # Get reward based on the simulated response 
-                    correctChoice[i] = int(choice[i] == yellowCorrect[i])
-                    # Get won amount based on the simulated response
-                    if y==1:
-                        wonAmount[i] = correctChoice[i]*winAmtYellow[i]
-                    elif y==0:
-                        wonAmount[i] = correctChoice[i]*winAmtBlue[i]
-                    # Rl rule update Color Action Learning values for the next trial
-                    if y == 1:
-                        probYell = probYell + alpha[i]*(correctChoice[i] - probYell)
-                        probBlue = 1 - probYell
-                    elif y == 0:
-                        probBlue = probBlue + alpha[i]*(correctChoice[i] - probBlue)
-                        probYell = 1 - probBlue  
-            # output results
-            task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses), 'correctChoice_'+simName] = correctChoice
-            task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses),'choice_'+simName] = choice
-            task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses), 'wonAmount_'+simName] = wonAmount
+            for run in [1, 2]:
+                for cond in ['Stim', 'Act']:
+                    task_sub_ses = task_design[(task_design['sub_ID']==subName) & (task_design['session']==ses) & (task_design['run']==run)& (task_design['block']==cond)]
+                    # Predefined Number of trials
+                    n_trials = task_sub_ses.shape[0]
+                    # Predefined Winning amout of reward for Action and Color options
+                    winAmtPushable = task_sub_ses.winAmtPushable.to_numpy()
+                    winAmtPullable = task_sub_ses.winAmtPullable.to_numpy()
+                    winAmtYellow = task_sub_ses.winAmtYellow.to_numpy()
+                    winAmtBlue = task_sub_ses.winAmtBlue.to_numpy()  
+                    # Predefined Correct responces for Action and color options
+                    pushCorrect = task_sub_ses.pushCorrect.to_numpy()
+                    yellowCorrect = task_sub_ses.yellowCorrect.to_numpy()
+                    # Predefined Ground truth Parameters
+                    alpha = task_sub_ses['alpha'+ simName].to_numpy()
+                    # Output of simulation for correct choice and Action and Color chosen
+                    correctChoice = np.zeros(n_trials).astype(int)
+                    choice = np.zeros(n_trials).astype(int)
+                    wonAmount = np.zeros(n_trials).astype(int)
+                    # Action condition value
+                    if cond=='Act':
+                        # Loop over trials
+                        for i in range(n_trials):
+                            # Compute the Standard Expected Value of each seperated option 
+                            expValue1 = probPush*winAmtPushable[i] 
+                            expValue2 = probPull*winAmtPullable[i]
+                            # Make a binary choice response with value-maximizing policy second step
+                            y = int(expValue1>=expValue2)
+                            choice[i] = y
+                            # Get reward based on the simulated response, third step
+                            correctChoice[i] = int(choice[i] == pushCorrect[i])
+                            # Get won amount based on the simulated response
+                            if y==1:
+                                wonAmount[i] = correctChoice[i]*winAmtPushable[i]
+                            elif y ==0:
+                                wonAmount[i] = correctChoice[i]*winAmtPullable[i]
+                            # Rl rule update over Action Learning Values for the next trial, fourth step
+                            if y ==  1:
+                                probPush = probPush + alpha[i]*(correctChoice[i] - probPush)
+                                probPull = 1 - probPush           
+                            elif y== 0:
+                                probPull = probPull + alpha[i]*(correctChoice[i] - probPull)
+                                probPush = 1 - probPull    
+                            listpropopush.append(probPush)
+                            listpropopull.append(probPull)                  
+                    elif cond=='Stim':     
+                        # Loop over trials
+                        for i in range(n_trials):
+                            # Compute the Standard Expected Value of each seperated option 
+                            expValue1 = probYell*winAmtYellow[i]
+                            expValue2 = probBlue*winAmtBlue[i]
+                            # Make a binary choice response with value-maximizing policy
+                            y = int(expValue1>=expValue2)
+                            choice[i] = y
+                            # Get reward based on the simulated response 
+                            correctChoice[i] = int(choice[i] == yellowCorrect[i])
+                            # Get won amount based on the simulated response
+                            if y==1:
+                                wonAmount[i] = correctChoice[i]*winAmtYellow[i]
+                            elif y==0:
+                                wonAmount[i] = correctChoice[i]*winAmtBlue[i]
+                            # Rl rule update Color Action Learning values for the next trial
+                            if y == 1:
+                                probYell = probYell + alpha[i]*(correctChoice[i] - probYell)
+                                probBlue = 1 - probYell
+                            elif y == 0:
+                                probBlue = probBlue + alpha[i]*(correctChoice[i] - probBlue)
+                                probYell = 1 - probBlue  
+                            
+                            listpropyell.append(probYell)
+                            listpropblue.append(probBlue)   
+                        # output results
+                    task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses) & (task_design['run']==run)& (task_design['block']==cond), 'correctChoice_'+simName] = correctChoice
+                    task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses) & (task_design['run']==run)& (task_design['block']==cond),'choice_'+simName] = choice
+                    task_design.loc[(task_design['sub_ID']==subName) & (task_design['session']==ses) & (task_design['run']==run)& (task_design['block']==cond), 'wonAmount_'+simName] = wonAmount
     return task_design 
 
 # Set the value of alpha parameters for simulating data from RL model
 for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
+    n = round(i, 2)
     # Put the alpha value into a new column
     rawBehAll['alpha'+str(n)] = n
     # Call simulation function
-    rawBehAll = simulateActClr(task_design = rawBehAll, simName=str(n))
+    sim_rawBehAll = simulateActClr(task_design = rawBehAll, simName=str(n))
  
 # save subfigure
 fig = plt.figure(figsize=(15, 15), tight_layout = True)
@@ -112,10 +124,10 @@ nrows= 4
 ncols=4
 idx = 1
 for i in np.linspace(0, 1, 16):
-    n = round(i, 1)
+    n = round(i, 2)
     fig.add_subplot(nrows, ncols, idx)
     plt.title('Alpha '+ str(n), fontsize='12')
-    plt.ylim(0, 3300)
+    plt.ylim(0,3300)
 
     # toral amount od simulated data by RL
     rawBehAll_wonAmount_agent = rawBehAll.groupby(['group', 'block', 'sub_ID'], as_index=False)['wonAmount_'+ str(n)].sum()
@@ -141,5 +153,5 @@ fig.text(0.5, 0, 'Group label', ha='center', fontsize='12')
 fig.text(0, 0.5, 'Total amount', va='center', rotation='vertical', fontsize='12')
 
 # Save figure
-plt.savefig('../figures/simulation_rl_alpha_won_ammount.png', dpi=300)
+#plt.savefig('../figures/simulation_rl_alpha_won_ammount.png', dpi=300)
 plt.show()
