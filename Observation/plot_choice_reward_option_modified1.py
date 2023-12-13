@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import sys
 sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
-from madule import plots
+from Madule import plots
 
 """Plots of choice responses for each individuals.
 In this plot all feasturs of pushing/pulling and yellow chosen/ blue chosen are shown in one plot.

@@ -11,12 +11,12 @@ import utils
 import nest_asyncio
 
 # List of subjects
-subList = ['sub-004', 'sub-020', 'sub-012', 'sub-020', 'sub-025', 'sub-026', 'sub-029',
-           'sub-030', 'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042',
-           'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059',
-           'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071'
-           'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080',
-           'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089',
+subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
+           'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
+           'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 
+           'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 
+           'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
+           'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 sub = subList[1]
 # If you want to model fit or just recall ex model fit
@@ -30,35 +30,26 @@ subName = sub
 # Main directory of the subject
 subMainDirec = 'data/originalfMRIbehFiles/'
 
+# read collected data across data
+behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+# read the specific participant
+behAll_sub = behAll[behAll['sub_ID']==sub]  
+
 # The adrees name of pickle file
-pickelDir = subMainDirec + subName + '/' + subName +'_inv_RLActClr.pkl'
+pickelDir = subMainDirec + subName + '/' + subName +'_RL_simple.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
-    # List of existing .csv files for each session and run realted to the subject
-    files = ['/ses-02achieva7t/' + subName + '_ses-02achieva7t_task-DA_run-1_beh.csv',
-             '/ses-02achieva7t/' + subName + '_ses-02achieva7t_task-DA_run-2_beh.csv',
-             '/ses-03achieva7t/' + subName + '_ses-03achieva7t_task-DA_run-1_beh.csv',
-             '/ses-03achieva7t/' + subName + '_ses-03achieva7t_task-DA_run-2_beh.csv']
-    # Making empty Dataframe to be concatenated for all four .csv file of the subject
-    data = pd.DataFrame([])
-    for i in range(len(files)):
-        direc = subMainDirec + subName + files[i]
-        df = pd.read_csv(direc)
-        data = pd.concat([data, df])
-    # Detection of irregular responces (no-responses or error responces)
-    temp = data['pushed'].to_numpy().astype(int)
-    dataClear = data[temp>=0]
     # Put required data for stan model
-    dataStan = {'N':int(dataClear.shape[0]),  
+    dataStan = {'N':int(behAll_sub.shape[0]),  
                 'nCond':2, 
                 'nSes':2, 
-                'pushed':np.array(dataClear.pushed).astype(int),  
-                'yellowChosen':np.array(dataClear.yellowChosen).astype(int), 
-                'winAmtPushable':np.array(dataClear.winAmtPushable).astype(int), 
-                'winAmtYellow':np.array(dataClear.winAmtYellow).astype(int), 
-                'rewarded':np.array(dataClear.correctChoice).astype(int),       
-                'session':np.array(dataClear.session).astype(int), 
-                'cond':np.array(dataClear.block.replace('Act',1).replace('Stim',2)).astype(int),  
+                'pushed':np.array(behAll_sub.pushed).astype(int),  
+                'yellowChosen':np.array(behAll_sub.yellowChosen).astype(int), 
+                'winAmtPushable':np.array(behAll_sub.winAmtPushable).astype(int), 
+                'winAmtYellow':np.array(behAll_sub.winAmtYellow).astype(int), 
+                'rewarded':np.array(behAll_sub.correctChoice).astype(int),       
+                'session':np.array(behAll_sub.session).astype(int), 
+                'cond':np.array(behAll_sub.block.replace('Act',1).replace('Stim',2)).astype(int),  
                 'p_push_init':.5, 
                 'p_yell_init':.5}
 
