@@ -1,0 +1,1042 @@
+nohup: ignoring input
+/home/amingk/Documents/7TPD/ActStimRL/Model/run_models/./hier/hierRL_simple_normal_group2.py:48: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  behAll_group.sub_ID = behAll_group.sub_ID.replace(np.unique(behAll_group.sub_ID), np.arange(1, nParts +1))
+Building...
+
+Building: 24.5s, done.Messages from stanc:
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 8, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 9, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 10, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 11, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 15, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 16, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 34, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 35, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 36, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 37, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 126, column 8: Comments
+    beginning with # are deprecated and this syntax will be removed in Stan
+    2.33.0. Use // to begin line comments; this can be done automatically
+    using the auto-format flag to stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 127, column 8: Comments
+    beginning with # are deprecated and this syntax will be removed in Stan
+    2.33.0. Use // to begin line comments; this can be done automatically
+    using the auto-format flag to stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 128, column 8: Comments
+    beginning with # are deprecated and this syntax will be removed in Stan
+    2.33.0. Use // to begin line comments; this can be done automatically
+    using the auto-format flag to stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 129, column 8: Comments
+    beginning with # are deprecated and this syntax will be removed in Stan
+    2.33.0. Use // to begin line comments; this can be done automatically
+    using the auto-format flag to stanc
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 138, column 49: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 130, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 121, column 65: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 121, column 62: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 120, column 62: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 120, column 59: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 119, column 62: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 119, column 59: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 118, column 68: A
+    control flow statement depends on parameter(s): sensitivity.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 108, column 40: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 108, column 37: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 107, column 37: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 107, column 34: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 106, column 37: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 106, column 34: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 98, column 69: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 98, column 20: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 94, column 69: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 94, column 20: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 90, column 70: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 90, column 21: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 86, column 70: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 86, column 21: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 67, column 17: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 66, column 17: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 65, column 17: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_elncnht2/model_zuftt2rh.stan', line 64, column 17: The
+    variable p_push may not have been assigned a value before its use.
+Warning: The parameter weightAct_hier has 4 priors.
+Warning: The parameter weightAct has 4 priors.
+Warning: The parameter sensitivity has 3 priors.
+Warning: The parameter alphaClr_hier has 4 priors.
+Warning: The parameter alphaClr has 4 priors.
+Warning: The parameter alphaAct_hier has 4 priors.
+Warning: The parameter alphaAct has 4 priors.
+Sampling:   0%
+Sampling:   0% (1/18000)
+Sampling:   0% (2/18000)
+Sampling:   0% (3/18000)
+Sampling:   1% (102/18000)
+Sampling:   1% (201/18000)
+Sampling:   2% (301/18000)
+Sampling:   2% (401/18000)
+Sampling:   3% (500/18000)
+Sampling:   3% (600/18000)
+Sampling:   4% (700/18000)
+Sampling:   4% (800/18000)
+Sampling:   5% (900/18000)
+Sampling:   6% (1000/18000)
+Sampling:   6% (1100/18000)
+Sampling:   7% (1200/18000)
+Sampling:   7% (1300/18000)
+Sampling:   8% (1400/18000)
+Sampling:   8% (1500/18000)
+Sampling:   9% (1600/18000)
+Sampling:   9% (1700/18000)
+Sampling:  10% (1800/18000)
+Sampling:  11% (1900/18000)
+Sampling:  11% (2000/18000)
+Sampling:  11% (2001/18000)
+Sampling:  12% (2101/18000)
+Sampling:  12% (2200/18000)
+Sampling:  13% (2300/18000)
+Sampling:  13% (2400/18000)
+Sampling:  14% (2500/18000)
+Sampling:  14% (2600/18000)
+Sampling:  15% (2700/18000)
+Sampling:  16% (2800/18000)
+Sampling:  23% (4200/18000)
+Sampling:  24% (4300/18000)
+Sampling:  24% (4400/18000)
+Sampling:  25% (4500/18000)
+Sampling:  26% (4600/18000)
+Sampling:  26% (4700/18000)
+Sampling:  26% (4701/18000)
+Sampling:  27% (4801/18000)
+Sampling:  27% (4901/18000)
+Sampling:  28% (5001/18000)
+Sampling:  28% (5101/18000)
+Sampling:  29% (5200/18000)
+Sampling:  29% (5300/18000)
+Sampling:  30% (5400/18000)
+Sampling:  30% (5401/18000)
+Sampling:  31% (5501/18000)
+Sampling:  31% (5601/18000)
+Sampling:  32% (5701/18000)
+Sampling:  32% (5800/18000)
+Sampling:  33% (5900/18000)
+Sampling:  33% (6000/18000)
+Sampling:  34% (6100/18000)
+Sampling:  34% (6200/18000)
+Sampling:  35% (6300/18000)
+Sampling:  36% (6400/18000)
+Sampling:  36% (6500/18000)
+Sampling:  37% (6600/18000)
+Sampling:  37% (6700/18000)
+Sampling:  38% (6800/18000)
+Sampling:  38% (6900/18000)
+Sampling:  39% (7000/18000)
+Sampling:  39% (7100/18000)
+Sampling:  40% (7200/18000)
+Sampling:  41% (7300/18000)
+Sampling:  41% (7400/18000)
+Sampling:  42% (7500/18000)
+Sampling:  42% (7600/18000)
+Sampling:  43% (7700/18000)
+Sampling:  43% (7800/18000)
+Sampling:  44% (7900/18000)
+Sampling:  44% (8000/18000)
+Sampling:  45% (8100/18000)
+Sampling:  46% (8200/18000)
+Sampling:  46% (8300/18000)
+Sampling:  47% (8400/18000)
+Sampling:  47% (8500/18000)
+Sampling:  48% (8600/18000)
+Sampling:  48% (8700/18000)
+Sampling:  49% (8800/18000)
+Sampling:  49% (8900/18000)
+Sampling:  50% (9000/18000)
+Sampling:  51% (9100/18000)
+Sampling:  51% (9200/18000)
+Sampling:  52% (9300/18000)
+Sampling:  53% (9600/18000)
+Sampling:  54% (9700/18000)
+Sampling:  56% (10000/18000)
+Sampling:  57% (10200/18000)
+Sampling:  57% (10300/18000)
+Sampling:  58% (10400/18000)
+Sampling:  58% (10500/18000)
+Sampling:  59% (10600/18000)
+Sampling:  59% (10700/18000)
+Sampling:  60% (10800/18000)
+Sampling:  61% (10900/18000)
+Sampling:  61% (11000/18000)
+Sampling:  62% (11100/18000)
+Sampling:  62% (11200/18000)
+Sampling:  63% (11300/18000)
+Sampling:  63% (11400/18000)
+Sampling:  64% (11500/18000)
+Sampling:  64% (11600/18000)
+Sampling:  65% (11700/18000)
+Sampling:  66% (11800/18000)
+Sampling:  67% (12000/18000)
+Sampling:  67% (12100/18000)
+Sampling:  68% (12200/18000)
+Sampling:  68% (12300/18000)
+Sampling:  69% (12400/18000)
+Sampling:  69% (12500/18000)
+Sampling:  70% (12600/18000)
+Sampling:  71% (12700/18000)
+Sampling:  71% (12800/18000)
+Sampling:  72% (12900/18000)
+Sampling:  72% (13000/18000)
+Sampling:  73% (13100/18000)
+Sampling:  73% (13200/18000)
+Sampling:  74% (13300/18000)
+Sampling:  74% (13400/18000)
+Sampling:  75% (13500/18000)
+Sampling:  76% (13600/18000)
+Sampling:  76% (13700/18000)
+Sampling:  77% (13800/18000)
+Sampling:  77% (13900/18000)
+Sampling:  78% (14000/18000)
+Sampling:  78% (14100/18000)
+Sampling:  79% (14200/18000)
+Sampling:  79% (14300/18000)
+Sampling:  80% (14400/18000)
+Sampling:  81% (14500/18000)
+Sampling:  81% (14600/18000)
+Sampling:  82% (14700/18000)
+Sampling:  82% (14800/18000)
+Sampling:  83% (14900/18000)
+Sampling:  83% (15000/18000)
+Sampling:  84% (15100/18000)
+Sampling:  84% (15200/18000)
+Sampling:  85% (15300/18000)
+Sampling:  86% (15400/18000)
+Sampling:  86% (15500/18000)
+Sampling:  87% (15600/18000)
+Sampling:  87% (15700/18000)
+Sampling:  88% (15800/18000)
+Sampling:  88% (15900/18000)
+Sampling:  89% (16000/18000)
+Sampling:  89% (16100/18000)
+Sampling:  90% (16200/18000)
+Sampling:  91% (16300/18000)
+Sampling:  91% (16400/18000)
+Sampling:  92% (16500/18000)
+Sampling:  92% (16600/18000)
+Sampling:  93% (16700/18000)
+Sampling:  93% (16800/18000)
+Sampling:  94% (16900/18000)
+Sampling:  94% (17000/18000)
+Sampling:  95% (17100/18000)
+Sampling:  96% (17200/18000)
+Sampling:  96% (17300/18000)
+Sampling:  97% (17400/18000)
+Sampling:  97% (17500/18000)
+Sampling:  98% (17600/18000)
+Sampling:  98% (17700/18000)
+Sampling:  99% (17800/18000)
+Sampling:  99% (17900/18000)
+Sampling: 100% (18000/18000)
+Sampling: 100% (18000/18000), done.
+Messages received during sampling:
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001631 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 16.31 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001487 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.87 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002124 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.24 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_un0d1et4/model_zuftt2rh.stan', line 105, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/model/hier/cond-Act_sess-1_env-21_Stan-hierRL_simple_normal_group2.pkl
+(15000,)
+Building...
+
+Building: 24.1s, done.Messages from stanc:
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 15, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 16, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 17, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 18, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 19, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 20, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 38, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 39, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 40, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 41, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 138, column 48: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 130, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 125, column 65: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 125, column 62: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 124, column 62: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 124, column 59: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 123, column 62: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 123, column 59: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 122, column 68: A
+    control flow statement depends on parameter(s): sensitivity.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 112, column 40: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 112, column 37: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 111, column 37: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 111, column 34: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 110, column 37: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 110, column 34: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 102, column 69: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 102, column 20: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 98, column 69: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 98, column 20: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 94, column 70: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 94, column 21: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 90, column 70: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 90, column 21: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 71, column 18: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 70, column 18: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 69, column 18: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 68, column 18: The
+    variable p_push may not have been assigned a value before its use.
+Warning: The parameter weightAct_hier has 4 priors.
+Warning: The parameter weightAct has 4 priors.
+Warning: The parameter sensitivity has 3 priors.
+Warning: The parameter alphaClr_hier has 4 priors.
+Warning: The parameter alphaClr has 4 priors.
+Warning: The parameter alphaAct_hier has 4 priors.
+Warning: The parameter alphaAct has 4 priors.
+Sampling:   0%
+Sampling:   0% (1/18000)
+Sampling:   0% (2/18000)
+Sampling:   0% (3/18000)
+Sampling:   1% (102/18000)
+Sampling:   1% (201/18000)
+Sampling:   2% (300/18000)
+Sampling:   2% (400/18000)
+Sampling:   3% (500/18000)
+Sampling:   3% (600/18000)
+Sampling:   4% (700/18000)
+Sampling:   4% (800/18000)
+Sampling:   5% (900/18000)
+Sampling:   6% (1000/18000)
+Sampling:   6% (1100/18000)
+Sampling:   7% (1200/18000)
+Sampling:   7% (1300/18000)
+Sampling:   8% (1400/18000)
+Sampling:   8% (1500/18000)
+Sampling:   9% (1600/18000)
+Sampling:   9% (1700/18000)
+Sampling:  10% (1800/18000)
+Sampling:  11% (1900/18000)
+Sampling:  11% (2000/18000)
+Sampling:  12% (2100/18000)
+Sampling:  12% (2200/18000)
+Sampling:  13% (2300/18000)
+Sampling:  13% (2400/18000)
+Sampling:  14% (2500/18000)
+Sampling:  14% (2501/18000)
+Sampling:  14% (2600/18000)
+Sampling:  15% (2700/18000)
+Sampling:  16% (2800/18000)
+Sampling:  16% (2900/18000)
+Sampling:  17% (3000/18000)
+Sampling:  17% (3100/18000)
+Sampling:  18% (3200/18000)
+Sampling:  18% (3300/18000)
+Sampling:  19% (3400/18000)
+Sampling:  19% (3500/18000)
+Sampling:  20% (3600/18000)
+Sampling:  21% (3700/18000)
+Sampling:  21% (3800/18000)
+Sampling:  22% (3900/18000)
+Sampling:  22% (4001/18000)
+Sampling:  23% (4101/18000)
+Sampling:  23% (4201/18000)
+Sampling:  24% (4301/18000)
+Sampling:  24% (4400/18000)
+Sampling:  25% (4500/18000)
+Sampling:  26% (4600/18000)
+Sampling:  28% (5000/18000)
+Sampling:  28% (5100/18000)
+Sampling:  29% (5200/18000)
+Sampling:  29% (5300/18000)
+Sampling:  30% (5400/18000)
+Sampling:  31% (5500/18000)
+Sampling:  31% (5600/18000)
+Sampling:  32% (5700/18000)
+Sampling:  32% (5800/18000)
+Sampling:  33% (5900/18000)
+Sampling:  33% (5901/18000)
+Sampling:  33% (6001/18000)
+Sampling:  34% (6101/18000)
+Sampling:  34% (6201/18000)
+Sampling:  35% (6301/18000)
+Sampling:  36% (6401/18000)
+Sampling:  36% (6501/18000)
+Sampling:  37% (6601/18000)
+Sampling:  37% (6700/18000)
+Sampling:  38% (6800/18000)
+Sampling:  38% (6900/18000)
+Sampling:  39% (7000/18000)
+Sampling:  39% (7100/18000)
+Sampling:  40% (7200/18000)
+Sampling:  41% (7300/18000)
+Sampling:  41% (7400/18000)
+Sampling:  42% (7500/18000)
+Sampling:  42% (7600/18000)
+Sampling:  43% (7700/18000)
+Sampling:  43% (7800/18000)
+Sampling:  44% (7900/18000)
+Sampling:  44% (8000/18000)
+Sampling:  45% (8100/18000)
+Sampling:  48% (8700/18000)
+Sampling:  49% (8800/18000)
+Sampling:  49% (8900/18000)
+Sampling:  50% (9000/18000)
+Sampling:  51% (9100/18000)
+Sampling:  51% (9200/18000)
+Sampling:  52% (9300/18000)
+Sampling:  52% (9400/18000)
+Sampling:  53% (9500/18000)
+Sampling:  53% (9600/18000)
+Sampling:  54% (9700/18000)
+Sampling:  54% (9800/18000)
+Sampling:  55% (9900/18000)
+Sampling:  56% (10000/18000)
+Sampling:  56% (10100/18000)
+Sampling:  57% (10300/18000)
+Sampling:  58% (10400/18000)
+Sampling:  58% (10500/18000)
+Sampling:  59% (10600/18000)
+Sampling:  59% (10700/18000)
+Sampling:  60% (10800/18000)
+Sampling:  61% (10900/18000)
+Sampling:  61% (11000/18000)
+Sampling:  62% (11100/18000)
+Sampling:  62% (11200/18000)
+Sampling:  63% (11300/18000)
+Sampling:  63% (11400/18000)
+Sampling:  64% (11500/18000)
+Sampling:  64% (11600/18000)
+Sampling:  65% (11700/18000)
+Sampling:  66% (11800/18000)
+Sampling:  66% (11900/18000)
+Sampling:  67% (12000/18000)
+Sampling:  67% (12100/18000)
+Sampling:  68% (12200/18000)
+Sampling:  68% (12300/18000)
+Sampling:  69% (12400/18000)
+Sampling:  69% (12500/18000)
+Sampling:  71% (12700/18000)
+Sampling:  71% (12800/18000)
+Sampling:  72% (12900/18000)
+Sampling:  72% (13000/18000)
+Sampling:  73% (13100/18000)
+Sampling:  73% (13200/18000)
+Sampling:  74% (13300/18000)
+Sampling:  74% (13400/18000)
+Sampling:  75% (13500/18000)
+Sampling:  76% (13600/18000)
+Sampling:  76% (13700/18000)
+Sampling:  77% (13800/18000)
+Sampling:  77% (13900/18000)
+Sampling:  78% (14000/18000)
+Sampling:  78% (14100/18000)
+Sampling:  79% (14200/18000)
+Sampling:  79% (14300/18000)
+Sampling:  80% (14400/18000)
+Sampling:  81% (14500/18000)
+Sampling:  81% (14600/18000)
+Sampling:  82% (14700/18000)
+Sampling:  82% (14800/18000)
+Sampling:  83% (14900/18000)
+Sampling:  83% (15000/18000)
+Sampling:  84% (15100/18000)
+Sampling:  84% (15200/18000)
+Sampling:  85% (15300/18000)
+Sampling:  86% (15400/18000)
+Sampling:  86% (15500/18000)
+Sampling:  87% (15600/18000)
+Sampling:  87% (15700/18000)
+Sampling:  88% (15800/18000)
+Sampling:  88% (15900/18000)
+Sampling:  89% (16000/18000)
+Sampling:  89% (16100/18000)
+Sampling:  90% (16200/18000)
+Sampling:  91% (16300/18000)
+Sampling:  91% (16400/18000)
+Sampling:  92% (16500/18000)
+Sampling:  92% (16600/18000)
+Sampling:  93% (16700/18000)
+Sampling:  93% (16800/18000)
+Sampling:  94% (16900/18000)
+Sampling:  94% (17000/18000)
+Sampling:  95% (17100/18000)
+Sampling:  96% (17200/18000)
+Sampling:  96% (17300/18000)
+Sampling:  97% (17400/18000)
+Sampling:  97% (17500/18000)
+Sampling:  98% (17600/18000)
+Sampling:  98% (17700/18000)
+Sampling:  99% (17800/18000)
+Sampling:  99% (17900/18000)
+Sampling: 100% (18000/18000)
+Sampling: 100% (18000/18000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.001633 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 16.33 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002026 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 20.26 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 116, column 4 to column 30)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 116, column 4 to column 30)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 116, column 4 to column 30)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002019 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 20.19 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_dodttuxp/model_chm4c4ly.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/model/hier/cond-Clr_sess-1_env-21_Stan-hierRL_simple_normal_group2.pkl
+(15000,)
+Building...
+
+Building: found in cache, done.Messages from stanc:
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 12, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 13, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 14, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 15, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 16, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 17, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 18, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 19, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 20, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 38, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 39, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 40, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 41, column 4: Declaration
+    of arrays by placing brackets after a variable name is deprecated and
+    will be removed in Stan 2.33.0. Instead use the array keyword before the
+    type. This can be changed automatically using the auto-format flag to
+    stanc
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 138, column 48: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 130, column 30: The
+    variable soft_max_EV may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 125, column 65: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 125, column 62: A
+    control flow statement depends on parameter(s): weightAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 124, column 62: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 124, column 59: A
+    control flow statement depends on parameter(s): alphaClr.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 123, column 62: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 123, column 59: A
+    control flow statement depends on parameter(s): alphaAct.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 122, column 68: A
+    control flow statement depends on parameter(s): sensitivity.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 112, column 40: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 112, column 37: A
+    control flow statement depends on parameter(s): weightAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 111, column 37: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 111, column 34: A
+    control flow statement depends on parameter(s): alphaClr_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 110, column 37: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 110, column 34: A
+    control flow statement depends on parameter(s): alphaAct_hier.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 102, column 69: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 102, column 20: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 98, column 69: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 98, column 20: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 94, column 70: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 94, column 21: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 90, column 70: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 90, column 21: The
+    variable p_push may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 71, column 18: The
+    variable p_blue may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 70, column 18: The
+    variable p_yell may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 69, column 18: The
+    variable p_pull may not have been assigned a value before its use.
+Warning in '/tmp/httpstan_epkvsvc9/model_chm4c4ly.stan', line 68, column 18: The
+    variable p_push may not have been assigned a value before its use.
+Warning: The parameter weightAct_hier has 4 priors.
+Warning: The parameter weightAct has 4 priors.
+Warning: The parameter sensitivity has 3 priors.
+Warning: The parameter alphaClr_hier has 4 priors.
+Warning: The parameter alphaClr has 4 priors.
+Warning: The parameter alphaAct_hier has 4 priors.
+Warning: The parameter alphaAct has 4 priors.
+Sampling:   0%
+Sampling:   0% (1/18000)
+Sampling:   0% (2/18000)
+Sampling:   0% (3/18000)
+Sampling:   1% (102/18000)
+Sampling:   1% (201/18000)
+Sampling:   2% (301/18000)
+Sampling:   2% (401/18000)
+Sampling:   3% (500/18000)
+Sampling:   3% (600/18000)
+Sampling:   4% (700/18000)
+Sampling:   4% (800/18000)
+Sampling:   5% (900/18000)
+Sampling:   6% (1000/18000)
+Sampling:   6% (1100/18000)
+Sampling:   7% (1200/18000)
+Sampling:   7% (1300/18000)
+Sampling:   8% (1400/18000)
+Sampling:   8% (1500/18000)
+Sampling:   9% (1600/18000)
+Sampling:   9% (1700/18000)
+Sampling:  10% (1800/18000)
+Sampling:  11% (1900/18000)
+Sampling:  11% (2000/18000)
+Sampling:  12% (2100/18000)
+Sampling:  12% (2200/18000)
+Sampling:  12% (2201/18000)
+Sampling:  13% (2301/18000)
+Sampling:  13% (2400/18000)
+Sampling:  14% (2500/18000)
+Sampling:  14% (2600/18000)
+Sampling:  15% (2700/18000)
+Sampling:  16% (2800/18000)
+Sampling:  16% (2900/18000)
+Sampling:  17% (3000/18000)
+Sampling:  17% (3100/18000)
+Sampling:  18% (3200/18000)
+Sampling:  18% (3300/18000)
+Sampling:  18% (3301/18000)
+Sampling:  19% (3401/18000)
+Sampling:  19% (3500/18000)
+Sampling:  20% (3600/18000)
+Sampling:  21% (3700/18000)
+Sampling:  21% (3801/18000)
+Sampling:  22% (3901/18000)
+Sampling:  22% (4001/18000)
+Sampling:  23% (4100/18000)
+Sampling:  23% (4200/18000)
+Sampling:  24% (4300/18000)
+Sampling:  24% (4400/18000)
+Sampling:  25% (4500/18000)
+Sampling:  26% (4600/18000)
+Sampling:  26% (4700/18000)
+Sampling:  27% (4800/18000)
+Sampling:  27% (4900/18000)
+Sampling:  28% (5000/18000)
+Sampling:  28% (5100/18000)
+Sampling:  29% (5200/18000)
+Sampling:  29% (5300/18000)
+Sampling:  30% (5400/18000)
+Sampling:  31% (5500/18000)
+Sampling:  31% (5600/18000)
+Sampling:  32% (5700/18000)
+Sampling:  34% (6100/18000)
+Sampling:  34% (6200/18000)
+Sampling:  36% (6400/18000)
+Sampling:  37% (6700/18000)
+Sampling:  38% (6800/18000)
+Sampling:  38% (6900/18000)
+Sampling:  39% (7000/18000)
+Sampling:  39% (7100/18000)
+Sampling:  40% (7200/18000)
+Sampling:  41% (7300/18000)
+Sampling:  41% (7400/18000)
+Sampling:  42% (7500/18000)
+Sampling:  42% (7600/18000)
+Sampling:  43% (7700/18000)
+Sampling:  43% (7800/18000)
+Sampling:  44% (7900/18000)
+Sampling:  44% (8000/18000)
+Sampling:  45% (8100/18000)
+Sampling:  46% (8200/18000)
+Sampling:  46% (8300/18000)
+Sampling:  47% (8400/18000)
+Sampling:  47% (8500/18000)
+Sampling:  48% (8600/18000)
+Sampling:  48% (8700/18000)
+Sampling:  49% (8800/18000)
+Sampling:  49% (8900/18000)
+Sampling:  50% (9000/18000)
+Sampling:  51% (9100/18000)
+Sampling:  51% (9200/18000)
+Sampling:  52% (9300/18000)
+Sampling:  52% (9400/18000)
+Sampling:  53% (9500/18000)
+Sampling:  53% (9600/18000)
+Sampling:  54% (9700/18000)
+Sampling:  54% (9800/18000)
+Sampling:  55% (9900/18000)
+Sampling:  56% (10000/18000)
+Sampling:  56% (10100/18000)
+Sampling:  57% (10200/18000)
+Sampling:  57% (10300/18000)
+Sampling:  58% (10400/18000)
+Sampling:  58% (10500/18000)
+Sampling:  59% (10600/18000)
+Sampling:  59% (10700/18000)
+Sampling:  60% (10800/18000)
+Sampling:  61% (10900/18000)
+Sampling:  61% (11000/18000)
+Sampling:  62% (11100/18000)
+Sampling:  62% (11200/18000)
+Sampling:  63% (11300/18000)
+Sampling:  63% (11400/18000)
+Sampling:  64% (11500/18000)
+Sampling:  64% (11600/18000)
+Sampling:  65% (11700/18000)
+Sampling:  66% (11800/18000)
+Sampling:  66% (11900/18000)
+Sampling:  67% (12000/18000)
+Sampling:  67% (12100/18000)
+Sampling:  68% (12200/18000)
+Sampling:  68% (12300/18000)
+Sampling:  69% (12400/18000)
+Sampling:  69% (12500/18000)
+Sampling:  70% (12600/18000)
+Sampling:  71% (12700/18000)
+Sampling:  71% (12800/18000)
+Sampling:  72% (12900/18000)
+Sampling:  72% (13000/18000)
+Sampling:  73% (13100/18000)
+Sampling:  73% (13200/18000)
+Sampling:  74% (13300/18000)
+Sampling:  74% (13400/18000)
+Sampling:  75% (13500/18000)
+Sampling:  76% (13600/18000)
+Sampling:  76% (13700/18000)
+Sampling:  77% (13800/18000)
+Sampling:  77% (13900/18000)
+Sampling:  78% (14000/18000)
+Sampling:  78% (14100/18000)
+Sampling:  79% (14200/18000)
+Sampling:  79% (14300/18000)
+Sampling:  80% (14400/18000)
+Sampling:  81% (14500/18000)
+Sampling:  81% (14600/18000)
+Sampling:  82% (14700/18000)
+Sampling:  82% (14800/18000)
+Sampling:  83% (14900/18000)
+Sampling:  83% (15000/18000)
+Sampling:  84% (15100/18000)
+Sampling:  84% (15200/18000)
+Sampling:  85% (15300/18000)
+Sampling:  86% (15400/18000)
+Sampling:  86% (15500/18000)
+Sampling:  87% (15600/18000)
+Sampling:  87% (15700/18000)Traceback (most recent call last):
+  File "/home/amingk/Documents/7TPD/ActStimRL/Model/run_models/./hier/hierRL_simple_normal_group2.py", line 102, in <module>
+    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 89, in sample
+    return self.hmc_nuts_diag_e_adapt(num_chains=num_chains, **kwargs)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 108, in hmc_nuts_diag_e_adapt
+    return self._create_fit(function=function, num_chains=num_chains, **kwargs)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 313, in _create_fit
+    return asyncio.run(go())
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/nest_asyncio.py", line 35, in run
+    return loop.run_until_complete(task)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/nest_asyncio.py", line 90, in run_until_complete
+    return f.result()
+  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/futures.py", line 201, in result
+    raise self._exception.with_traceback(self._exception_tb)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/tasks.py", line 232, in __step
+    result = coro.send(None)
+  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 236, in go
+    raise RuntimeError(message)
+RuntimeError: Exception during call to services function: `BrokenProcessPool("A process in the process pool was terminated abruptly while the future was running or pending. Rejecting initial value: Log probability evaluates to log(0), i.e. negative infinity. Stan can't start sampling from this initial value. Rejecting initial value: ...  Gradient evaluation took 0.002137 seconds 1000 transitions using 10 leapfrog steps per transition would take 21.37 seconds. Adjust your expectations accordingly! ...  Gradient evaluation took 0.001674 seconds 1000 transitions using 10 leapfrog steps per transition would take 16.74 seconds. Adjust your expectations accordingly! ...")`, traceback: `['  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/tasks.py", line 232, in __step\n    result = coro.send(None)\n', '  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/httpstan/services_stub.py", line 185, in call\n    future.result()\n', '  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/futures.py", line 201, in result\n    raise self._exception.with_traceback(self._exception_tb)\n']`
