@@ -71,35 +71,35 @@ transformed parameters {
         EV_blue = p_blue*winAmtBlue[i];
        
         // Relative contribution of Action Value Learning verus Color Value Learning
-        EV_push_yell = weightAct[participant[N]]*EV_push + (1 - weightAct[participant[N]])*EV_yell;
-        EV_push_blue = weightAct[participant[N]]*EV_push + (1 - weightAct[participant[N]])*EV_blue;
-        EV_pull_yell = weightAct[participant[N]]*EV_pull + (1 - weightAct[participant[N]])*EV_yell;
-        EV_pull_blue = weightAct[participant[N]]*EV_pull + (1 - weightAct[participant[N]])*EV_blue;
+        EV_push_yell = weightAct[participant[i]]*EV_push + (1 - weightAct[participant[i]])*EV_yell;
+        EV_push_blue = weightAct[participant[i]]*EV_push + (1 - weightAct[participant[i]])*EV_blue;
+        EV_pull_yell = weightAct[participant[i]]*EV_pull + (1 - weightAct[participant[i]])*EV_yell;
+        EV_pull_blue = weightAct[participant[i]]*EV_pull + (1 - weightAct[participant[i]])*EV_blue;
        
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(sensitivity[participant[N]]*EV_push_yell)/(exp(sensitivity[participant[N]]*EV_push_yell) + exp(sensitivity[participant[N]]*EV_pull_blue));
+            soft_max_EV[i] = exp(sensitivity[participant[i]]*EV_push_yell)/(exp(sensitivity[participant[i]]*EV_push_yell) + exp(sensitivity[participant[i]]*EV_pull_blue));
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(sensitivity[participant[N]]*EV_push_blue)/(exp(sensitivity[participant[N]]*EV_push_blue) + exp(sensitivity[participant[N]]*EV_pull_yell));  
+            soft_max_EV[i] = exp(sensitivity[participant[i]]*EV_push_blue)/(exp(sensitivity[participant[i]]*EV_push_blue) + exp(sensitivity[participant[i]]*EV_pull_yell));  
           
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         if (pushed[i] == 1){
-            p_push = p_push + alphaAct[participant[N]]*(rewarded[i] - p_push); 
+            p_push = p_push + alphaAct[participant[i]]*(rewarded[i] - p_push); 
             p_pull = 1 - p_push;
         }
         else{
-            p_pull = p_pull + alphaAct[participant[N]]*(rewarded[i] - p_pull);
+            p_pull = p_pull + alphaAct[participant[i]]*(rewarded[i] - p_pull);
             p_push = 1 - p_pull;
         }    
         if (yellowChosen[i] == 1){
-           p_yell = p_yell + alphaClr[participant[N]]*(rewarded[i] - p_yell);
+           p_yell = p_yell + alphaClr[participant[i]]*(rewarded[i] - p_yell);
            p_blue = 1 - p_yell;
         }    
         else{
-           p_blue = p_blue + alphaClr[participant[N]]*(rewarded[i] - p_blue);
+           p_blue = p_blue + alphaClr[participant[i]]*(rewarded[i] - p_blue);
            p_yell = 1 - p_blue;           
         }
     }   

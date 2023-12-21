@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import gaussian_kde
+import matplotlib.lines as mlines
 
 def plotChosenCorrect(data, blocks, subName, saveFile):
     """Plot of chosen and correct response for all runs and sessions"""
@@ -109,8 +110,7 @@ def plotChosenCorrect_modofied1(data, blocks, subName, saveFile):
     # Position marker type and colors of Action adn Color Value Learning
     y = [1 ,1, .5 ,.0, .0] 
     markers = ['$\u25EF$', 'o', 'o' , 'o', '$\u25EF$']
-    colorsAct =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
-    colorsClr =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    colors =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
     size = [30, 5, 10, 10, 30]
     idx = 0
     for s in range(1, 3):
@@ -137,7 +137,7 @@ def plotChosenCorrect_modofied1(data, blocks, subName, saveFile):
                     # Create a list of y coordinates for every x coordinate
                     for i in range(len(dfPlotAct)):
                         plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
-                                    s=size[i], facecolors=colorsAct[i], marker=markers[i])
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
                     # show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.ylim(-.1, 1.1)
@@ -169,7 +169,7 @@ def plotChosenCorrect_modofied1(data, blocks, subName, saveFile):
                     #create a list of y coordinates for every x coordinate
                     for i in range(len(dfPlotClr)):
                         plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
-                                    s=size[i], facecolors=colorsClr[i], marker=markers[i])
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
                     # Show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.ylim(-.1, 1.1)
@@ -208,8 +208,7 @@ def plotChosenCorrect_modofied2(data, blocks, subName, saveFile):
     # Position marker type and colors of Action adn Color Value Learning
     y = [1 ,1, .5 ,.0, .0] 
     markers = ['$\u25EF$', 'o', 'o' , 'o', '$\u25EF$']
-    colorsAct =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
-    colorsClr =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
+    colors =['#d62728','#2ca02c', '#d62728', '#1f77b4', '#d62728']
     idx = 0
     for s in range(1, 3):
         for r in range(1, 3):
@@ -236,12 +235,13 @@ def plotChosenCorrect_modofied2(data, blocks, subName, saveFile):
                     # amount of correct option 
                     amtPushCorr = dataCondAct[dataCondAct['pushCorrect']==1]['winAmtPushable'].to_numpy()
                     amtPullCorr = dataCondAct[dataCondAct['pushCorrect']==0]['winAmtPullable'].to_numpy()
+                    # changing size of chosen option adjusted by the winning amount
                     size = [100*np.ones(pushed.shape[0]), amtPushCorr/4, 10*np.ones(noRes.shape[0]),
                              amtPullCorr/4, 100*np.ones(pulled.shape[0])]
                     # Create a list of y coordinates for every x coordinate
                     for i in range(len(dfPlotAct)):
                         plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
-                                    s=size[i], facecolors=colorsAct[i], marker=markers[i])
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
                     # show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.ylim(-.15, 1.15)
@@ -273,12 +273,13 @@ def plotChosenCorrect_modofied2(data, blocks, subName, saveFile):
                     # amount of correct option 
                     amtYellCorr = dataCondClr[dataCondClr['yellowCorrect']==1]['winAmtYellow'].to_numpy()
                     amtBlueCorr = dataCondClr[dataCondClr['yellowCorrect']==0]['winAmtBlue'].to_numpy()
+                    # changing size of chosen option adjusted by the winning amount
                     size = [100*np.ones(yellChosen.shape[0]), amtYellCorr/4, 10*np.ones(noRes.shape[0]),
                              amtBlueCorr/4, 100*np.ones(blueChosen.shape[0])]
                     #create a list of y coordinates for every x coordinate
                     for i in range(len(dfPlotClr)):
                         plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
-                                    s=size[i], facecolors=colorsClr[i], marker=markers[i])
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
                     # Show the empy y axis label
                     plt.yticks(y,[]) 
                     plt.ylim(-.15, 1.15)
@@ -305,7 +306,137 @@ def plotChosenCorrect_modofied2(data, blocks, subName, saveFile):
     # Save plot of chosen and correct response 
     fig.savefig(saveFile, dpi=300)
     plt.close()
+
+def plotChosenCorrect_modofied3(data, blocks, subName, saveFile):
+    """Plot of chosen and correct response for all runs and sessions.
+       In this plot we combine both correct option and choices """
+    # Figure of behavioral data in two column and four rows
+    fig = plt.figure(figsize=(10, 10), tight_layout=True)
+    rows = 8
+    columns = 1
+    # Position marker type and colors of Action adn Color Value Learning
+    y = [1 ,1, .5 ,.0, .0] 
+    markers = ['$\u25EF$', 'o', 'o' , 'o', '$\u25EF$']
+    size = [100, 15, 5, 15, 100]
+    idx = 0
+    for s in range(1, 3):
+        for r in range(1, 3):
+            for b in range(1, 3):
+                fig.add_subplot(rows, columns, idx+1) 
+                # Action block
+                if blocks[idx] == 'Act':
+                    # Seperate data taken from a session, run and Action block
+                    dataCondAct = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+                    # Seperate the index of pushed and pulled responses
+                    resAct = dataCondAct['pushed'].to_numpy().astype(int)
+                    pushed = np.where(resAct==1)[0] + 1
+                    pulled = np.where(resAct==0)[0] + 1
+                    noRes  = np.where(resAct < 0)[0] + 1
+                    # Seperate the index of pushed and pulled correct choices
+                    corrAct= dataCondAct['pushCorrect']
+                    pushCorr = np.where(corrAct==1)[0] + 1
+                    pulledCorr = np.where(corrAct==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataAct = ({'label': ['pushed', 'push correct', 'no response', 'pull correct', 'pulled'],
+                                'x': [pushed, pushCorr, noRes, pulledCorr, pulled]})
+                    dfPlotAct = pd.DataFrame(dicDataAct)
+                    # changing color of chosen option adjusted by the higher vs lower winning amount
+                    # Calculate the probability of high amount is chosed or lower amount
+                    amtPushCorr = dataCondAct[resAct==1]['winAmtPushable'].to_numpy()
+                    amtPullCorr = dataCondAct[resAct==0]['winAmtPullable'].to_numpy()
+                    colors = [[i*'#d62728' + j*'#d6d327' for (i,j) in zip(amtPushCorr>=50, amtPushCorr<50)], 
+                              pushCorr.shape[0]*['#2ca02c'], 
+                              noRes.shape[0]*['#d62728'],
+                             pulledCorr.shape[0]*['#1f77b4'], 
+                             [i*'#d62728' + j*'#d6d327' for (i,j) in zip(amtPullCorr>=50, amtPullCorr<50)]]
+                    # Create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotAct)):
+                        plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
+                    # show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.ylim(-.15, 1.15)
+                    plt.xlabel('')
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10) 
+                    # chaning legen manually since fro each section of push and pull has two higher and lowe amount so
+                    # it is hard to disantagle that automatically, of course based on my implementation
+                    high_amt = mlines.Line2D([], [], color='#d62728', marker='$\u25EF$', ls='', markersize=6, label='high amt')
+                    low_amt = mlines.Line2D([], [], color='#d6d327', marker='$\u25EF$', ls='', markersize=6, label='low amt')
+                    no_reponse = mlines.Line2D([], [], color='#2ca02c', marker='o', ls='', markersize=2, label='push correct')
+                    push_correct = mlines.Line2D([], [], color='#d62728', marker='o', ls='', markersize=2, label='no response')
+                    pull_correct = mlines.Line2D([], [], color='#1f77b4', marker='o', ls='', markersize=2, label='pull correct')
+                    plt.legend(handles=[high_amt, low_amt, no_reponse, push_correct, pull_correct], fontsize=6)
+                        
+                # Color block
+                elif blocks[idx] == 'Stim':
+                    # Seperate data taken from a session, run and Color block
+                    dataCondClr = data[(data.session==s) & (data.run==r) & (data.block==blocks[idx])]
+                    # Seperate the index of yellow and blue responses
+                    resClr = dataCondClr['yellowChosen'].to_numpy().astype(int)
+                    yellChosen = np.where(resClr==1)[0] + 1
+                    blueChosen = np.where(resClr==0)[0] + 1
+                    noRes  = np.where(resClr < 0)[0] + 1
+                    # Seperate the index of yellow and blue correct choices
+                    corrClr= dataCondClr['yellowCorrect']
+                    yellCorr = np.where(corrClr==1)[0] + 1
+                    blueCorr = np.where(corrClr==0)[0] + 1
+                    # Put all reponses and correct choice in a Dataframe
+                    dicDataClr = ({'label': ['yellow chosen', 'yellow correct', 'no response', 'blue correct', 'blue chosen'],
+                                'x': [yellChosen, yellCorr, noRes, blueCorr, blueChosen]})
+                    dfPlotClr = pd.DataFrame(dicDataClr)         
+                    # Calculate the probability of high amount is chosed or lower amount
+                    # (resClr >= 0) this is for elinination of non response choices
+                    amtYellCorr = dataCondClr[resClr == 1]['winAmtYellow'].to_numpy()
+                    amtBlueCorr = dataCondClr[resClr == 0]['winAmtBlue'].to_numpy()                    
+                    colors = [[i*'#d62728' + j*'#d6d327' for (i,j) in zip(amtYellCorr>=50, amtYellCorr<50)], 
+                              yellCorr.shape[0]*['#2ca02c'], 
+                              noRes.shape[0]*['#d62728'],
+                              blueCorr.shape[0]*['#1f77b4'], 
+                             [i*'#d62728' + j*'#d6d327' for (i,j) in zip(amtBlueCorr>=50, amtBlueCorr<50)]]
+                    #create a list of y coordinates for every x coordinate
+                    for i in range(len(dfPlotClr)):
+                        plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
+                                    s=size[i], facecolors=colors[i], marker=markers[i])
+                    # Show the empy y axis label
+                    plt.yticks(y,[]) 
+                    plt.ylim(-.15, 1.15)
+                    plt.xlabel('') 
+                    if blocks[idx]=='Stim':
+                        blockName = 'Clr'
+                    elif blocks[idx]=='Act':
+                        blockName = 'Act'
+                    plt.title(subName + ' - Ses ' +  str(s) +' - Run ' + str(r) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                    # chaning legen manually since fro each section of push and pull has two higher and lowe amount so
+                    # it is hard to disantagle that automatically, of course based on my implementation
+                    high_amt = mlines.Line2D([], [], color='#d62728', marker='$\u25EF$', ls='', markersize=6, label='high amt')
+                    low_amt = mlines.Line2D([], [], color='#d6d327', marker='$\u25EF$', ls='', markersize=6, label='low amt')
+                    no_reponse = mlines.Line2D([], [], color='#2ca02c', marker='o', ls='', markersize=2, label='yellow correct')
+                    push_correct = mlines.Line2D([], [], color='#d62728', marker='o', ls='', markersize=2, label='no response')
+                    pull_correct = mlines.Line2D([], [], color='#1f77b4', marker='o', ls='', markersize=2, label='blue correct')
+                    plt.legend(handles=[high_amt, low_amt, no_reponse, push_correct, pull_correct], fontsize=6)
+
+                # Determine Reversal point for each condition 
+                reverse = data.loc[(data['session']==s)&(data['run']==r)&(data['block']==blocks[idx]), 'reverse'].unique()[0]
+                # Draw vertical lines for one or two reversal points learning during runs
+                if reverse==21:
+                    plt.axvline(x = 21, color='#ff7f0e', linewidth=1, alpha=.5)
+                elif reverse==14:
+                    plt.axvline(x = 14, color='#ff7f0e', linewidth=1, alpha=.7)
+                    plt.axvline(x = 28, color='#ff7f0e', linewidth=1, alpha=.7)
+
+                idx += 1
+    
+    plt.xlabel('Trials', fontsize=12)
+    # Save plot of chosen and correct response 
+    fig.savefig(saveFile, dpi=300)
+    plt.close()
      
+
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
 def bci(x, alpha=0.05):
     """Calculate Bayesian credible interval (BCI).
