@@ -1,2 +1,2 @@
 # ActStimRL
-This repository is launched to model the relative contribution of Action and Stimulus reinforcement Learning
+This repository is launched to devlope the reinforcement Learning algorithm
