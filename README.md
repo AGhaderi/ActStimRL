@@ -1,2 +1,2 @@
 # ActStimRL
-This repository is launched to devlope the reinforcement Learning algorithm
+This repository is launched to develop the reinforcement Learning algorithm.
