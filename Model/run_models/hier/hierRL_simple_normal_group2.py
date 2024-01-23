@@ -24,7 +24,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 3
+n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=5000
 # Main directory of the subject
@@ -40,6 +40,7 @@ for sub in subList:
             for condition in ['Act', 'Clr']: # condition
                 behAll_indicator = behAll[(behAll['sub_ID']==sub)&(behAll['block']==condition)&(behAll['session']==session)&(behAll['reverse']==reverse)]  
                 behAll.loc[(behAll['sub_ID']==sub)&(behAll['block']==condition)&(behAll['session']==session)&(behAll['reverse']==reverse), 'indicator'] = np.arange(1, behAll_indicator.shape[0] + 1)
+
 # select the healthy control data
 behAll_group = behAll[behAll['group']==2]
 # number of participant
@@ -48,9 +49,9 @@ nParts = len(np.unique(behAll_group.sub_ID))
 behAll_group.sub_ID = behAll_group.sub_ID.replace(np.unique(behAll_group.sub_ID), np.arange(1, nParts +1))
 
 # read all conditions and sessions data for a specifit participant
-for session in [1, 2]: # session
-    for reverse in [21, 14]: # two distinct environemnt
-        for condition in ['Act', 'Clr']: # condition
+for session in [1]: # session
+    for reverse in [21]: # two distinct environemnt
+        for condition in ['Act']: # condition
             behAll_cond = behAll_group[(behAll_group['block']==condition)&(behAll_group['session']==session)&(behAll_group['reverse']==reverse)]  
             # The adrees name of pickle file
             pickelDir = subMainDirec + 'AllBehData/model/hier/' + 'cond-' + str(condition) + '_sess-' + str(session) + '_env-' + str(reverse) + '_Stan-hierRL_simple_normal_group2.pkl'
@@ -75,14 +76,14 @@ for session in [1, 2]: # session
                 initials = [] 
                 for c in range(0, n_chains):
                     chaininit = {
-                        'alphaAct': np.random.uniform(.3, .7, size=nParts),
-                        'alphClr': np.random.uniform(.3, .7, size=nParts),        
-                        'weightAct': np.random.uniform(.3, .7, size=nParts),
-                        'sensitivity': np.random.uniform(.3, .7, size=nParts),
-                        'alphaAct_hier': np.random.uniform(.2, .8),
-                        'alphClr_hier': np.random.uniform(.2, .8),        
-                        'weightAct_hier': np.random.uniform(.2, .8),
-                        'sensitivity_hier': np.random.uniform(.4, .8),
+                        'alphaAct': np.random.uniform(.3, .6, size=nParts),
+                        'alphClr': np.random.uniform(.3, .6, size=nParts),        
+                        'weightAct': np.random.uniform(.3, .6, size=nParts),
+                        'sensitivity': np.random.uniform(.3, .6, size=nParts),
+                        'alphaAct_hier': np.random.uniform(.3, .6),
+                        'alphClr_hier': np.random.uniform(.3, .6),        
+                        'weightAct_hier': np.random.uniform(.3, .6),
+                        'sensitivity_hier': np.random.uniform(.3, .6),
                         'alphaAct_sd': np.random.uniform(.01, .1),
                         'alphClr_sd': np.random.uniform(.01, .1),        
                         'weightAct_sd': np.random.uniform(.01, .1),
@@ -127,6 +128,7 @@ for session in [1, 2]: # session
             plt.title('Weightening', fontsize=12)
             plt.ylabel('Density', fontsize=12)
             plt.xlabel('$w_{(A)}$', fontsize=14)
+            plt.xlim(0, 1)
 
             # Sensitivity
             fig.add_subplot(rows, columns, 2)
@@ -135,13 +137,13 @@ for session in [1, 2]: # session
             plt.ylabel('Density', fontsize=12)
             plt.xlabel(r'$\beta$', fontsize=14)
 
-
             # Action Learning Rate
             fig.add_subplot(rows, columns, 3)
             sns.histplot(alphaAct_, kde=True, stat='density', bins=100)
             plt.title('Action Learning Rate', fontsize=12)
             plt.ylabel('Density', fontsize=12)
             plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
+            plt.xlim(0, 1)
 
             # Color Learning Rate
             fig.add_subplot(rows, columns, 4)
@@ -149,7 +151,7 @@ for session in [1, 2]: # session
             plt.title('Color Learning Rate', fontsize=12)
             plt.ylabel('Density', fontsize=12)
             plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
-
+            plt.xlim(0, 1)
             plt.subplots_adjust(wspace=10.)
 
             # Save figure of parameter distribution 
