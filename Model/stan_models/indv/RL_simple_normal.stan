@@ -2,9 +2,9 @@
    This code can only model each singel data for instance one condition in one specific session and run.
    Therefore, this code conducts the individual level nanalysis.
    The push choice is enough to capture all choices for each trial. Since th options are 1. push/yell vs pull/blue, or 2. push/blue vs pull/yell.
-   For both distinct options the push is coded 1 if selected and 0 if not selected. But for the first option, yell chosen encoded 1 and blue is conded 0
+   For both distinct options, the push is coded 1 if selected and 0 if not selected. But for the first option, yell chosen encoded 1 and blue is conded 0
    on the other hand, in the second option blue is encoded 1 and yellow is encoded 0. At the result, since the push matches to yellow in the first option
-   and maches the blue in the second option, there is no necessary to change anything, we should just consider the push encoding.
+   and maches the blue in the second option, there is no necessary to change anything, we should just consider the push-based encoding.
 */ 
 data {
     int<lower=1> N;                             // Number of trial-level observations

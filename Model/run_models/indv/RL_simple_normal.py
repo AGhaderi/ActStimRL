@@ -35,7 +35,7 @@ behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/
 behAll = behAll.replace('Stim', 'Clr')
 
 # read all conditions and sessions data for a specifit participant
-for subName in subList[36:]:    
+for subName in subList[9:10]:    
     for session in [1, 2]: # session
         for reverse in [21, 14]: # two distinct environemnt
             for condition in ['Act', 'Clr']: # condition

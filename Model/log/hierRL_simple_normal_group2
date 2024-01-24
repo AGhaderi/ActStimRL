@@ -1,382 +1,10 @@
 nohup: ignoring input
-/home/amingk/Documents/7TPD/ActStimRL/Model/run_models/./hier/hierRL_simple_normal_group2.py:48: SettingWithCopyWarning: 
+/home/amingk/Documents/7TPD/ActStimRL/Model/run_models/./hier/hierRL_simple_normal_group2.py:49: SettingWithCopyWarning: 
 A value is trying to be set on a copy of a slice from a DataFrame.
 Try using .loc[row_indexer,col_indexer] = value instead
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   behAll_group.sub_ID = behAll_group.sub_ID.replace(np.unique(behAll_group.sub_ID), np.arange(1, nParts +1))
-Building...
-
-Building: 33.0s, done.Messages from stanc:
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 12, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 13, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 14, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 15, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 16, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 17, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 18, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 19, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 20, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 38, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 39, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 40, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 41, column 4: Declaration
-    of arrays by placing brackets after a variable name is deprecated and
-    will be removed in Stan 2.33.0. Instead use the array keyword before the
-    type. This can be changed automatically using the auto-format flag to
-    stanc
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 138, column 48: The
-    variable soft_max_EV may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 130, column 30: The
-    variable soft_max_EV may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 125, column 65: A
-    control flow statement depends on parameter(s): weightAct.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 125, column 62: A
-    control flow statement depends on parameter(s): weightAct.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 124, column 62: A
-    control flow statement depends on parameter(s): alphaClr.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 124, column 59: A
-    control flow statement depends on parameter(s): alphaClr.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 123, column 62: A
-    control flow statement depends on parameter(s): alphaAct.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 123, column 59: A
-    control flow statement depends on parameter(s): alphaAct.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 122, column 68: A
-    control flow statement depends on parameter(s): sensitivity.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 112, column 40: A
-    control flow statement depends on parameter(s): weightAct_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 112, column 37: A
-    control flow statement depends on parameter(s): weightAct_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 111, column 37: A
-    control flow statement depends on parameter(s): alphaClr_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 111, column 34: A
-    control flow statement depends on parameter(s): alphaClr_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 110, column 37: A
-    control flow statement depends on parameter(s): alphaAct_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 110, column 34: A
-    control flow statement depends on parameter(s): alphaAct_hier.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 102, column 69: The
-    variable p_blue may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 102, column 20: The
-    variable p_blue may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 98, column 69: The
-    variable p_yell may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 98, column 20: The
-    variable p_yell may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 94, column 70: The
-    variable p_pull may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 94, column 21: The
-    variable p_pull may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 90, column 70: The
-    variable p_push may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 90, column 21: The
-    variable p_push may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 71, column 18: The
-    variable p_blue may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 70, column 18: The
-    variable p_yell may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 69, column 18: The
-    variable p_pull may not have been assigned a value before its use.
-Warning in '/tmp/httpstan_znpgq86_/model_dyd6dsi7.stan', line 68, column 18: The
-    variable p_push may not have been assigned a value before its use.
-Warning: The parameter weightAct_hier has 4 priors.
-Warning: The parameter weightAct has 4 priors.
-Warning: The parameter sensitivity has 3 priors.
-Warning: The parameter alphaClr_hier has 4 priors.
-Warning: The parameter alphaClr has 4 priors.
-Warning: The parameter alphaAct_hier has 4 priors.
-Warning: The parameter alphaAct has 4 priors.
-Sampling:   0%
-Sampling:   0% (1/18000)
-Sampling:   0% (2/18000)
-Sampling:   0% (3/18000)
-Sampling:   1% (102/18000)
-Sampling:   1% (201/18000)
-Sampling:   2% (301/18000)
-Sampling:   2% (400/18000)
-Sampling:   3% (500/18000)
-Sampling:   3% (600/18000)
-Sampling:   4% (700/18000)
-Sampling:   4% (800/18000)
-Sampling:   5% (900/18000)
-Sampling:   6% (1000/18000)
-Sampling:   6% (1100/18000)
-Sampling:   7% (1200/18000)
-Sampling:   7% (1300/18000)
-Sampling:   8% (1400/18000)
-Sampling:   8% (1500/18000)
-Sampling:   9% (1600/18000)
-Sampling:   9% (1700/18000)
-Sampling:  10% (1800/18000)
-Sampling:  11% (1901/18000)
-Sampling:  11% (2001/18000)
-Sampling:  12% (2100/18000)
-Sampling:  12% (2200/18000)
-Sampling:  13% (2300/18000)
-Sampling:  13% (2400/18000)
-Sampling:  14% (2500/18000)
-Sampling:  14% (2600/18000)
-Sampling:  15% (2700/18000)
-Sampling:  16% (2800/18000)
-Sampling:  16% (2900/18000)
-Sampling:  17% (3000/18000)
-Sampling:  17% (3100/18000)
-Sampling:  18% (3200/18000)
-Sampling:  18% (3300/18000)
-Sampling:  19% (3400/18000)
-Sampling:  19% (3500/18000)
-Sampling:  20% (3600/18000)
-Sampling:  21% (3700/18000)
-Sampling:  21% (3800/18000)
-Sampling:  22% (3900/18000)
-Sampling:  22% (4000/18000)
-Sampling:  23% (4100/18000)
-Sampling:  23% (4200/18000)
-Sampling:  24% (4300/18000)
-Sampling:  24% (4400/18000)
-Sampling:  25% (4500/18000)
-Sampling:  26% (4600/18000)
-Sampling:  26% (4700/18000)
-Sampling:  27% (4800/18000)
-Sampling:  27% (4900/18000)
-Sampling:  28% (5000/18000)
-Sampling:  28% (5100/18000)
-Sampling:  29% (5200/18000)
-Sampling:  29% (5300/18000)
-Sampling:  30% (5400/18000)
-Sampling:  31% (5500/18000)
-Sampling:  31% (5600/18000)
-Sampling:  31% (5601/18000)
-Sampling:  32% (5701/18000)
-Sampling:  32% (5800/18000)
-Sampling:  33% (5900/18000)
-Sampling:  33% (6000/18000)
-Sampling:  34% (6100/18000)
-Sampling:  34% (6200/18000)
-Sampling:  35% (6300/18000)
-Sampling:  36% (6400/18000)
-Sampling:  36% (6500/18000)
-Sampling:  37% (6600/18000)
-Sampling:  37% (6700/18000)
-Sampling:  38% (6800/18000)
-Sampling:  38% (6900/18000)
-Sampling:  39% (7000/18000)
-Sampling:  39% (7100/18000)
-Sampling:  40% (7200/18000)
-Sampling:  41% (7300/18000)
-Sampling:  41% (7400/18000)
-Sampling:  42% (7500/18000)
-Sampling:  42% (7600/18000)
-Sampling:  43% (7700/18000)
-Sampling:  43% (7800/18000)
-Sampling:  44% (7900/18000)
-Sampling:  44% (8000/18000)
-Sampling:  45% (8100/18000)
-Sampling:  46% (8200/18000)
-Sampling:  46% (8300/18000)
-Sampling:  47% (8400/18000)
-Sampling:  47% (8500/18000)
-Sampling:  48% (8600/18000)
-Sampling:  48% (8700/18000)
-Sampling:  48% (8701/18000)
-Sampling:  49% (8801/18000)
-Sampling:  49% (8901/18000)
-Sampling:  50% (9001/18000)
-Sampling:  51% (9101/18000)
-Sampling:  51% (9201/18000)
-Sampling:  52% (9301/18000)
-Sampling:  52% (9401/18000)
-Sampling:  53% (9501/18000)
-Sampling:  54% (9701/18000)
-Sampling:  54% (9801/18000)
-Sampling:  72% (13001/18000)
-Sampling:  73% (13100/18000)
-Sampling:  73% (13200/18000)
-Sampling:  74% (13300/18000)
-Sampling:  74% (13400/18000)
-Sampling:  75% (13500/18000)
-Sampling:  76% (13600/18000)
-Sampling:  76% (13700/18000)
-Sampling:  77% (13800/18000)
-Sampling:  77% (13900/18000)
-Sampling:  78% (14000/18000)
-Sampling:  78% (14100/18000)
-Sampling:  79% (14200/18000)
-Sampling:  79% (14300/18000)
-Sampling:  80% (14400/18000)
-Sampling:  81% (14500/18000)
-Sampling:  81% (14600/18000)
-Sampling:  82% (14700/18000)
-Sampling:  82% (14800/18000)
-Sampling:  83% (14900/18000)
-Sampling:  83% (15000/18000)
-Sampling:  84% (15100/18000)
-Sampling:  84% (15200/18000)
-Sampling:  85% (15300/18000)
-Sampling:  86% (15400/18000)
-Sampling:  86% (15500/18000)
-Sampling:  87% (15600/18000)
-Sampling:  87% (15700/18000)
-Sampling:  88% (15800/18000)
-Sampling:  88% (15900/18000)
-Sampling:  89% (16000/18000)
-Sampling:  89% (16100/18000)
-Sampling:  90% (16200/18000)
-Sampling:  91% (16300/18000)
-Sampling:  91% (16400/18000)
-Sampling:  92% (16500/18000)
-Sampling:  92% (16600/18000)
-Sampling:  93% (16700/18000)
-Sampling:  93% (16800/18000)
-Sampling:  94% (16900/18000)
-Sampling:  94% (17000/18000)
-Sampling:  95% (17100/18000)
-Sampling:  96% (17200/18000)
-Sampling:  96% (17300/18000)
-Sampling:  97% (17400/18000)
-Sampling:  97% (17500/18000)
-Sampling:  98% (17600/18000)
-Sampling:  98% (17700/18000)
-Sampling:  99% (17800/18000)
-Sampling:  99% (17900/18000)
-Sampling: 100% (18000/18000)
-Sampling: 100% (18000/18000), done.
-Messages received during sampling:
-  Gradient evaluation took 0.001824 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 18.24 seconds.
-  Adjust your expectations accordingly!
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 116, column 4 to column 30)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 116, column 4 to column 30)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Gradient evaluation took 0.001609 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 16.09 seconds.
-  Adjust your expectations accordingly!
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 130, column 8 to column 46)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 130, column 8 to column 46)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Rejecting initial value:
-    Log probability evaluates to log(0), i.e. negative infinity.
-    Stan can't start sampling from this initial value.
-  Gradient evaluation took 0.002052 seconds
-  1000 transitions using 10 leapfrog steps per transition would take 20.52 seconds.
-  Adjust your expectations accordingly!
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 116, column 4 to column 30)
-  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/model/hier/cond-Act_sess-1_env-21_Stan-hierRL_simple_normal_group2.pkl
-(15000,)
 Building...
 
 Building: found in cache, done.Messages from stanc:
@@ -507,140 +135,682 @@ Warning: The parameter alphaClr has 4 priors.
 Warning: The parameter alphaAct_hier has 4 priors.
 Warning: The parameter alphaAct has 4 priors.
 Sampling:   0%
-Sampling:   0% (1/18000)
-Sampling:   0% (2/18000)
-Sampling:   1% (101/18000)
-Sampling:   1% (200/18000)
-Sampling:   2% (300/18000)
-Sampling:   2% (400/18000)
-Sampling:   3% (500/18000)
-Sampling:   3% (600/18000)
-Sampling:   4% (700/18000)
-Sampling:   4% (800/18000)
-Sampling:   5% (900/18000)
-Sampling:   6% (1000/18000)
-Sampling:   6% (1100/18000)
-Sampling:   7% (1200/18000)
-Sampling:   7% (1300/18000)
-Sampling:   8% (1400/18000)
-Sampling:   8% (1500/18000)
-Sampling:   9% (1600/18000)
-Sampling:   9% (1700/18000)
-Sampling:  10% (1800/18000)
-Sampling:  10% (1801/18000)
-Sampling:  11% (1900/18000)
-Sampling:  11% (2000/18000)
-Sampling:  12% (2100/18000)
-Sampling:  12% (2200/18000)
-Sampling:  13% (2300/18000)
-Sampling:  13% (2400/18000)
-Sampling:  14% (2500/18000)
-Sampling:  14% (2600/18000)
-Sampling:  15% (2700/18000)
-Sampling:  16% (2800/18000)
-Sampling:  16% (2900/18000)
-Sampling:  17% (3000/18000)
-Sampling:  17% (3100/18000)
-Sampling:  18% (3200/18000)
-Sampling:  18% (3300/18000)
-Sampling:  19% (3400/18000)
-Sampling:  19% (3500/18000)
-Sampling:  19% (3501/18000)
-Sampling:  20% (3601/18000)
-Sampling:  21% (3701/18000)
-Sampling:  21% (3801/18000)
-Sampling:  22% (3901/18000)
-Sampling:  24% (4401/18000)
-Sampling:  25% (4501/18000)
-Sampling:  26% (4601/18000)
-Sampling:  26% (4701/18000)
-Sampling:  27% (4801/18000)
-Sampling:  27% (4901/18000)
-Sampling:  28% (5001/18000)
-Sampling:  28% (5101/18000)
-Sampling:  29% (5201/18000)
-Sampling:  29% (5301/18000)
-Sampling:  30% (5401/18000)
-Sampling:  31% (5501/18000)
-Sampling:  31% (5600/18000)
-Sampling:  32% (5700/18000)
-Sampling:  32% (5800/18000)
-Sampling:  33% (5900/18000)
-Sampling:  33% (6000/18000)
-Sampling:  34% (6100/18000)
-Sampling:  34% (6200/18000)
-Sampling:  35% (6300/18000)
-Sampling:  37% (6700/18000)
-Sampling:  38% (6800/18000)
-Sampling:  38% (6900/18000)
-Sampling:  39% (7000/18000)
-Sampling:  39% (7100/18000)
-Sampling:  40% (7200/18000)
-Sampling:  41% (7300/18000)
-Sampling:  41% (7400/18000)
-Sampling:  42% (7500/18000)
-Sampling:  42% (7600/18000)
-Sampling:  43% (7700/18000)
-Sampling:  43% (7800/18000)
-Sampling:  44% (7900/18000)
-Sampling:  44% (8000/18000)
-Sampling:  45% (8100/18000)
-Sampling:  46% (8200/18000)
-Sampling:  46% (8300/18000)
-Sampling:  47% (8400/18000)
-Sampling:  47% (8500/18000)
-Sampling:  48% (8600/18000)
-Sampling:  48% (8700/18000)
-Sampling:  49% (8800/18000)
-Sampling:  49% (8900/18000)
-Sampling:  50% (9000/18000)
-Sampling:  51% (9100/18000)
-Sampling:  51% (9200/18000)
-Sampling:  52% (9300/18000)
-Sampling:  52% (9400/18000)
-Sampling:  53% (9500/18000)
-Sampling:  53% (9600/18000)
-Sampling:  54% (9700/18000)
-Sampling:  54% (9800/18000)
-Sampling:  55% (9900/18000)
-Sampling:  56% (10000/18000)
-Sampling:  56% (10100/18000)
-Sampling:  57% (10200/18000)
-Sampling:  57% (10300/18000)
-Sampling:  58% (10400/18000)
-Sampling:  58% (10500/18000)
-Sampling:  59% (10600/18000)
-Sampling:  59% (10700/18000)
-Sampling:  60% (10800/18000)
-Sampling:  61% (10900/18000)
-Sampling:  61% (11000/18000)
-Sampling:  62% (11100/18000)
-Sampling:  62% (11200/18000)
-Sampling:  63% (11300/18000)
-Sampling:  63% (11400/18000)
-Sampling:  64% (11500/18000)
-Sampling:  64% (11600/18000)
-Sampling:  65% (11700/18000)
-Sampling:  66% (11800/18000)
-Sampling:  66% (11900/18000)
-Sampling:  67% (12000/18000)Traceback (most recent call last):
-  File "/home/amingk/Documents/7TPD/ActStimRL/Model/run_models/./hier/hierRL_simple_normal_group2.py", line 102, in <module>
-    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 89, in sample
-    return self.hmc_nuts_diag_e_adapt(num_chains=num_chains, **kwargs)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 108, in hmc_nuts_diag_e_adapt
-    return self._create_fit(function=function, num_chains=num_chains, **kwargs)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 313, in _create_fit
-    return asyncio.run(go())
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/nest_asyncio.py", line 35, in run
-    return loop.run_until_complete(task)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/nest_asyncio.py", line 90, in run_until_complete
-    return f.result()
-  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/futures.py", line 201, in result
-    raise self._exception.with_traceback(self._exception_tb)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/tasks.py", line 232, in __step
-    result = coro.send(None)
-  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/stan/model.py", line 236, in go
-    raise RuntimeError(message)
-RuntimeError: Exception during call to services function: `ValueError("Initialization failed. Rejecting initial value: Log probability evaluates to log(0), i.e. negative infinity. Stan can't start sampling from this initial value. Rejecting initial value: ...")`, traceback: `['  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/tasks.py", line 232, in __step\n    result = coro.send(None)\n', '  File "/mrhome/amingk/anaconda3/lib/python3.10/site-packages/httpstan/services_stub.py", line 185, in call\n    future.result()\n', '  File "/mrhome/amingk/anaconda3/lib/python3.10/asyncio/futures.py", line 201, in result\n    raise self._exception.with_traceback(self._exception_tb)\n']`
-ICE default IO error handler doing an exit(), pid = 3496868, errno = 32
+Sampling:   0% (1/60000)
+Sampling:   0% (2/60000)
+Sampling:   0% (3/60000)
+Sampling:   0% (4/60000)
+Sampling:   0% (5/60000)
+Sampling:   0% (6/60000)
+Sampling:   0% (7/60000)
+Sampling:   0% (8/60000)
+Sampling:   0% (9/60000)
+Sampling:   0% (10/60000)
+Sampling:   0% (109/60000)
+Sampling:   0% (208/60000)
+Sampling:   1% (307/60000)
+Sampling:   1% (406/60000)
+Sampling:   1% (505/60000)
+Sampling:   1% (604/60000)
+Sampling:   1% (703/60000)
+Sampling:   1% (803/60000)
+Sampling:   2% (903/60000)
+Sampling:   2% (1003/60000)
+Sampling:   2% (1102/60000)
+Sampling:   2% (1202/60000)
+Sampling:   2% (1302/60000)
+Sampling:   2% (1402/60000)
+Sampling:   3% (1502/60000)
+Sampling:   3% (1601/60000)
+Sampling:   3% (1701/60000)
+Sampling:   3% (1801/60000)
+Sampling:   3% (1901/60000)
+Sampling:   3% (2001/60000)
+Sampling:   4% (2101/60000)
+Sampling:   4% (2200/60000)
+Sampling:   4% (2300/60000)
+Sampling:   4% (2400/60000)
+Sampling:   4% (2500/60000)
+Sampling:   4% (2600/60000)
+Sampling:   4% (2700/60000)
+Sampling:   5% (2800/60000)
+Sampling:   5% (2900/60000)
+Sampling:   5% (3000/60000)
+Sampling:   5% (3100/60000)
+Sampling:   5% (3200/60000)
+Sampling:   6% (3300/60000)
+Sampling:   6% (3400/60000)
+Sampling:   6% (3500/60000)
+Sampling:   6% (3600/60000)
+Sampling:   6% (3700/60000)
+Sampling:   6% (3800/60000)
+Sampling:   6% (3900/60000)
+Sampling:   7% (4000/60000)
+Sampling:   7% (4100/60000)
+Sampling:   7% (4200/60000)
+Sampling:   7% (4300/60000)
+Sampling:   7% (4400/60000)
+Sampling:   8% (4500/60000)
+Sampling:   8% (4600/60000)
+Sampling:   8% (4700/60000)
+Sampling:   8% (4800/60000)
+Sampling:   8% (4900/60000)
+Sampling:   8% (5000/60000)
+Sampling:   8% (5100/60000)
+Sampling:   9% (5200/60000)
+Sampling:   9% (5300/60000)
+Sampling:   9% (5400/60000)
+Sampling:   9% (5500/60000)
+Sampling:   9% (5600/60000)
+Sampling:  10% (5700/60000)
+Sampling:  10% (5800/60000)
+Sampling:  10% (5900/60000)
+Sampling:  10% (6000/60000)
+Sampling:  10% (6100/60000)
+Sampling:  10% (6200/60000)
+Sampling:  10% (6300/60000)
+Sampling:  11% (6401/60000)
+Sampling:  11% (6501/60000)
+Sampling:  11% (6600/60000)
+Sampling:  11% (6700/60000)
+Sampling:  11% (6800/60000)
+Sampling:  12% (6900/60000)
+Sampling:  12% (7000/60000)
+Sampling:  12% (7100/60000)
+Sampling:  12% (7200/60000)
+Sampling:  12% (7300/60000)
+Sampling:  12% (7400/60000)
+Sampling:  12% (7500/60000)
+Sampling:  13% (7600/60000)
+Sampling:  13% (7700/60000)
+Sampling:  13% (7900/60000)
+Sampling:  13% (8000/60000)
+Sampling:  14% (8100/60000)
+Sampling:  14% (8200/60000)
+Sampling:  14% (8300/60000)
+Sampling:  14% (8400/60000)
+Sampling:  14% (8500/60000)
+Sampling:  14% (8601/60000)
+Sampling:  15% (8701/60000)
+Sampling:  15% (8801/60000)
+Sampling:  15% (8902/60000)
+Sampling:  15% (9001/60000)
+Sampling:  15% (9102/60000)
+Sampling:  15% (9202/60000)
+Sampling:  16% (9302/60000)
+Sampling:  16% (9402/60000)
+Sampling:  16% (9502/60000)
+Sampling:  16% (9602/60000)
+Sampling:  16% (9703/60000)
+Sampling:  16% (9803/60000)
+Sampling:  17% (9903/60000)
+Sampling:  17% (10003/60000)
+Sampling:  17% (10102/60000)
+Sampling:  17% (10202/60000)
+Sampling:  17% (10302/60000)
+Sampling:  17% (10403/60000)
+Sampling:  18% (10503/60000)
+Sampling:  18% (10602/60000)
+Sampling:  18% (10702/60000)
+Sampling:  18% (10802/60000)
+Sampling:  18% (10902/60000)
+Sampling:  18% (11003/60000)
+Sampling:  19% (11103/60000)
+Sampling:  19% (11203/60000)
+Sampling:  19% (11303/60000)
+Sampling:  19% (11402/60000)
+Sampling:  19% (11502/60000)
+Sampling:  19% (11601/60000)
+Sampling:  20% (11701/60000)
+Sampling:  20% (11801/60000)
+Sampling:  20% (11901/60000)
+Sampling:  20% (12001/60000)
+Sampling:  20% (12101/60000)
+Sampling:  20% (12201/60000)
+Sampling:  21% (12301/60000)
+Sampling:  21% (12401/60000)
+Sampling:  21% (12501/60000)
+Sampling:  21% (12601/60000)
+Sampling:  21% (12701/60000)
+Sampling:  21% (12801/60000)
+Sampling:  22% (12901/60000)
+Sampling:  22% (13001/60000)
+Sampling:  22% (13101/60000)
+Sampling:  22% (13201/60000)
+Sampling:  22% (13301/60000)
+Sampling:  22% (13401/60000)
+Sampling:  23% (13501/60000)
+Sampling:  23% (13601/60000)
+Sampling:  23% (13700/60000)
+Sampling:  23% (13800/60000)
+Sampling:  23% (13900/60000)
+Sampling:  24% (14200/60000)
+Sampling:  24% (14300/60000)
+Sampling:  24% (14400/60000)
+Sampling:  24% (14500/60000)
+Sampling:  24% (14600/60000)
+Sampling:  24% (14700/60000)
+Sampling:  25% (14800/60000)
+Sampling:  25% (14900/60000)
+Sampling:  25% (15000/60000)
+Sampling:  25% (15100/60000)
+Sampling:  25% (15200/60000)
+Sampling:  26% (15300/60000)
+Sampling:  26% (15400/60000)
+Sampling:  26% (15500/60000)
+Sampling:  26% (15600/60000)
+Sampling:  26% (15700/60000)
+Sampling:  26% (15800/60000)
+Sampling:  27% (16000/60000)
+Sampling:  27% (16100/60000)
+Sampling:  27% (16200/60000)
+Sampling:  27% (16300/60000)
+Sampling:  27% (16400/60000)
+Sampling:  28% (16500/60000)
+Sampling:  28% (16600/60000)
+Sampling:  28% (16700/60000)
+Sampling:  28% (16800/60000)
+Sampling:  28% (16900/60000)
+Sampling:  28% (17000/60000)
+Sampling:  28% (17100/60000)
+Sampling:  29% (17200/60000)
+Sampling:  29% (17300/60000)
+Sampling:  29% (17400/60000)
+Sampling:  29% (17500/60000)
+Sampling:  29% (17600/60000)
+Sampling:  30% (17700/60000)
+Sampling:  30% (17800/60000)
+Sampling:  30% (17900/60000)
+Sampling:  30% (18000/60000)
+Sampling:  30% (18100/60000)
+Sampling:  30% (18200/60000)
+Sampling:  30% (18300/60000)
+Sampling:  31% (18400/60000)
+Sampling:  31% (18500/60000)
+Sampling:  31% (18600/60000)
+Sampling:  31% (18701/60000)
+Sampling:  31% (18801/60000)
+Sampling:  32% (18901/60000)
+Sampling:  32% (19001/60000)
+Sampling:  32% (19101/60000)
+Sampling:  32% (19201/60000)
+Sampling:  32% (19301/60000)
+Sampling:  32% (19401/60000)
+Sampling:  33% (19501/60000)
+Sampling:  33% (19601/60000)
+Sampling:  33% (19700/60000)
+Sampling:  33% (19800/60000)
+Sampling:  33% (19900/60000)
+Sampling:  33% (20000/60000)
+Sampling:  34% (20100/60000)
+Sampling:  34% (20200/60000)
+Sampling:  34% (20300/60000)
+Sampling:  34% (20400/60000)
+Sampling:  34% (20500/60000)
+Sampling:  34% (20600/60000)
+Sampling:  34% (20700/60000)
+Sampling:  35% (20800/60000)
+Sampling:  35% (20900/60000)
+Sampling:  35% (21000/60000)
+Sampling:  35% (21100/60000)
+Sampling:  35% (21200/60000)
+Sampling:  36% (21300/60000)
+Sampling:  36% (21400/60000)
+Sampling:  36% (21500/60000)
+Sampling:  36% (21600/60000)
+Sampling:  36% (21700/60000)
+Sampling:  36% (21800/60000)
+Sampling:  36% (21900/60000)
+Sampling:  37% (22000/60000)
+Sampling:  37% (22100/60000)
+Sampling:  37% (22200/60000)
+Sampling:  37% (22300/60000)
+Sampling:  37% (22400/60000)
+Sampling:  38% (22500/60000)
+Sampling:  38% (22600/60000)
+Sampling:  38% (22701/60000)
+Sampling:  38% (22801/60000)
+Sampling:  38% (22901/60000)
+Sampling:  38% (23001/60000)
+Sampling:  39% (23101/60000)
+Sampling:  39% (23201/60000)
+Sampling:  39% (23301/60000)
+Sampling:  39% (23401/60000)
+Sampling:  39% (23501/60000)
+Sampling:  39% (23601/60000)
+Sampling:  40% (23701/60000)
+Sampling:  40% (23801/60000)
+Sampling:  40% (24001/60000)
+Sampling:  40% (24101/60000)
+Sampling:  40% (24201/60000)
+Sampling:  41% (24301/60000)
+Sampling:  42% (25001/60000)
+Sampling:  42% (25101/60000)
+Sampling:  42% (25201/60000)
+Sampling:  42% (25401/60000)
+Sampling:  43% (25501/60000)
+Sampling:  43% (25601/60000)
+Sampling:  43% (25901/60000)
+Sampling:  43% (26001/60000)
+Sampling:  44% (26101/60000)
+Sampling:  44% (26201/60000)
+Sampling:  44% (26301/60000)
+Sampling:  44% (26401/60000)
+Sampling:  44% (26501/60000)
+Sampling:  44% (26601/60000)
+Sampling:  45% (26701/60000)
+Sampling:  45% (26801/60000)
+Sampling:  45% (26900/60000)
+Sampling:  45% (27000/60000)
+Sampling:  45% (27100/60000)
+Sampling:  45% (27200/60000)
+Sampling:  46% (27300/60000)
+Sampling:  46% (27401/60000)
+Sampling:  46% (27501/60000)
+Sampling:  46% (27601/60000)
+Sampling:  46% (27701/60000)
+Sampling:  46% (27801/60000)
+Sampling:  47% (28001/60000)
+Sampling:  47% (28101/60000)
+Sampling:  47% (28201/60000)
+Sampling:  47% (28301/60000)
+Sampling:  47% (28401/60000)
+Sampling:  48% (28501/60000)
+Sampling:  48% (28601/60000)
+Sampling:  48% (28701/60000)
+Sampling:  48% (28801/60000)
+Sampling:  48% (28901/60000)
+Sampling:  48% (29001/60000)
+Sampling:  49% (29101/60000)
+Sampling:  49% (29201/60000)
+Sampling:  49% (29301/60000)
+Sampling:  49% (29401/60000)
+Sampling:  49% (29501/60000)
+Sampling:  49% (29601/60000)
+Sampling:  50% (29701/60000)
+Sampling:  50% (29800/60000)
+Sampling:  50% (29900/60000)
+Sampling:  50% (30000/60000)
+Sampling:  50% (30100/60000)
+Sampling:  50% (30200/60000)
+Sampling:  50% (30300/60000)
+Sampling:  51% (30400/60000)
+Sampling:  51% (30500/60000)
+Sampling:  51% (30600/60000)
+Sampling:  51% (30700/60000)
+Sampling:  51% (30800/60000)
+Sampling:  52% (30900/60000)
+Sampling:  52% (31000/60000)
+Sampling:  52% (31100/60000)
+Sampling:  52% (31200/60000)
+Sampling:  52% (31300/60000)
+Sampling:  52% (31400/60000)
+Sampling:  52% (31500/60000)
+Sampling:  53% (31600/60000)
+Sampling:  53% (31700/60000)
+Sampling:  53% (31800/60000)
+Sampling:  53% (31900/60000)
+Sampling:  53% (32000/60000)
+Sampling:  54% (32100/60000)
+Sampling:  54% (32200/60000)
+Sampling:  54% (32300/60000)
+Sampling:  54% (32600/60000)
+Sampling:  54% (32700/60000)
+Sampling:  55% (32900/60000)
+Sampling:  55% (33000/60000)
+Sampling:  55% (33200/60000)
+Sampling:  56% (33400/60000)
+Sampling:  56% (33500/60000)
+Sampling:  56% (33700/60000)
+Sampling:  56% (33800/60000)
+Sampling:  56% (33900/60000)
+Sampling:  57% (34000/60000)
+Sampling:  57% (34100/60000)
+Sampling:  57% (34200/60000)
+Sampling:  57% (34300/60000)
+Sampling:  57% (34400/60000)
+Sampling:  58% (34700/60000)
+Sampling:  58% (34800/60000)
+Sampling:  58% (34900/60000)
+Sampling:  58% (35000/60000)
+Sampling:  58% (35100/60000)
+Sampling:  59% (35200/60000)
+Sampling:  59% (35300/60000)
+Sampling:  59% (35400/60000)
+Sampling:  59% (35500/60000)
+Sampling:  59% (35600/60000)
+Sampling:  60% (35700/60000)
+Sampling:  60% (35800/60000)
+Sampling:  60% (35900/60000)
+Sampling:  60% (36000/60000)
+Sampling:  60% (36100/60000)
+Sampling:  60% (36200/60000)
+Sampling:  60% (36300/60000)
+Sampling:  61% (36400/60000)
+Sampling:  61% (36500/60000)
+Sampling:  61% (36600/60000)
+Sampling:  61% (36700/60000)
+Sampling:  61% (36800/60000)
+Sampling:  62% (36900/60000)
+Sampling:  62% (37000/60000)
+Sampling:  62% (37100/60000)
+Sampling:  62% (37200/60000)
+Sampling:  62% (37300/60000)
+Sampling:  62% (37500/60000)
+Sampling:  63% (37600/60000)
+Sampling:  63% (37700/60000)
+Sampling:  63% (37800/60000)
+Sampling:  63% (37900/60000)
+Sampling:  63% (38000/60000)
+Sampling:  64% (38100/60000)
+Sampling:  64% (38200/60000)
+Sampling:  64% (38300/60000)
+Sampling:  64% (38400/60000)
+Sampling:  64% (38500/60000)
+Sampling:  64% (38600/60000)
+Sampling:  64% (38700/60000)
+Sampling:  65% (38800/60000)
+Sampling:  65% (38900/60000)
+Sampling:  65% (39100/60000)
+Sampling:  65% (39200/60000)
+Sampling:  66% (39300/60000)
+Sampling:  66% (39400/60000)
+Sampling:  66% (39500/60000)
+Sampling:  66% (39600/60000)
+Sampling:  66% (39700/60000)
+Sampling:  66% (39800/60000)
+Sampling:  66% (39900/60000)
+Sampling:  67% (40000/60000)
+Sampling:  67% (40100/60000)
+Sampling:  67% (40200/60000)
+Sampling:  67% (40300/60000)
+Sampling:  67% (40400/60000)
+Sampling:  68% (40500/60000)
+Sampling:  68% (40600/60000)
+Sampling:  68% (40700/60000)
+Sampling:  68% (40800/60000)
+Sampling:  68% (40900/60000)
+Sampling:  68% (41000/60000)
+Sampling:  68% (41100/60000)
+Sampling:  69% (41200/60000)
+Sampling:  69% (41300/60000)
+Sampling:  69% (41400/60000)
+Sampling:  69% (41500/60000)
+Sampling:  69% (41600/60000)
+Sampling:  70% (41700/60000)
+Sampling:  70% (41800/60000)
+Sampling:  70% (41900/60000)
+Sampling:  70% (42000/60000)
+Sampling:  70% (42100/60000)
+Sampling:  70% (42200/60000)
+Sampling:  70% (42300/60000)
+Sampling:  71% (42400/60000)
+Sampling:  71% (42500/60000)
+Sampling:  71% (42600/60000)
+Sampling:  71% (42700/60000)
+Sampling:  71% (42800/60000)
+Sampling:  72% (42900/60000)
+Sampling:  72% (43000/60000)
+Sampling:  72% (43100/60000)
+Sampling:  72% (43200/60000)
+Sampling:  72% (43300/60000)
+Sampling:  72% (43400/60000)
+Sampling:  72% (43500/60000)
+Sampling:  73% (43600/60000)
+Sampling:  73% (43700/60000)
+Sampling:  73% (43800/60000)
+Sampling:  73% (43900/60000)
+Sampling:  73% (44000/60000)
+Sampling:  74% (44100/60000)
+Sampling:  74% (44200/60000)
+Sampling:  74% (44300/60000)
+Sampling:  74% (44400/60000)
+Sampling:  74% (44500/60000)
+Sampling:  74% (44600/60000)
+Sampling:  74% (44700/60000)
+Sampling:  75% (44800/60000)
+Sampling:  75% (44900/60000)
+Sampling:  75% (45000/60000)
+Sampling:  75% (45100/60000)
+Sampling:  75% (45200/60000)
+Sampling:  76% (45300/60000)
+Sampling:  76% (45400/60000)
+Sampling:  76% (45500/60000)
+Sampling:  76% (45600/60000)
+Sampling:  76% (45700/60000)
+Sampling:  76% (45800/60000)
+Sampling:  76% (45900/60000)
+Sampling:  77% (46000/60000)
+Sampling:  77% (46100/60000)
+Sampling:  77% (46200/60000)
+Sampling:  77% (46300/60000)
+Sampling:  77% (46400/60000)
+Sampling:  78% (46500/60000)
+Sampling:  78% (46600/60000)
+Sampling:  78% (46700/60000)
+Sampling:  78% (46800/60000)
+Sampling:  78% (46900/60000)
+Sampling:  78% (47000/60000)
+Sampling:  78% (47100/60000)
+Sampling:  79% (47200/60000)
+Sampling:  79% (47300/60000)
+Sampling:  79% (47400/60000)
+Sampling:  79% (47500/60000)
+Sampling:  79% (47600/60000)
+Sampling:  80% (47700/60000)
+Sampling:  80% (47800/60000)
+Sampling:  80% (47900/60000)
+Sampling:  80% (48000/60000)
+Sampling:  80% (48100/60000)
+Sampling:  80% (48200/60000)
+Sampling:  80% (48300/60000)
+Sampling:  81% (48400/60000)
+Sampling:  81% (48500/60000)
+Sampling:  81% (48600/60000)
+Sampling:  81% (48700/60000)
+Sampling:  81% (48800/60000)
+Sampling:  82% (48900/60000)
+Sampling:  82% (49000/60000)
+Sampling:  82% (49100/60000)
+Sampling:  82% (49200/60000)
+Sampling:  82% (49300/60000)
+Sampling:  82% (49400/60000)
+Sampling:  82% (49500/60000)
+Sampling:  83% (49600/60000)
+Sampling:  83% (49700/60000)
+Sampling:  83% (49800/60000)
+Sampling:  83% (49900/60000)
+Sampling:  83% (50000/60000)
+Sampling:  84% (50100/60000)
+Sampling:  84% (50200/60000)
+Sampling:  84% (50300/60000)
+Sampling:  84% (50400/60000)
+Sampling:  84% (50500/60000)
+Sampling:  84% (50600/60000)
+Sampling:  84% (50700/60000)
+Sampling:  85% (50800/60000)
+Sampling:  85% (50900/60000)
+Sampling:  85% (51000/60000)
+Sampling:  85% (51100/60000)
+Sampling:  85% (51200/60000)
+Sampling:  86% (51300/60000)
+Sampling:  86% (51400/60000)
+Sampling:  86% (51500/60000)
+Sampling:  86% (51600/60000)
+Sampling:  86% (51700/60000)
+Sampling:  86% (51800/60000)
+Sampling:  86% (51900/60000)
+Sampling:  87% (52000/60000)
+Sampling:  87% (52100/60000)
+Sampling:  87% (52200/60000)
+Sampling:  87% (52300/60000)
+Sampling:  87% (52400/60000)
+Sampling:  88% (52500/60000)
+Sampling:  88% (52600/60000)
+Sampling:  88% (52700/60000)
+Sampling:  88% (52800/60000)
+Sampling:  88% (52900/60000)
+Sampling:  88% (53000/60000)
+Sampling:  88% (53100/60000)
+Sampling:  89% (53200/60000)
+Sampling:  89% (53300/60000)
+Sampling:  89% (53400/60000)
+Sampling:  89% (53500/60000)
+Sampling:  89% (53600/60000)
+Sampling:  90% (53700/60000)
+Sampling:  90% (53800/60000)
+Sampling:  90% (53900/60000)
+Sampling:  90% (54000/60000)
+Sampling:  90% (54100/60000)
+Sampling:  90% (54200/60000)
+Sampling:  90% (54300/60000)
+Sampling:  91% (54400/60000)
+Sampling:  91% (54500/60000)
+Sampling:  91% (54600/60000)
+Sampling:  91% (54700/60000)
+Sampling:  91% (54800/60000)
+Sampling:  92% (54900/60000)
+Sampling:  92% (55000/60000)
+Sampling:  92% (55100/60000)
+Sampling:  92% (55200/60000)
+Sampling:  92% (55300/60000)
+Sampling:  92% (55400/60000)
+Sampling:  92% (55500/60000)
+Sampling:  93% (55600/60000)
+Sampling:  93% (55700/60000)
+Sampling:  93% (55800/60000)
+Sampling:  93% (55900/60000)
+Sampling:  93% (56000/60000)
+Sampling:  94% (56100/60000)
+Sampling:  94% (56200/60000)
+Sampling:  94% (56300/60000)
+Sampling:  94% (56400/60000)
+Sampling:  94% (56500/60000)
+Sampling:  94% (56600/60000)
+Sampling:  94% (56700/60000)
+Sampling:  95% (56800/60000)
+Sampling:  95% (56900/60000)
+Sampling:  95% (57000/60000)
+Sampling:  95% (57100/60000)
+Sampling:  95% (57200/60000)
+Sampling:  96% (57300/60000)
+Sampling:  96% (57400/60000)
+Sampling:  96% (57500/60000)
+Sampling:  96% (57600/60000)
+Sampling:  96% (57700/60000)
+Sampling:  96% (57800/60000)
+Sampling:  96% (57900/60000)
+Sampling:  97% (58000/60000)
+Sampling:  97% (58100/60000)
+Sampling:  97% (58200/60000)
+Sampling:  97% (58300/60000)
+Sampling:  97% (58400/60000)
+Sampling:  98% (58500/60000)
+Sampling:  98% (58600/60000)
+Sampling:  98% (58700/60000)
+Sampling:  98% (58800/60000)
+Sampling:  98% (58900/60000)
+Sampling:  98% (59000/60000)
+Sampling:  98% (59100/60000)
+Sampling:  99% (59200/60000)
+Sampling:  99% (59300/60000)
+Sampling:  99% (59400/60000)
+Sampling:  99% (59500/60000)
+Sampling:  99% (59600/60000)
+Sampling: 100% (59700/60000)
+Sampling: 100% (59800/60000)
+Sampling: 100% (59900/60000)
+Sampling: 100% (60000/60000)
+Sampling: 100% (60000/60000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.001488 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.88 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 130, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 130, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001465 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.65 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002124 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.24 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001501 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 15.01 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001495 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.95 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002126 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.26 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002141 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.41 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002161 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.61 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.002143 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 21.43 seconds.
+  Adjust your expectations accordingly!
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Rejecting initial value:
+    Log probability evaluates to log(0), i.e. negative infinity.
+    Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001506 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 15.06 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan__ijkisml/model_dyd6dsi7.stan', line 109, column 4 to column 34)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/model/hier/cond-Act_sess-1_env-21_Stan-hierRL_simple_normal_group2.pkl
+(50000,)
