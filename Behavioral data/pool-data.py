@@ -17,7 +17,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 
 # Group labels including 1, 2, 3
-randomGroupLabel = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/randomGroupLabel.csv')
+randomGroupLabel = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/randomGroupLabel.csv')
 # Concatenate all participatns excel files into a one dataframe
 dataAll = pd.DataFrame([])
 # List of subjects
