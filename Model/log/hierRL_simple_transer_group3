@@ -3909,3 +3909,268 @@ Sampling: 100% (69700/70000)
 Sampling: 100% (69800/70000)
 Sampling: 100% (69900/70000)
 Sampling: 100% (70000/70000)
+Sampling: 100% (70000/70000), done.
+Messages received during sampling:
+  Gradient evaluation took 0.001456 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.56 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001416 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.16 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 141, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 141, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001421 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.21 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001394 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 13.94 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 141, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 141, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001399 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 13.99 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001406 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.06 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 141, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.00143 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.3 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001415 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.15 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Gradient evaluation took 0.001426 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 14.26 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 140, column 4 to column 38)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+warn:Rejecting initial value:
+warn:  Log probability evaluates to log(0), i.e. negative infinity.
+warn:  Stan can't start sampling from this initial value.
+  Gradient evaluation took 0.001393 seconds
+  1000 transitions using 10 leapfrog steps per transition would take 13.93 seconds.
+  Adjust your expectations accordingly!
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: gamma_lpdf: Random variable is 0, but must be positive finite! (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 142, column 4 to column 35)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+  Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+  Exception: bernoulli_lpmf: Probability parameter is -nan, but must be in the interval [0, 1] (in '/tmp/httpstan_myr4x9dk/model_ez37k6n2.stan', line 155, column 8 to column 46)
+  If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+  but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+Saved results to  /mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/Model_secondOrder/hier/group3/cond-Clr_env-14_Stan-hierRL_simple_transfer_group3.pkl
