@@ -96,7 +96,7 @@ if modelFit == True:
     # Building Stan Model realted to our proposed model
     posterior = stan.build(stan_model, data = dataStan)
     # Start for taking samples from parameters in the Stan Model
-    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
+    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples)
     # Save Model Fit
     utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
