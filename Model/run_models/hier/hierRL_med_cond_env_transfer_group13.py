@@ -2,7 +2,7 @@
 """Model fit for competing Action Value Learning and Stimulus Value Learning in the cotext of Reinforcement Learning at the hierarchical level.
 It is based on Group 2"""
 
-import numpy as np
+import numpy as np #
 import pandas as pd
 import stan
 import matplotlib.pyplot as plt
