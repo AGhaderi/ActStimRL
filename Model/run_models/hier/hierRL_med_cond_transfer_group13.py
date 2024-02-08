@@ -24,9 +24,9 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 10
+n_chains = 5
 # The number of iteration or samples for each chain in MCM procedure
-n_samples=6000
+n_samples=5000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # read collected data across data
@@ -55,8 +55,8 @@ nConds = 2
 behAll_group.block = behAll_group.block.replace(['Act', 'Clr'], [1, 2])
 # read all conditions data for a specifit participant
 # The adrees name of pickle file
-pickelDir = subMainDirec + 'Model_secondOrder/hier/group13/med_cond/Stan-hierRL_med_cond_transfer_group13.pkl'
-if modelFit == True: 
+pickelDir = subMainDirec + 'Model_secondOrder/hier/group13/different/Stan-hierRL_med_cond_transfer_group13.pkl'
+if modelFit == False: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
     dataStan = {'N':behAll_group.shape[0],  
@@ -80,10 +80,14 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alphaAct': np.random.normal(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_alphClr': np.random.normal(-1, 1, size=(nParts, nMeds, nConds)),        
-            'z_weightAct': np.random.normal(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_sensitivity': np.random.normal(-1, 1, size=(nParts, nMeds, nConds))
+            'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphClr': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),        
+            'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'hier_alphaAct_sd': np.random.uniform(.01, .1),
+            'hier_alphaClr_sd': np.random.uniform(.01, .1),        
+            'hier_weightAct_sd': np.random.uniform(.01, .1),
+            'hier_sensitivity_sd': np.random.uniform(.01, .1),
         }
         initials.append(chaininit)   
 
@@ -96,7 +100,7 @@ if modelFit == True:
     # Building Stan Model realted to our proposed model
     posterior = stan.build(stan_model, data = dataStan)
     # Start for taking samples from parameters in the Stan Model
-    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples)
+    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
     # Save Model Fit
     utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
@@ -118,23 +122,24 @@ columns = 2
 fig.add_subplot(rows, columns, 1)
 sns.histplot(weightAct_[0, 0], kde=True, stat='density', bins=100)
 sns.histplot(weightAct_[0, 1], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[1, 1], kde=True, stat='density', bins=100)
 sns.histplot(weightAct_[1, 0], kde=True, stat='density', bins=100)
+sns.histplot(weightAct_[1, 1], kde=True, stat='density', bins=100)
 plt.title('Weightening', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
+plt.legend(['Group 1-Act', 'Group 1-Clr' ,'Group 3-Act', 'Group 3-Clr'])
 plt.xlim(0, 1)
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
 sns.histplot(beta_[0, 0], kde=True, stat='density', bins=100)
 sns.histplot(beta_[0, 1], kde=True, stat='density', bins=100)
-sns.histplot(beta_[1, 1], kde=True, stat='density', bins=100)
 sns.histplot(beta_[1, 0], kde=True, stat='density', bins=100)
-
+sns.histplot(beta_[1, 1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
+plt.legend(['Group 1-Act', 'Group 1-Clr' ,'Group 3-Act', 'Group 3-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
@@ -146,6 +151,7 @@ plt.title('Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
 plt.xlim(0, 1)
+plt.legend(['Group 1-Act', 'Group 1-Clr' ,'Group 3-Act', 'Group 3-Clr'])
 
 # Color Learning Rate
 fig.add_subplot(rows, columns, 4)
@@ -157,7 +163,8 @@ plt.title('Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
 plt.xlim(0, 1)
+plt.legend(['Group 1-Act', 'Group 1-Clr' ,'Group 3-Act', 'Group 3-Clr'])
 plt.subplots_adjust(wspace=10.)
 
 # Save figure of parameter distribution 
-fig.savefig(subMainDirec + 'Model_secondOrder/hier/group13/med_cond_env/Stan-hierRL_med_cond_transfer_group13.png', dpi=300)
+fig.savefig(subMainDirec + 'Model_secondOrder/hier/group13/different/Stan-hierRL_med_cond_transfer_group13.png', dpi=300)
