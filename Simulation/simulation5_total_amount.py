@@ -82,10 +82,10 @@ rawBehAll_wonAmount.loc[rawBehAll_wonAmount['group']==2,'wonAmount'] = rawBehAll
 sn = sns.barplot(data = rawBehAll_wonAmount, x='group', y='wonAmount', hue='block', width=.5, errorbar="se")
 new_title = 'Condition'
 sn.legend_.set_title(new_title)
-for t, l in zip(sn.legend_.texts,['Observed Act','Observed Clr', 'Agent 5 Act','Agent 5 Clr']):
+for t, l in zip(sn.legend_.texts,['Agent 5 Act','Agent 5 Clr','Observed Act','Observed Clr']):
     t.set_text(l)
 
-plt.title('winStay/loseShift regarding Act and Clr conditions')
+plt.title('Choosing options with higher probability of winning')
 plt.ylabel('Total amount', fontsize=12)
 plt.xlabel('Group label', fontsize=12)
 plt.ylim(0,3000)
