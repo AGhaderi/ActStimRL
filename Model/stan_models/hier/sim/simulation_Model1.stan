@@ -155,10 +155,10 @@ model {
     } 
  
     /* Hierarchical sd parameter*/
-    hier_alphaAct_sd ~ normal(0,.1) T[0,];  
-    hier_alphaClr_sd ~ normal(0,.1) T[0,];
-    hier_weightAct_sd ~ normal(0,.1) T[0,]; 
-    hier_sensitivity_sd ~ normal(0,.1) T[0,];
+    hier_alphaAct_sd ~ normal(0,1) T[0,];  
+    hier_alphaClr_sd ~ normal(0,1) T[0,];
+    hier_weightAct_sd ~ normal(0,1) T[0,]; 
+    hier_sensitivity_sd ~ normal(0,1) T[0,];
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {

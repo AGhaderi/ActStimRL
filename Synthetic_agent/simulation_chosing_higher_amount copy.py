@@ -9,7 +9,7 @@ import numpy as np
 # read collected data across data
 rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/rawBehAll.csv')
 
-# Calculuate rewarded left option
+# Calculuate rewarded higher amount options
 rawBehAll['pushed_agent'] = np.array(rawBehAll['winAmtPushable']>=50).astype(int)
 rawBehAll['yellowChosen_agent'] = np.array(rawBehAll['winAmtYellow']>=50).astype(int)
 # define rewarded or not rewarded option

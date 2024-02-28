@@ -34,8 +34,6 @@ subMainDirec = '/mnt/scratch/projects/7TPD/amin/bids/derivatives/fMRI_DA/data_Be
 behAll = pd.read_csv('/mrhome/amingk/Documents/7TPD/ActStimRL/Simulation/simulation_chosing_higher_amount.csv')
 behAll.block = behAll.block.replace('Stim', 'Clr')
 
-print(np.sum((behAll.pushed_agent==0) + (behAll.pushed_agent==1)))
-print(len(behAll.pushed_agent))
 # set of indicator to the first trial of each participant
 for sub in subList:
     for session in [1, 2]: # session
@@ -92,7 +90,7 @@ if modelFit == True:
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/sim/simulation_chosing_higher_probability_Model1.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/sim/simulation_Model1.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -132,18 +130,22 @@ plt.xlim(0, 1)
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta_[0], kde=True, stat='density', bins=100)
-sns.histplot(beta_[1], kde=True, stat='density', bins=100)
-plt.legend(['Act', 'Clr'])
+sns.histplot(beta_[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta_[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta_[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta_[1,1], kde=True, stat='density', bins=100)
+plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
 plt.title('Sensitivity', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alphaAct_[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_[1], kde=True, stat='density', bins=100)
-plt.legend(['Act', 'Clr'])
+sns.histplot(alphaAct_[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_[1,1], kde=True, stat='density', bins=100)
+plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
 plt.title('Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
@@ -151,9 +153,11 @@ plt.xlim(0, 1)
 
 # Color Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_[1], kde=True, stat='density', bins=100)
-plt.legend(['Act', 'Clr'])
+sns.histplot(alphaClr_[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_[1,1], kde=True, stat='density', bins=100)
+plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
 plt.title('Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
