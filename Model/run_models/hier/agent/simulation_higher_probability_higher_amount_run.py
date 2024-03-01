@@ -31,7 +31,7 @@ n_samples=5000
 # Main directory of the subject
 subMainDirec = '/mnt/scratch/projects/7TPD/amin/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # read collected data across data
-behAll = pd.read_csv('/mrhome/amingk/Documents/7TPD/ActStimRL/Simulation/simulation_chosing_higher_amount.csv')
+behAll = pd.read_csv('/mrhome/amingk/Documents/7TPD/ActStimRL/Synthetic_agent/simulation_higher_probability_higher_amount_50.csv')
 behAll.block = behAll.block.replace('Stim', 'Clr')
 
 # set of indicator to the first trial of each participant
@@ -53,7 +53,7 @@ behAll.patient = behAll.patient.replace(['HC', 'PD'], [1, 2])
 nConds = 2
 behAll.block = behAll.block.replace(['Act', 'Clr'], [1, 2])
 # The adrees name of pickle file
-pickelDir = subMainDirec + 'Model_secondOrder/hier/sim/simulation_chosing_higher_amount_Model1.pkl'
+pickelDir = subMainDirec + 'Model_secondOrder/hier/sim/simulation_higher_probability_higher_amount_50.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -90,7 +90,7 @@ if modelFit == True:
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/sim/simulation_Model1.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/agent/agent_model.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -165,4 +165,4 @@ plt.xlim(0, 1)
 plt.subplots_adjust(wspace=10.)
 
 # Save figure of parameter distribution 
-fig.savefig(subMainDirec + 'Model_secondOrder/hier/sim/simulation_chosing_higher_amount_Model1.png', dpi=300)
+fig.savefig(subMainDirec + 'Model_secondOrder/hier/sim/simulation_higher_probability_higher_amount_50.png', dpi=300)
