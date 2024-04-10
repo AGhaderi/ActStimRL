@@ -149,16 +149,16 @@ model {
         for (c in 1:nConds){
             hier_alphaAct_mu[m, c] ~ normal(0,1);
             hier_alphaClr_mu[m, c] ~ normal(0,1); 
-            hier_sensitivity_mu[m, c] ~ normal(1,5); 
+            hier_sensitivity_mu[m, c] ~ normal(0,1); 
             hier_weightAct_mu[m, c] ~ normal(0,1);
         }
     } 
  
     /* Hierarchical sd parameter*/
-    hier_alphaAct_sd ~ normal(0,1) T[0,];  
-    hier_alphaClr_sd ~ normal(0,1) T[0,];
-    hier_weightAct_sd ~ normal(0,1) T[0,]; 
-    hier_sensitivity_sd ~ normal(0,1) T[0,];
+    hier_alphaAct_sd ~ normal(1,2);  
+    hier_alphaClr_sd ~ normal(1,2);
+    hier_weightAct_sd ~ normal(1,2); 
+    hier_sensitivity_sd ~ normal(1,2);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {

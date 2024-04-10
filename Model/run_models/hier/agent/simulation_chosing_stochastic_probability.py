@@ -23,7 +23,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 
 # If you want to model fit or just recall ex model fit
-modelFit = False
+modelFit = True
 # Number of chains in MCMC procedure
 n_chains = 5
 # The number of iteration or samples for each chain in MCM procedure
@@ -31,7 +31,7 @@ n_samples=5000
 # Main directory of the subject
 subMainDirec = '/mnt/scratch/projects/7TPD/amin/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # read collected data across data
-behAll = pd.read_csv('/mrhome/amingk/Documents/7TPD/ActStimRL/Simulation/simulation_chosing_higher_probability.csv')
+behAll = pd.read_csv('/mrhome/amingk/Documents/7TPD/ActStimRL/Synthetic_agent/simulation_chosing_stochastic_probability.csv')
 behAll.block = behAll.block.replace('Stim', 'Clr')
 
 # set of indicator to the first trial of each participant
@@ -53,7 +53,7 @@ behAll.patient = behAll.patient.replace(['HC', 'PD'], [1, 2])
 nConds = 2
 behAll.block = behAll.block.replace(['Act', 'Clr'], [1, 2])
 # The adrees name of pickle file
-pickelDir = subMainDirec + 'Model_secondOrder/hier/agent/simulation_chosing_higher_probability_Model1_trial.pkl'
+pickelDir = subMainDirec + 'Model_secondOrder/hier/sim/simulation_chosing_higher_amount_Model1.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -76,21 +76,21 @@ if modelFit == True:
                 'p_yell_init':.5}
     # initial sampling
     initials = [] 
-    for c in range(0, n_chains):
-        chaininit = {
-            'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'z_alphClr': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),        
-            'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'hier_alphaAct_sd': np.random.uniform(.01, .1),
-            'hier_alphaClr_sd': np.random.uniform(.01, .1),        
-            'hier_weightAct_sd': np.random.uniform(.01, .1),
-            'hier_sensitivity_sd': np.random.uniform(.01, .1),
+    chaininit = {
+	    'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
+	    'z_alphClr': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),        
+	    'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
+	    'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
+	    'hier_alphaAct_sd': np.random.uniform(.01, .1),
+	    'hier_alphaClr_sd': np.random.uniform(.01, .1),        
+	    'hier_weightAct_sd': np.random.uniform(.01, .1),
+	    'hier_sensitivity_sd': np.random.uniform(.01, .1)
         }
-        initials.append(chaininit)   
+    for c in range(0, n_chains):
+    	initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/sim/simulation_chosing_higher_probability_Model1.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/agent/agent_model.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -165,4 +165,4 @@ plt.xlim(0, 1)
 plt.subplots_adjust(wspace=10.)
 
 # Save figure of parameter distribution 
-fig.savefig(subMainDirec + 'Model_secondOrder/hier/agent/simulation_chosing_higher_probability_Model1_trial.png', dpi=300)
+fig.savefig(subMainDirec + 'Model_secondOrder/hier/agent/simulation_chosing_stochastic_probability.png', dpi=300)

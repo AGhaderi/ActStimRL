@@ -76,10 +76,10 @@ if modelFit == True:
     # initial sampling
     initials = [] 
     chaininit = {
-    'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-    'z_alphClr': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),        
-    'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nConds)),
-    'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
+    'transfer_alphaAct': np.random.uniform(0, 0, size=(nParts, nGrps, nConds)),
+    'transfer_alphaClr': np.random.uniform(0, 0, size=(nParts, nGrps, nConds)),        
+    'transfer_weightAct': np.random.uniform(.5, .5, size=(nParts, nConds)),
+    'transfer_sensitivity': np.random.uniform(.02, .08, size=(nParts, nGrps, nConds)),
     'hier_alphaAct_sd': np.random.uniform(.01, .08),
     'hier_alphaClr_sd': np.random.uniform(.01, .08),        
     'hier_weightAct_sd': np.random.uniform(.01, .08),

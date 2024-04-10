@@ -31,7 +31,7 @@ n_samples=5000
 # Main directory of the subject
 subMainDirec = '/mnt/scratch/projects/7TPD/amin/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # number of simulation
-simNumber =1
+simNumber = 5 
 # Main directory of the simupated participatns
 parent_dir = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/simulation/'
 # Directory of the especifit simulated participant
@@ -59,7 +59,7 @@ simulated_data.patient = simulated_data.patient.replace(['HC', 'PD'], [1, 2])
 nConds = 2
 simulated_data.block = simulated_data.block.replace(['Act', 'Clr'], [1, 2])
 # The adrees name of pickle file
-pickelDir = subMainDirec + 'Model_secondOrder/hier/para_recov/para_recov_model.pkl'
+pickelDir = subMainDirec + 'Model_secondOrder/hier/para_recov/para_recov_model2_sim_' + str(simNumber)+'.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -83,20 +83,20 @@ if modelFit == True:
     # initial sampling
     initials = [] 
     chaininit = {
-            'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'z_alphClr': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),        
-            'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nGrps, nConds)),
-            'hier_alphaAct_sd': np.random.uniform(.01, .1),
-            'hier_alphaClr_sd': np.random.uniform(.01, .1),        
-            'hier_weightAct_sd': np.random.uniform(.01, .1),
-            'hier_sensitivity_sd': np.random.uniform(.01, .1),
+        'transfer_alphaAct': np.random.uniform(0, 0, size=(nParts, nGrps, nConds)),
+        'transfer_alphaClr': np.random.uniform(0, 0, size=(nParts, nGrps, nConds)),        
+        'transfer_weightAct': np.random.uniform(.5, .5, size=(nParts, nConds)),
+        'transfer_sensitivity': np.random.uniform(.02, .08, size=(nParts, nGrps, nConds)),
+        'hier_alphaAct_sd': np.random.uniform(.01, .08),
+        'hier_alphaClr_sd': np.random.uniform(.01, .08),        
+        'hier_weightAct_sd': np.random.uniform(.01, .08),
+        'hier_sensitivity_sd': np.random.uniform(.01, .08),
         }
     for c in range(0, n_chains):
     	initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/para_recov/para_recov_model.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/para_recov/para_recov_model2.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -124,51 +124,43 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weightAct_[0, 0], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[0, 1], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[1, 0], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[1, 1], kde=True, stat='density', bins=100)
-plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
-plt.title('Simulation 1 -Weightening parameter', fontsize=12)
+sns.histplot(weightAct_[0], kde=True, stat='density', bins=100)
+sns.histplot(weightAct_[1], kde=True, stat='density', bins=100)
+plt.legend(['Act', 'Clr'])
+plt.title('Simulation ' + str(simNumber)+' -Weightening parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
 plt.xlim(0, 1)
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta_[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta_[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta_[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta_[1,1], kde=True, stat='density', bins=100)
-plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
-plt.title('Simulation 1 -Sensitivity parameter', fontsize=12)
+sns.histplot(beta_[0], kde=True, stat='density', bins=100)
+sns.histplot(beta_[1], kde=True, stat='density', bins=100)
+plt.legend(['Act', 'Clr'])
+plt.title('Simulation ' + str(simNumber)+' -Sensitivity parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alphaAct_[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_[1,1], kde=True, stat='density', bins=100)
-plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
-plt.title('Simulation 1 -Action Learning Rate', fontsize=12)
+sns.histplot(alphaAct_[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_[1], kde=True, stat='density', bins=100)
+plt.legend(['Act', 'Clr'])
+plt.title('Simulation ' + str(simNumber)+' -Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
 plt.xlim(0, 1)
 
 # Color Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_[1,1], kde=True, stat='density', bins=100)
-plt.legend(['HC-Act', 'HC-Clr', 'PD-Act', 'PD-Clr'])
-plt.title('Simulation 1 -Color Learning Rate', fontsize=12)
+sns.histplot(alphaClr_[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_[1], kde=True, stat='density', bins=100)
+plt.legend(['Act', 'Clr'])
+plt.title('Simulation ' + str(simNumber)+' -Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
 plt.xlim(0, 1)
 plt.subplots_adjust(wspace=10.)
 
 # Save figure of parameter distribution 
-fig.savefig(subMainDirec + 'Model_secondOrder/hier/para_recov/para_recov_model.png', dpi=300)
+fig.savefig(subMainDirec + 'Model_secondOrder/hier/para_recov/para_recov_model2_sim_' + str(simNumber)+'.png', dpi=300)

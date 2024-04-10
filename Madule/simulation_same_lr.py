@@ -1,14 +1,12 @@
-"""simulation for RL_condition.stan code"""
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.io import loadmat
 import os
 
-def set_true_all_parts(alphaAct_mu_arg, alphaAct_sd_arg,
-                    alphaClr_mu_arg, alphaClr_sd_arg,
-                    weightAct_mu_arg, weightAct_sd_arg,
-                    beta_mu_arg, beta_sd_arg, simNumber_arg = 1):
+def set_true_all_parts(alpha_mu_arg, alpha_sd_arg,
+                       weightAct_mu_arg, weightAct_sd_arg,
+                       beta_mu_arg, beta_sd_arg, simNumber_arg = 1):
     """generate and put individual and heirarchical true parameters into task desgin for each participant"""
     
     # List of subjects
@@ -29,11 +27,11 @@ def set_true_all_parts(alphaAct_mu_arg, alphaAct_sd_arg,
             task_design = rawBehAll[rawBehAll['sub_ID']==subName]
             # choose some relevant columns
             task_design = task_design[['session', 'run', 'stimActFirst', 'block', 'stimActBlock', 'trialNumber', 'yellowOnLeftSide', 'leftCanBePushed', 'winAmtLeft', 'winAmtRight', 'winAmtYellow', 'winAmtBlue', 'winAmtPushable', 'winAmtPullable', 'yellowCorrect', 'pushCorrect', 'reverse', 'group', 'patient']]
+                
             # Put true parameters into the task design and then return it
-            task_desin_parameters = set_true_part(task_design, alphaAct_mu_arg, alphaAct_sd_arg,
-                                                  alphaClr_mu_arg, alphaClr_sd_arg,
+            task_desin_parameters = set_true_part(task_design, alpha_mu_arg, alpha_sd_arg,
                                                   weightAct_mu_arg, weightAct_sd_arg,
-                                                  beta_mu_arg, beta_sd_arg)
+                                                  beta_mu_arg, beta_sd_arg) 
             # Directory of simulated data
             parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/simulation/'
             # Check existing directory of subject name forlder and simulation number
@@ -45,10 +43,8 @@ def set_true_all_parts(alphaAct_mu_arg, alphaAct_sd_arg,
             task_desin_parameters.to_csv(parent_dir + str(simNumber_arg) + '/' + subName + '/' +subName +'-task-design-true-param.csv', index=False)
         # Save Hierarchical true parameters
         dicHierMeanStdParam= ({'label':['Session 1 - Act', 'session 1- Stim', 'Session 2 - Act', 'session 2- Stim'],
-                               'hierAlphaAct_mu':alphaAct_mu_arg.flatten(),
-                               'hierAlphaAct_sd': np.repeat(alphaAct_sd_arg, 4),
-                               'hierAlphaClr_mu': alphaClr_mu_arg.flatten(),
-                               'hierAlphaClr_sd': np.repeat(alphaClr_sd_arg, 4),
+                               'hierAlpha_mu':alpha_mu_arg.flatten(),
+                               'hierAlpha_sd': np.repeat(alpha_sd_arg, 4),
                                'hierWeightAct_mu': weightAct_mu_arg.flatten(),
                                'hierWeightAct_sd': np.repeat(weightAct_sd_arg, 4),
                                'hierBeta_mu': beta_mu_arg.flatten(),
@@ -62,8 +58,7 @@ def set_true_all_parts(alphaAct_mu_arg, alphaAct_sd_arg,
         return print("An exception accured within trueParamAllParts function: " + str(e))
  
 def set_true_part(task_design,
-                  alphaAct_mu, alphaAct_sd,
-                  alphaClr_mu, alphaClr_sd,
+                  alpha_mu, alpha_sd,
                   weightAct_mu, weightAct_sd,
                   beta_mu, beta_sd): 
     """Set true parameters in each condition and session independently.
@@ -71,9 +66,10 @@ def set_true_part(task_design,
     True parameters are generated for each condition and session independently"""
     
     # Define new columns of grand truth parameters within predefined task design 
-    task_design[['alphaAct', 'alphaClr', 'weightAct', 'beta']] = ""  
+    task_design[['alpha', 'weightAct', 'beta']] = ""  
     # Set number of sessions and conditions, and name of conditions 
     nsess = 2
+
     for s in range(nsess):
         for c, condition in enumerate(['Act', 'Stim']):
             # Sensitivity parameter chnages across session but not condition
@@ -81,16 +77,11 @@ def set_true_part(task_design,
                 beta = np.round(np.random.normal(beta_mu[s,c], beta_sd), 5)
                 if beta >= 0 and beta <.2:
                     break
-                # Learning rate parameter of Action Value chnages across session and condition
+            # Learning rate parameter 
             while (True):
-                alphaAct = np.round(np.random.normal(alphaAct_mu[s,c], alphaAct_sd), 2)
-                if alphaAct >= 0 and alphaAct <= 1:
-                    break  
-            # Learning rate parameter of Color Value chnages across session and condition
-            while (True):
-                alphaClr = np.round(np.random.normal(alphaClr_mu[s,c], alphaClr_sd), 2)
-                if alphaClr >= 0 and alphaClr <= 1:
-                    break
+                alpha = np.round(np.random.normal(alpha_mu[s,c], alpha_sd), 2)
+                if alpha >= 0 and alpha <= 1:
+                    break        
             if condition == 'Act':
                 # Relative Contribution parameter chnages across session and condition
                 while (True):
@@ -103,15 +94,13 @@ def set_true_part(task_design,
                     weightAct = np.round(np.random.normal(weightAct_mu[s,c], weightAct_sd), 2)
                     if weightAct >= 0 and weightAct <= .4:
                         break
-
-            # Put generated true parameters of alphaAct, alphaClr and weight Act within the predefined task design dataframe
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'alphaAct'] = alphaAct
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'alphaClr'] = alphaClr
+            # Put generated true parameters of alpha and weight Act within the predefined task design dataframe
+            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'alpha'] = alpha
             task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'weightAct'] = weightAct
             task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'beta'] = beta
     return task_design  
 
-def simulate_data_true_params(simNumber = 1):
+def simulate_data_true_params(simNumber = 1, runNumber = 1):
     """Simulated data for each participatn based on predefined True Parameters"""
     # List of subjects
     subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
@@ -121,6 +110,7 @@ def simulate_data_true_params(simNumber = 1):
                'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
                'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
                'sub-090', 'sub-092', 'sub-108', 'sub-109']
+
     try:
         # Simulation for participant
         for subName in subList:
@@ -129,7 +119,7 @@ def simulate_data_true_params(simNumber = 1):
             task_design_param = pd.read_csv(parent_dir + subName +'-task-design-true-param.csv')
             # simulate data
             simulated_data = simulateActClr(task_design_param)
-            simulated_data.to_csv(parent_dir + subName +'-simulated-task-design-true-param.csv', index=False)
+            simulated_data.to_csv(parent_dir + subName +'-simulated-task-design-true-param'+str(runNumber)+'.csv', index=False)
             
         return print("All simulations have been done successfully!")
     
@@ -138,6 +128,7 @@ def simulate_data_true_params(simNumber = 1):
   
 def simulateActClr(task_design_param):
     """Simulated data from the predefined true parameters in dataframe task_design_param"""
+
     for session in [1, 2]: # session
         for reverse in [21, 14]: # two distinct environemnt
             for condition in ['Act', 'Stim']: # condition
@@ -162,8 +153,7 @@ def simulateActClr(task_design_param):
                 yellowCorrect = task_design_param_split.yellowCorrect.to_numpy()
                 
                 # Predefined Ground truth Parameters
-                alphaAct = task_design_param_split.alphaAct.to_numpy()
-                alphaClr = task_design_param_split.alphaClr.to_numpy()
+                alpha = task_design_param_split.alpha.to_numpy()
                 weightAct = task_design_param_split.weightAct.to_numpy()
                 beta = task_design_param_split.beta.to_numpy()
                 
@@ -235,17 +225,14 @@ def simulateActClr(task_design_param):
                         
                     # Rl rule update over Action Learning Values for the next trial
                     if pushed[i] == 1:
-                        probPush = probPush + alphaAct[i]*(correctChoice[i] - probPush)
+                        probPush = probPush + alpha[i]*(correctChoice[i] - probPush)
                         probPull = 1 - probPush           
-                    elif pushed[i] == 0:
-                        probPull = probPull + alphaAct[i]*(correctChoice[i] - probPull)
-                        probPush = 1 - probPull                      
                     # Rl rule update Color Action Learning values for the next trial
                     if yellowChosen[i] == 1:
-                        probYell = probYell + alphaClr[i]*(correctChoice[i] - probYell)
+                        probYell = probYell + alpha[i]*(correctChoice[i] - probYell)
                         probBlue = 1 - probYell
                     elif yellowChosen[i] == 0:
-                        probBlue = probBlue + alphaClr[i]*(correctChoice[i] - probBlue)
+                        probBlue = probBlue + alpha[i]*(correctChoice[i] - probBlue)
                         probYell = 1 - probBlue  
 
                 # output results
