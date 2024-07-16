@@ -20,7 +20,7 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # select Act or Stim to model fit seperately
-cond_act_stim = 'Stim'
+cond_act_stim = 'Act'
 # List of subjects
 subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
            'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
@@ -96,7 +96,7 @@ if modelFit == True:
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/various_approaches/HierRL_not_com_same_2lr_model1.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/various_approaches/HierRL_not_comp_same_2lr_model1.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions

@@ -20,7 +20,7 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # select Act or Stim to model fit seperately
-cond_act_stim = 'Act'
+cond_act_stim = 'Stim'
 # List of subjects
 subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
            'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
@@ -85,17 +85,17 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alpha': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nMeds)),
+            'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nMeds)),
+            'z_alphaStim': np.random.uniform(-1, 1, size=(nParts, nMeds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_weightAct_sd': np.random.uniform(.01, .1),
+            'hier_alphaAct_sd': np.random.uniform(.01, .1),        
+            'hier_alphaStim_sd': np.random.uniform(.01, .1),        
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
         }
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/various_approaches/HierRL_not_comp_same_lr_model1.stan' 
+    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/various_approaches/HierRL_not_comp_non_w_same_lr_model1.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -115,23 +115,13 @@ else:
     fit = loadPkl['fit']
 
 # Extracting posterior distributions for each of four main unkhown parameters
-alpha_ = fit["transfer_hier_alpha_mu"] 
-weightAct_ = fit["transfer_hier_weightAct_mu"] 
+alphaAct_ = fit["transfer_hier_alphaAct_mu"] 
+alphaStim_ = fit["transfer_hier_alphaStim_mu"] 
 beta_ = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
 rows = 2
 columns = 2
-
-# Weghtening
-fig.add_subplot(rows, columns, 1)
-sns.histplot(weightAct_[0], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[1], kde=True, stat='density', bins=100)
-plt.title('Weighting parameter', fontsize=12)
-plt.ylabel('Density', fontsize=12)
-plt.xlabel('$w_{(A)}$', fontsize=14)
-plt.xlim(0, 1)
-plt.legend(['PD OFF', 'PD ON']) 
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
@@ -143,10 +133,20 @@ plt.xlabel(r'$\beta$', fontsize=14)
 plt.legend(['PD OFF', 'PD ON']) 
 
 # Action Learning Rate
+fig.add_subplot(rows, columns, 1)
+sns.histplot(alphaAct_[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_[1], kde=True, stat='density', bins=100)
+plt.title('Action Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha $', fontsize=14)
+plt.xlim(0, 1)
+plt.legend(['PD OFF', 'PD ON']) 
+
+# Stim Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alpha_[0], kde=True, stat='density', bins=100)
-sns.histplot(alpha_[1], kde=True, stat='density', bins=100)
-plt.title('Learning Rate', fontsize=12)
+sns.histplot(alphaStim_[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaStim_[1], kde=True, stat='density', bins=100)
+plt.title('Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha $', fontsize=14)
 plt.xlim(0, 1)
