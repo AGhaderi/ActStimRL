@@ -1,2 +1,0 @@
-nohup: ignoring input
-nohup: failed to run command './run_simulation_RL_condition_same_lr.py': No such file or directory

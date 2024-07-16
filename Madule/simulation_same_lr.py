@@ -80,7 +80,7 @@ def set_true_part(task_design,
             # Learning rate parameter 
             while (True):
                 alpha = np.round(np.random.normal(alpha_mu[s,c], alpha_sd), 2)
-                if alpha >= 0 and alpha <= 1:
+                if alpha >= 0 and alpha <= .7:
                     break        
             if condition == 'Act':
                 # Relative Contribution parameter chnages across session and condition
@@ -100,7 +100,7 @@ def set_true_part(task_design,
             task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'beta'] = beta
     return task_design  
 
-def simulate_data_true_params(simNumber = 1, runNumber = 1):
+def simulate_data_true_params(simNumber, runNumber):
     """Simulated data for each participatn based on predefined True Parameters"""
     # List of subjects
     subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
@@ -226,7 +226,11 @@ def simulateActClr(task_design_param):
                     # Rl rule update over Action Learning Values for the next trial
                     if pushed[i] == 1:
                         probPush = probPush + alpha[i]*(correctChoice[i] - probPush)
-                        probPull = 1 - probPush           
+                        probPull = 1 - probPush 
+                    elif pushed[i] == 0:
+                        probPull = probPull + alpha[i]*(correctChoice[i] - probPull)
+                        probPush = 1 - probPull   
+                                           
                     # Rl rule update Color Action Learning values for the next trial
                     if yellowChosen[i] == 1:
                         probYell = probYell + alpha[i]*(correctChoice[i] - probYell)
@@ -238,7 +242,6 @@ def simulateActClr(task_design_param):
                 # output results
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'correctChoice'] = correctChoice  
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'pushed'] = pushed  
-                task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'yellowChosen'] = yellowChosen  
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'yellowChosen'] = yellowChosen  
  
     return task_design_param

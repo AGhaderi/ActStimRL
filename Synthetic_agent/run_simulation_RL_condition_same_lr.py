@@ -5,34 +5,34 @@ import sys
 sys.path.append('..')
 from Madule import simulation_same_lr
 from Madule import plots 
-"""
+
+ 
 
 " Simulation number"
-simNumber = 12
+simNumber = 1
 "Set mean and STD of Learning rate for Action Value Conditions"
-alpha_mu = np.array([[.1,.3], [.3,.1]])
+alpha_mu = np.array([[.3, .3], [.3, .3]])
 alpha_sd = np.array(.2)
 
 "Set mean and STD of Relative Contribution Parameter"
-weightAct_mu = np.array([[.8,.2], [.9,.1]])
+weightAct_mu = np.array([[.8,.2], [.8,.2]])
 weightAct_sd = np.array(.2)
 
 "Set mean and STD of Sensitivity Parameter"
-beta_mu = np.array([[.02, .04], [.01, .06]])
-beta_sd = np.array(0.04) 
+beta_mu = np.array([[.03, .03], [.03, .03]])
+beta_sd = np.array(0.05) 
 
 "True values of individual-level parameters are randomly taken from predefined hierarchical level parameters"
 simulation_same_lr.set_true_all_parts(alpha_mu_arg=alpha_mu, alpha_sd_arg=alpha_sd,
                               weightAct_mu_arg=weightAct_mu, weightAct_sd_arg=weightAct_sd,
                               beta_mu_arg=beta_mu, beta_sd_arg=beta_sd,
                               simNumber_arg=simNumber)
-""" 
-
+ 
 # Simulation number
-simNumber = 12
+simNumber = 1
 # simulation run
-runNumber = 21
-for run in range(20, runNumber):
+runNumber = 15
+for run in range(1, runNumber):
     # The Final step is to simulate data from the grand truth parameters that has been generated from previous step
     simulation_same_lr.simulate_data_true_params(simNumber=simNumber, runNumber= run)
 

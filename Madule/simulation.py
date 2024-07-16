@@ -252,6 +252,5 @@ def simulateActClr(task_design_param):
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'correctChoice'] = correctChoice  
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'pushed'] = pushed  
                 task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'yellowChosen'] = yellowChosen  
-                task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'yellowChosen'] = yellowChosen  
  
     return task_design_param

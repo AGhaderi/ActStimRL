@@ -96,3 +96,10 @@ model {
         pushed[i] ~ bernoulli(soft_max_EV[i]);
     }
 }
+generated quantities { 
+   vector[N] log_lik;  
+    /*  RL Log density likelihood */
+    for (i in 1:N) {
+        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
+        }
+}
