@@ -3,4 +3,4 @@ __pycache__
 build
 *.out
 *.txt
-.vscode
+*.vscode
