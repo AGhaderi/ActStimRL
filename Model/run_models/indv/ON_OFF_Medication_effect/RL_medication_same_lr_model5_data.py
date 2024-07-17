@@ -12,7 +12,7 @@ import nest_asyncio
 import os 
 
 # select Act or Stim to model fit seperately
-cond_act_stim = 'Stim'
+cond_act_stim = 'Act'
 # List of subjects
 subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
            'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
@@ -22,7 +22,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
 # Number of chains in MCMC procedure
 n_chains = 5
 # The number of iteration or samples for each chain in MCM procedure
@@ -136,12 +136,8 @@ for subName in subList_PD:
     fig.add_subplot(rows, columns, 3)
     sns.histplot(alpha_, kde=True, stat='density')
     plt.ylabel('Density', fontsize=12)
-    if cond_act_stim=='Act':
-        plt.title(subName + ', Action Learning Rate', fontsize=12)
-        plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
-    if cond_act_stim=='Stim':
-        plt.title(subName + ', Color Learning Rate', fontsize=12)
-        plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
+    plt.title(subName + ', Color Learning Rate', fontsize=12)
+    plt.xlabel(r'$ \alpha$', fontsize=14)
     plt.xlim(0, 1)
 
     plt.subplots_adjust(wspace=10.)
