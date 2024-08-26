@@ -58,12 +58,20 @@ window_size = 4
 
 """High reward option"""
 # Average of chosen options Across participants for each trial
-behAllCond_chosenOption = behAllCond.groupby(['trialNumber'], as_index=False)['highRewardOption'].mean()
+behAllCond_chosenOption = behAllCond.groupby(['group', 'trialNumber'], as_index=False)['highRewardOption'].mean()
  
 # Assignment of x and y values from the mean across subject for each trial
-y_1_chosenOption = behAllCond_chosenOption['highRewardOption']
+y_1_chosenOption = behAllCond_chosenOption[behAllCond_chosenOption['group']==1]['highRewardOption']
 windows_y_1_chosenOption = y_1_chosenOption.rolling(window=window_size, min_periods=1)
 moving_averages_y_1_chosenOption = windows_y_1_chosenOption.mean()
+  
+y_2_chosenOption = behAllCond_chosenOption[behAllCond_chosenOption['group']==2]['highRewardOption']
+windows_y_2_chosenOption = y_2_chosenOption.rolling(window=window_size, min_periods=1)
+moving_averages_y_2_chosenOption = windows_y_2_chosenOption.mean()
+
+y_3_chosenOption = behAllCond_chosenOption[behAllCond_chosenOption['group']==3]['highRewardOption']
+windows_y_3_chosenOption = y_3_chosenOption.rolling(window=window_size, min_periods=1)
+moving_averages_y_3_chosenOption = windows_y_3_chosenOption.mean()
 
  
 # plot 
@@ -76,9 +84,13 @@ column = 1
 # The mosing average
 fig.add_subplot(row, column, 1)
 plt.plot(np.arange(1, 43), moving_averages_y_1_chosenOption)
+plt.plot(np.arange(1, 43), moving_averages_y_2_chosenOption)
+plt.plot(np.arange(1, 43), moving_averages_y_3_chosenOption)
 plt.xlabel('Trials', fontsize='12')
 plt.ylabel('Chosen high rewarding option', fontsize='12')
 plt.axhline(y=.5, color='black' , linestyle='--')
+plt.legend(['OFF', 'HC', 'ON'])
+
 # Add titles
 if block=='Act':
     plt.title('Moving average ' + str(window_size) + ' - Action value learning')
