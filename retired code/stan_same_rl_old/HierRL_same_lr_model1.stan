@@ -104,19 +104,19 @@ transformed parameters {
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         if (pushed[i] == 1){
             p_push = p_push + transfer_alpha[participant[i], group[i]]*(rewarded[i] - p_push); 
-            p_pull = 1 - p_push;
+            //p_pull = 1 - p_push; 
         }
         else{
             p_pull = p_pull + transfer_alpha[participant[i], group[i]]*(rewarded[i] - p_pull);
-            p_push = 1 - p_pull;
+            //p_push = 1 - p_pull;
         }    
         if (yellowChosen[i] == 1){
            p_yell = p_yell + transfer_alpha[participant[i], group[i]]*(rewarded[i] - p_yell);
-           p_blue = 1 - p_yell;
+           //p_blue = 1 - p_yell;
         }    
         else{
            p_blue = p_blue + transfer_alpha[participant[i], group[i]]*(rewarded[i] - p_blue);
-           p_yell = 1 - p_blue;           
+           //p_yell = 1 - p_blue;           
         }
     }   
 }

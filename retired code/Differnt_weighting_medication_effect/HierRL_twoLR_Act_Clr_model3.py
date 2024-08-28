@@ -1,8 +1,18 @@
 #!/mrhome/amingk/anaconda3/envs/7tpd/bin/python
-"""Model fit for competing Action Value Learning and Stimulus Value Learning in the cotext of Reinforcement Learning at the hierarchical level.
-It is based on Group 2"""
+"""Model 1 provide medication effect (OFF vs ON) in Parkinson's disease in both Action and Color values leanring condition.
+alphaAct : Learning rate for Action Value Learning
+alphaClr : Learning rate for Color value learning
+weightAct : Weighting pratameter showing Relative contribution of Action Value Learning verus Color Value Learning
+beta : Sensitivity parameter
+It assumes Medication anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
+alphaAct[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaClr[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+weight_Act  Action value learing 
+weight_Clr[2]  Color value lerning in two medication effects
+beta[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+"""
 
-import numpy as np #
+import numpy as np 
 import pandas as pd
 import stan
 import matplotlib.pyplot as plt
@@ -13,14 +23,13 @@ from Madule import utils
 import nest_asyncio
 import os
 
-
+# Medication effect over Parkinsdon's disease
+partcipant_group = 'PD'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
 model_name = os.path.splitext(filename)[0]
-
-# select Act or Stim to model fit seperately
-cond_act_stim = 'Stim'
+ 
 # List of subjects
 subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
            'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
@@ -33,12 +42,12 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 10
+n_chains = 4
 # The number of iteration or samples for each chain in MCM procedure
-n_samples=5000
+n_samples=4000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
-# read collected data across data
+# read collected data across all participants
 behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
 
 # set of indicator to the first trial of each participant
@@ -49,12 +58,17 @@ for sub in subList:
                 behAll_indicator = behAll[(behAll['sub_ID']==sub)&(behAll['block']==condition)&(behAll['session']==session)&(behAll['reverse']==reverse)]  
                 behAll.loc[(behAll['sub_ID']==sub)&(behAll['block']==condition)&(behAll['session']==session)&(behAll['reverse']==reverse), 'indicator'] = np.arange(1, behAll_indicator.shape[0] + 1)
 
-# select sAct or Stim in PD
-behAll = behAll[(behAll['block']==cond_act_stim)&(behAll['patient']=='PD')]
-# number of conditions
+# select PD group
+behAll = behAll[behAll['patient']==partcipant_group]
+
+# Number of Medication effect (OFF vs ON) 
 nMeds = 2
+# Number of conditions (Action vs Color)
+nConds = 2
 # group label 1: PD OFF, group label 3: PD ON
-behAll.group = behAll.group.replace([1, 3], [1, 2])
+behAll['medication'] = behAll.group.replace([1, 3], [1, 2])
+# Condition label 1: Act, label 2: Stim
+behAll.block = behAll.block.replace(['Act', 'Stim'], [1, 2])
 # number of participant
 nParts = len(np.unique(behAll.sub_ID))
 # participant indeces
@@ -62,7 +76,7 @@ behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nPa
 # main directory of saving
 mainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{mainScarch}/realdata/hier/PD/medication/{model_name}_{cond_act_stim}.pkl'
+pickelDir = f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -77,25 +91,29 @@ if modelFit == True:
                 'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),  
-                'nGrps':nMeds,
-                'group':np.array(behAll.group).astype(int),
+                'nMeds':nMeds,
+                'nConds':nConds,
+                'medication':np.array(behAll.medication).astype(int),
+                'condition':np.array(behAll.block).astype(int),
                 'p_push_init':.5, 
                 'p_yell_init':.5}
     # initial sampling
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alpha': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'z_weightAct': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds)),
+            'z_alphaAct': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaClr': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_weight_Act': np.random.uniform(-1, 1, size=(nParts)),
+            'z_weight_Clr': np.random.uniform(-1, 1, size=(nParts, nMeds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_weightAct_sd': np.random.uniform(.01, .1),
+            'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
         }
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = '/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/HierRL_same_lr_model1.stan' 
+    file_name = f'/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/hier/{model_name}.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -105,8 +123,8 @@ if modelFit == True:
     # Start for taking samples from parameters in the Stan Model
     fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
     # Save Model Fit
-    if not os.path.isdir(mainScarch  + '/realdata/hier/PD/medication/'):
-            os.makedirs(mainScarch  + '/realdata/hier/PD/medication/') 
+    if not os.path.isdir(mainScarch  + '/realdata/hier/PD-HC/diagnosis/'):
+            os.makedirs(mainScarch  + '/realdata/hier/PD-HC/diagnosis/') 
     # Save Model Fit
     utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
@@ -115,9 +133,11 @@ else:
     fit = loadPkl['fit']
 
 # Extracting posterior distributions for each of four main unkhown parameters
-alpha_ = fit["transfer_hier_alpha_mu"] 
-weightAct_ = fit["transfer_hier_weightAct_mu"] 
-beta_ = fit["transfer_hier_sensitivity_mu"]
+alphaAct = fit["transfer_hier_alphaAct_mu"] 
+alphaClr = fit["transfer_hier_alphaClr_mu"] 
+weight_Act = fit["transfer_hier_weight_mu_Act"].flatten() 
+weight_Clr = fit["transfer_hier_weight_mu_Clr"] 
+beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
 rows = 2
@@ -125,32 +145,54 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weightAct_[0], kde=True, stat='density', bins=100)
-sns.histplot(weightAct_[1], kde=True, stat='density', bins=100)
+sns.histplot(weight_Act, kde=True, stat='density', bins=100)
+sns.histplot(weight_Clr[0], kde=True, stat='density', bins=100)
+sns.histplot(weight_Clr[1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
 plt.xlim(0, 1)
-plt.legend(['PD OFF', 'PD ON']) 
+plt.legend(['Act', 'OFF-Clr', 'ON-Clr']) 
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta_[0], kde=True, stat='density', bins=100)
-sns.histplot(beta_[1], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
-plt.legend(['PD OFF', 'PD ON']) 
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alpha_[0], kde=True, stat='density', bins=100)
-sns.histplot(alpha_[1], kde=True, stat='density', bins=100)
-plt.title('Learning Rate', fontsize=12)
+sns.histplot(alphaAct[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct[1,1], kde=True, stat='density', bins=100)
+plt.title('Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
-plt.xlabel(r'$ \alpha $', fontsize=14)
-plt.xlim(0, 1)
-plt.legend(['PD OFF', 'PD ON']) 
+plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 4)
+sns.histplot(alphaClr[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr[1,1], kde=True, stat='density', bins=100)
+plt.title('Color Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/hier/PD/medication/{model_name}_{cond_act_stim}.png', dpi=300)
+fig.savefig(f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.png', dpi=300)
+
+# Figure of model fit results in two column and two rows
+fig = plt.figure(figsize=(10, 6), tight_layout=True)
+rows = 2
+columns = 2
+ 

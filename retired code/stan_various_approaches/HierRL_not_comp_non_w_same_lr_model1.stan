@@ -55,7 +55,7 @@ transformed parameters {
     array[nGrps] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
 	transfer_hier_alphaAct_mu = Phi(hier_alphaAct_mu);				// for the output
-	transfer_hier_alphaStim_mu = Phi(hier_alphaStim_mu);		    // for the output
+	transfer_hier_alphaStim_mu = Phi(hier_alphaStim_mu);		    
 	for (g in 1:nGrps){
         transfer_hier_sensitivity_mu[g] = log(1 + exp(hier_sensitivity_mu[g]));
     }
