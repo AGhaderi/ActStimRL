@@ -43,7 +43,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
 # Number of chains in MCMC procedure
 n_chains = 4
 # The number of iteration or samples for each chain in MCM procedure
@@ -149,8 +149,8 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
-sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight[0], kde=True, stat='density', bins=100)
+sns.histplot(weight[1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
