@@ -118,11 +118,11 @@ transformed parameters {
         EV_pull_blue = transfer_weight[participant[i], medication_session[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], medication_session[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
-        // pushed and yellow vs pulled and blue
+        // pushed/yellow coded and pulled/blue coded 1
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
             soft_max_EV[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_blue));
 
-        // pushed and blue vs pulled and yellow
+        //  pushed/blue coded 1 and pulled/yellow coded 0
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
             soft_max_EV[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_yell));  
           

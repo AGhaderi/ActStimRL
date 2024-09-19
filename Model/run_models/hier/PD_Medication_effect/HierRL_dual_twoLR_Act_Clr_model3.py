@@ -11,9 +11,8 @@ alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 alphaClr_pos[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 alphaClr_neg[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-weight_Act  Action value learing 
-weight_Clr[2]  Color value lerning in two medication effects
-beta[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+weight[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+beta[2]  two Conditions [Act, Clr]
 """
 
 import numpy as np 
@@ -108,9 +107,8 @@ if modelFit == True:
             'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_weight_Act': np.random.uniform(-1, 1, size=(nParts)),
-            'z_weight_Clr': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -142,8 +140,7 @@ alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"]
 alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
 alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
 alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
-weight_Act = fit["transfer_hier_weight_mu_Act"].flatten()
-weight_Clr = fit["transfer_hier_weight_mu_Clr"] 
+weight = fit["transfer_hier_weight_mu"] 
 beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
@@ -152,25 +149,24 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight_Act, kde=True, stat='density', bins=100)
-sns.histplot(weight_Clr[0], kde=True, stat='density', bins=100)
-sns.histplot(weight_Clr[1], kde=True, stat='density', bins=100)
+sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
 plt.xlim(0, 1)
-plt.legend(['Act', 'OFF-Clr', 'ON-Clr']) 
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
-plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)

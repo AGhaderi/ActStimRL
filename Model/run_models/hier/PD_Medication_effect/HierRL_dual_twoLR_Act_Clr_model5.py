@@ -9,10 +9,10 @@ beta : Sensitivity parameter
 It assumes Medication anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
 alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-alphaClr_pos[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-alphaClr_neg[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaClr_pos[2]   two Conditions [Act, Clr]
+alphaClr_neg[2]   two Conditions [Act, Clr]
 weight[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-beta[2]  two Conditions [Act, Clr]
+beta[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 """
 
 import numpy as np 
@@ -105,10 +105,10 @@ if modelFit == True:
         chaininit = {
             'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -161,12 +161,14 @@ plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr'])
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$\beta$', fontsize=14)
-plt.legend(['Act', 'Clr']) 
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
@@ -182,14 +184,12 @@ plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_pos[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1], kde=True, stat='density', bins=100)
 plt.title('Positive Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
-plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
@@ -205,14 +205,12 @@ plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 6)
-sns.histplot(alphaClr_neg[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1], kde=True, stat='density', bins=100)
 plt.title('Negative Color Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
-plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 # Save figure of parameter distribution 
 fig.savefig(f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.png', dpi=300)

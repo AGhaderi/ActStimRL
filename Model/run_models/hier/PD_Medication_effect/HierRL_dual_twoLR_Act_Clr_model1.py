@@ -232,9 +232,4 @@ plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
 fig.savefig(f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.png', dpi=500)
-
-# Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-rows = 2
-columns = 2
  

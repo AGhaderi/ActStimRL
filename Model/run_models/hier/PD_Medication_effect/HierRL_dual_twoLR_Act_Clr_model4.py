@@ -7,12 +7,11 @@ alphaClr_neg : Negative Learning rate for Color value learning
 weight : Weighting pratameter showing Relative contribution of Action Value Learning verus Color Value Learning
 beta : Sensitivity parameter
 It assumes Medication anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
-alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaAct_pos[2] two Conditions [Act, Clr]
+alphaAct_neg[2] two Conditions [Act, Clr]
 alphaClr_pos[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 alphaClr_neg[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
-weight_Act[2]   Action value learing in two medication effects
-weight_Clr Color value lerning 
+weight[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 beta[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 """
 
@@ -104,12 +103,11 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
-            'z_weight_Act': np.random.uniform(-1, 1, size=(nParts, nMeds)),
-            'z_weight_Clr': np.random.uniform(-1, 1, size=(nParts)),
+            'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
@@ -142,8 +140,7 @@ alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"]
 alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
 alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
 alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
-weight_Act = fit["transfer_hier_weight_mu_Act"]
-weight_Clr = fit["transfer_hier_weight_mu_Clr"].flatten() 
+weight = fit["transfer_hier_weight_mu"] 
 beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
@@ -152,14 +149,15 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight_Act[0], kde=True, stat='density', bins=100)
-sns.histplot(weight_Act[1], kde=True, stat='density', bins=100)
-sns.histplot(weight_Clr, kde=True, stat='density', bins=100)
+sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel('$w_{(A)}$', fontsize=14)
 plt.xlim(0, 1)
-plt.legend(['ON-Act', 'OFF-Act', 'Clr']) 
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
@@ -174,14 +172,12 @@ plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alphaAct_pos[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1], kde=True, stat='density', bins=100)
 plt.title('Positive Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
-plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 
 # Action Learning Rate
@@ -197,14 +193,12 @@ plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
-sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1], kde=True, stat='density', bins=100)
 plt.title('Negative Action Learning Rate', fontsize=12)
 plt.ylabel('Density', fontsize=12)
 plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
-plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 
 # Action Learning Rate

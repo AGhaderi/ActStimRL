@@ -7,12 +7,13 @@ alphaClr_neg : Negative Learning rate for Color value learning
 weight : Weighting pratameter showing Relative contribution of Action Value Learning verus Color Value Learning
 beta : Sensitivity parameter
 It assumes Medication anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
-alphaAct_pos[2] two Conditions [Act, Clr]
-alphaAct_pos[2] two Conditions [Act, Clr]
-alphaClr_pos[2] two Conditions [Act, Clr]
-alphaClr_neg[2] two Conditions [Act, Clr]
-weight[2] two Conditions [Act, Clr]
-beta[2]  two Conditions [Act, Clr]
+alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaAct_pos[2,2] two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaClr_pos[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+alphaClr_neg[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
+weight_Act[2]   Action value learing in two medication effects
+weight_Clr Color value lerning 
+beta[2,2]  two Medication effect (OFF vs ON), two Conditions [Act, Clr]
 """
 
 import numpy as np 
@@ -43,7 +44,7 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 
 # If you want to model fit or just recall ex model fit
-modelFit = False
+modelFit = True
 # Number of chains in MCMC procedure
 n_chains = 4
 # The number of iteration or samples for each chain in MCM procedure
@@ -103,12 +104,13 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_weight': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
+            'z_weight_Act': np.random.uniform(-1, 1, size=(nParts, nMeds)),
+            'z_weight_Clr': np.random.uniform(-1, 1, size=(nParts)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -140,7 +142,8 @@ alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"]
 alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
 alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
 alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
-weight = fit["transfer_hier_weight_mu"] 
+weight_Act = fit["transfer_hier_weight_mu_Act"]
+weight_Clr = fit["transfer_hier_weight_mu_Clr"].flatten() 
 beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
@@ -149,78 +152,74 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight[0], kde=True, stat='density', bins=100)
-sns.histplot(weight[1], kde=True, stat='density', bins=100)
-plt.title('Weighting parameter', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel('$w_{(A)}$', fontsize=18)
+sns.histplot(weight_Act[0], kde=True, stat='density', bins=100)
+sns.histplot(weight_Act[1], kde=True, stat='density', bins=100)
+sns.histplot(weight_Clr, kde=True, stat='density', bins=100)
+plt.title('Weighting parameter', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel('$w_{(A)}$', fontsize=14)
 plt.xlim(0, 1)
-plt.legend(['Act', 'Clr']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
+plt.legend(['ON-Act', 'OFF-Act', 'Clr']) 
 
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1], kde=True, stat='density', bins=100)
-plt.title('Sensitivity', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel(r'$\beta$', fontsize=18)
-plt.legend(['Act', 'Clr']) 
- 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
+sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+plt.title('Sensitivity', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$\beta$', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alphaAct_pos[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[1], kde=True, stat='density', bins=100)
-plt.title('Positive Action Learning Rate', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel(r'$ \alpha_{(A)} $', fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
+sns.histplot(alphaAct_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Action Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_pos[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1], kde=True, stat='density', bins=100)
-plt.title('Positive Color Learning Rate', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel(r'$ \alpha_{(C)} $', fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
-
+sns.histplot(alphaClr_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Color Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
-sns.histplot(alphaAct_neg[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1], kde=True, stat='density', bins=100)
-plt.title('Negative Action Learning Rate', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel(r'$ \alpha_{(A)} $', fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
+sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Action Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha_{(A)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 6)
-sns.histplot(alphaClr_neg[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[1], kde=True, stat='density', bins=100)
-plt.title('Negative Color Learning Rate', fontsize=18)
-plt.ylabel('Density', fontsize=18)
-plt.xlabel(r'$ \alpha_{(C)} $', fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
+sns.histplot(alphaClr_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Color Learning Rate', fontsize=12)
+plt.ylabel('Density', fontsize=12)
+plt.xlabel(r'$ \alpha_{(C)} $', fontsize=14)
+plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.png', dpi=500)
+fig.savefig(f'{mainScarch}/realdata/hier/{partcipant_group}/{model_name}.png', dpi=300)
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)
