@@ -22,7 +22,7 @@ parameters {
     array[nMeds_nSes, nConds] real hier_alphaAct_mu;    // Mean Hierarchical Learning rate for action Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_alphaClr_mu;    // Mean Hierarchical Learning rate for color Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_sensitivity_mu;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
-    array[nMeds_nSes, nConds] real<lower=0, upper=1>  hier_theta_mu;    // Mean Hierarchical snesitivity mixing proportions
+    array[nMeds_nSes, nConds] real hier_theta_mu;    // Mean Hierarchical snesitivity mixing proportions
 
     /* Hierarchical sd parameter*/                               
     real<lower=0> hier_alpha_sd;        // Between-participant variability Learning rate for Learning Value
@@ -33,7 +33,7 @@ parameters {
     array[nParts, nMeds_nSes, nConds] real z_alphaAct;   // Learning rate for Action Learning Value
     array[nParts, nMeds_nSes, nConds] real z_alphaClr;   // Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real z_sensitivity;             // With a higher sensitivity value θ, choices are more sensitive to value differences
-    array[nParts, nMeds_nSes, nConds] real <lower=0, upper=1> theta;  // mixing proportions
+    array[nParts, nMeds_nSes, nConds] real z_theta;  // mixing proportions
 }
 transformed parameters {
     /* probability of each features and their combination */
@@ -52,14 +52,17 @@ transformed parameters {
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaAct;   // Learning rate for Action Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaClr;   // Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0> transfer_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_theta;                // Mixture proportion
     
     /* Transfer Hierarchical parameters just for output*/
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaAct_mu;   // Hierarchical Learning rate for Action Learning Value
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_mu;   // Hierarchical Learning rate for Color Learning Value
     array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_theta_mu;         // Hierarchical smixture proportion
 
 	transfer_hier_alphaAct_mu = Phi(hier_alphaAct_mu);				// for the output
 	transfer_hier_alphaClr_mu = Phi(hier_alphaClr_mu);				 
+	transfer_hier_theta_mu = Phi(hier_theta_mu);				 
 	for (g in 1:nMeds_nSes){
         for (c in 1:nConds){
             transfer_hier_sensitivity_mu[g, c] = log(1 + exp(hier_sensitivity_mu[g, c]));
@@ -72,6 +75,7 @@ transformed parameters {
                 transfer_alphaAct[p, g, c] = Phi(hier_alphaAct_mu[g, c] + z_alphaAct[p, g, c]*hier_alpha_sd);
                 transfer_alphaClr[p, g, c] = Phi(hier_alphaClr_mu[g, c] + z_alphaClr[p, g, c]*hier_alpha_sd);
                 transfer_sensitivity[p, g, c] = log(1 + exp(hier_sensitivity_mu[g, c] + z_sensitivity[p,g, c]*hier_sensitivity_sd));
+                transfer_theta[p, g, c] = Phi(hier_theta_mu[g, c] + z_theta[p, g, c]*hier_theta_sd);
             }
         }
     }
@@ -123,14 +127,14 @@ model {
                 hier_alphaAct_mu[g,c] ~ normal(0,1);
                 hier_alphaClr_mu[g,c] ~ normal(0,1);
                 hier_sensitivity_mu[g,c] ~ normal(1,5); 
-                hier_theta_mu[g,c] ~ beta(1,1);  // Weak prior on global mixture proportions (flat Dirichlet) 
+                hier_theta_mu[g,c] ~ normal(0,1);  // Weak prior on global mixture proportions (flat Dirichlet) 
             }
         }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,.1) T[0,];  
-    hier_sensitivity_sd ~ normal(0,.1) T[0,];
-    hier_theta_sd ~ normal(0,.1) T[0,];
+    hier_alpha_sd ~ normal(0,.1);  
+    hier_sensitivity_sd ~ normal(0,.1);
+    hier_theta_sd ~ normal(0,.1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
@@ -139,7 +143,7 @@ model {
                 z_alphaAct[p, g, c] ~ normal(0,1);
                 z_alphaClr[p, g, c] ~ normal(0,1);
                 z_sensitivity[p, g, c] ~ normal(0,1); 
-                theta[g,c] ~ normal(hier_theta_mu[g, c], hier_theta_sd);  // Weak prior on global mixture proportions (flat Dirichlet) 
+                z_theta[p,g,c] ~ normal(0,1);  // Weak prior on global mixture proportions (flat Dirichlet) 
             }
         }
     }
@@ -148,8 +152,8 @@ model {
     for (i in 1:N) { 
         // Relative contribution of Action Value Learning verus Color Value Learning
         vector[2] lps;
-        lps[1] = log(theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(pushed[i] | 1, soft_max_Act[i]);  // first term of mixture 
-        lps[2] = log1m(theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(yellowChosen[i] | 1, soft_max_Stim[i]);  // second term of mixture
+        lps[1] = log(transfer_theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(pushed[i] | 1, soft_max_Act[i]);  // first term of mixture 
+        lps[2] = log1m(transfer_theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(yellowChosen[i] | 1, soft_max_Stim[i]);  // second term of mixture
         // target
         target += log_sum_exp(lps);
     }
@@ -168,9 +172,9 @@ generated quantities {
     for (i in 1:N) { 
         // Relative contribution of Action Value Learning verus Color Value Learning
         vector[2] lps;
-        lps[1] += log(theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(pushed[i] | 1, soft_max_Act[i]);  // first term of mixture 
-        lps[2] += log1m(theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(yellowChosen[i] | 1, soft_max_Stim[i]);  // second term of mixture
+        lps[1] += log(transfer_theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(pushed[i] | 1, soft_max_Act[i]);  // first term of mixture 
+        lps[2] += log1m(transfer_theta[participant[i], medication_session[i], condition[i]]) + binomial_lpmf(yellowChosen[i] | 1, soft_max_Stim[i]);  // second term of mixture
         // target
-        target += log_sum_exp(lps);
+        log_lik[i] = log_sum_exp(lps);
     }
 }

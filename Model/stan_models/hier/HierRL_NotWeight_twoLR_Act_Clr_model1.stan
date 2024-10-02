@@ -125,8 +125,8 @@ model {
         }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,.1) T[0,];  
-    hier_sensitivity_sd ~ normal(0,.1) T[0,];
+    hier_alpha_sd ~ normal(0,.1);  
+    hier_sensitivity_sd ~ normal(0,.1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
