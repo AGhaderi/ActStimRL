@@ -26,7 +26,7 @@ behAll['chosenHighWinAmt'] = chosenAmount>=50
 # gtoup label 1,2 3 are PD-OFF, HC and PF-ON respectively
 behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
 # gtoup label 1,2 3 are PD-OFF, HC and PF-ON respectively
-behAll['Condition'] = behAll['block'].replace(['Acyt', 'Stim'], ['Act', 'Clr'])
+behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Act', 'Clr'])
 
 """The same as the figure above but differnt action and color conditions.
 """
