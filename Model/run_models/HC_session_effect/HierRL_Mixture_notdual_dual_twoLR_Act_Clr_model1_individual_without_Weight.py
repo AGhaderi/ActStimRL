@@ -45,9 +45,9 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 4
+n_chains = 2
 # The number of iteration or samples for each chain in MCM procedure
-n_samples=4000
+n_samples=2000
 n_warmup = 1000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
@@ -144,11 +144,10 @@ alphaAct_pos1 = fit["transfer_hier_alphaAct_pos_mu1"]
 alphaAct_neg1 = fit["transfer_hier_alphaAct_neg_mu1"] 
 alphaClr_pos1 = fit["transfer_hier_alphaClr_pos_mu1"] 
 alphaClr_neg1 = fit["transfer_hier_alphaClr_neg_mu1"] 
-weight1 = fit["transfer_hier_weight_mu1"] 
+weight = fit["transfer_hier_weight_mu"] 
 beta1 = fit["transfer_hier_sensitivity_mu1"]
 alphaAct2 = fit["transfer_hier_alphaAct_mu2"] 
 alphaClr2 = fit["transfer_hier_alphaClr_mu2"] 
-weight2 = fit["transfer_hier_weight_mu2"] 
 beta2 = fit["transfer_hier_sensitivity_mu2"]
 
 # Figure of model fit results in two column and two rows
@@ -158,10 +157,10 @@ columns = 4
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
-sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
-sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
-sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
+sns.histplot(weight1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(weight1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(weight1[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
@@ -239,6 +238,10 @@ plt.xlim(0, 1)
 
 # Weghtening
 fig.add_subplot(rows, columns, 8)
+sns.histplot(weight2[0,0], kde=True, stat='density', bins=100)
+sns.histplot(weight2[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight2[1,0], kde=True, stat='density', bins=100)
+sns.histplot(weight2[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
