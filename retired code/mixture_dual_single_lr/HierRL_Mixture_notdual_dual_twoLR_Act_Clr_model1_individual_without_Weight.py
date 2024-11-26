@@ -43,9 +43,9 @@ subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'su
            'sub-090', 'sub-092', 'sub-108', 'sub-109']
 
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
 # Number of chains in MCMC procedure
-n_chains = 3
+n_chains = 2
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=2000
 n_warmup = 1000
@@ -112,7 +112,8 @@ if modelFit == True:
             'hier_alpha_sd2': .05,        
             'z_alphaAct2': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
             'z_alphaClr2': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'transfer_sensitivity': np.random.uniform(.1, .5, size=(nParts, nSes, nConds)),
+            'transfer_sensitivity1': np.random.uniform(.1, .5, size=(nParts, nSes, nConds)),
+            'transfer_sensitivity2': np.random.uniform(.1, .5, size=(nParts, nSes, nConds)),
             'soft_max_EV1': np.repeat(.5, behAll.shape[0]),
             'soft_max_EV2': np.repeat(.5, behAll.shape[0])
         }
@@ -144,9 +145,10 @@ alphaAct_neg1 = fit["transfer_hier_alphaAct_neg_mu1"]
 alphaClr_pos1 = fit["transfer_hier_alphaClr_pos_mu1"] 
 alphaClr_neg1 = fit["transfer_hier_alphaClr_neg_mu1"] 
 weight = fit["transfer_hier_weight_mu"] 
-beta = fit["transfer_hier_sensitivity_mu"]
+beta1 = fit["transfer_hier_sensitivity_mu1"]
 alphaAct2 = fit["transfer_hier_alphaAct_mu2"] 
 alphaClr2 = fit["transfer_hier_alphaClr_mu2"] 
+beta2 = fit["transfer_hier_sensitivity_mu2"]
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 12), tight_layout=True)
@@ -169,10 +171,10 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+sns.histplot(beta1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta1[1,1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
@@ -234,6 +236,18 @@ plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
+plt.xlim(0, 1)
+# Sensitivity
+fig.add_subplot(rows, columns, 9)
+sns.histplot(beta2[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta2[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta2[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta2[1,1], kde=True, stat='density', bins=100)
+plt.title('Sensitivity',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$\beta$',  fontsize=18)
+plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+ 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 10)
 sns.histplot(alphaAct2[0,0], kde=True, stat='density', bins=100)

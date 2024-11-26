@@ -24,12 +24,12 @@ parameters {
     array[nMeds_nSes, nConds] real hier_alphaClr_pos_mu1;   // Mean Hierarchical Positive Learning rate for color Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_alphaClr_neg_mu1;   // Mean Hierarchical Negative Learning rate for color Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_weight_mu;         // Mean Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
-    array[nMeds_nSes, nConds] real hier_sensitivity_mu;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nMeds_nSes, nConds] real hier_sensitivity_mu1;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
     /* Hierarchical sd parameter model1*/                               
     real<lower=0> hier_alpha_sd1;      // Between-participant variability Learning rate for Learning Value
     real<lower=0> hier_weight_sd;     // Between-participant variability Wieghtening of Action Learning Value against to Color Learnig Value
-    real<lower=0> hier_sensitivity_sd;   // Between-participant variability sensitivity
+    real<lower=0> hier_sensitivity_sd1;   // Between-participant variability sensitivity
 
     /* participant-level main paameter model1*/
     array[nParts, nMeds_nSes, nConds] real z_alphaAct_pos1;   // Positive Learning rate for Action Learning Value
@@ -37,18 +37,21 @@ parameters {
     array[nParts, nMeds_nSes, nConds] real z_alphaClr_pos1;   // Positive Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real z_alphaClr_neg1;   // Negative Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real z_weight;         // Wieghtening of Action Learning Value against to Learnig Value
-    array[nParts, nMeds_nSes, nConds] real z_sensitivity;    // With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nParts, nMeds_nSes, nConds] real z_sensitivity1;    // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     /* Hierarchical mu parameter model2*/                               
     array[nMeds_nSes, nConds] real hier_alphaAct_mu2;    // Mean Hierarchical Learning rate for action Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_alphaClr_mu2;    // Mean Hierarchical Learning rate for color Learning Value and medication_session effect
+    array[nMeds_nSes, nConds] real hier_sensitivity_mu2;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
     /* Hierarchical sd parameter model2*/                               
     real<lower=0> hier_alpha_sd2;      // Between-participant variability Learning rate for Learning Value
+    real<lower=0> hier_sensitivity_sd2;   // Between-participant variability sensitivity
 
     /* participant-level main paameter model2*/
     array[nParts, nMeds_nSes, nConds] real z_alphaAct2;   // Learning rate for Action Learning Value
     array[nParts, nMeds_nSes, nConds] real z_alphaClr2;   // Learning rate for Color Learning Value
+    array[nParts, nMeds_nSes, nConds] real z_sensitivity2;         // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     array[nParts] real<lower=0, upper=1> theta;          // mixing proportions
 }
@@ -89,7 +92,7 @@ transformed parameters {
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaClr_pos1;   // Positive Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaClr_neg1;   // Negative Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
-    array[nParts, nMeds_nSes, nConds] real<lower=0> transfer_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nParts, nMeds_nSes, nConds] real<lower=0> transfer_sensitivity1;         // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     /* Transfer Hierarchical parameters just for output for model1*/
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaAct_pos_mu1;   // Hierarchical Positive Learning rate for Action Learning Value
@@ -97,7 +100,7 @@ transformed parameters {
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_pos_mu1;   // Hierarchical Positive Learning rate for Color Learning Value
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_neg_mu1;   // Hierarchical Negative  Learning rate for Color Learning Value
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
-    array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu1;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
 	transfer_hier_alphaAct_pos_mu1 = Phi(hier_alphaAct_pos_mu1);				// for the output
 	transfer_hier_alphaAct_neg_mu1 = Phi(hier_alphaAct_neg_mu1);				 
@@ -106,7 +109,7 @@ transformed parameters {
     transfer_hier_weight_mu = Phi(hier_weight_mu);
 	for (g in 1:nMeds_nSes){
         for (c in 1:nConds){
-            transfer_hier_sensitivity_mu[g, c] = log(1 + exp(hier_sensitivity_mu[g, c]));
+            transfer_hier_sensitivity_mu1[g, c] = log(1 + exp(hier_sensitivity_mu1[g, c]));
         }
     }
 
@@ -118,7 +121,7 @@ transformed parameters {
                 transfer_alphaAct_neg1[p, g, c] = Phi(hier_alphaAct_neg_mu1[g, c] + z_alphaAct_neg1[p, g, c]*hier_alpha_sd1);
                 transfer_alphaClr_pos1[p, g, c] = Phi(hier_alphaClr_pos_mu1[g, c] + z_alphaClr_pos1[p, g, c]*hier_alpha_sd1);
                 transfer_alphaClr_neg1[p, g, c] = Phi(hier_alphaClr_neg_mu1[g, c] + z_alphaClr_neg1[p, g, c]*hier_alpha_sd1);
-                transfer_sensitivity[p, g, c] = log(1 + exp(hier_sensitivity_mu[g, c] + z_sensitivity[p,g, c]*hier_sensitivity_sd));
+                transfer_sensitivity1[p, g, c] = log(1 + exp(hier_sensitivity_mu1[g, c] + z_sensitivity1[p,g, c]*hier_sensitivity_sd1));
             }
         }
     }
@@ -127,19 +130,27 @@ transformed parameters {
   /* Transfer individual parameters for model 2*/
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaAct2;   // Learning rate for Action Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaClr2;   // Learning rate for Color Learning Value
+    array[nParts, nMeds_nSes, nConds] real<lower=0> transfer_sensitivity2;         // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     /* Transfer Hierarchical parameters just for output*/
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaAct_mu2;   // Hierarchical Learning rate for Action Learning Value
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_mu2;   // Hierarchical Learning rate for Color Learning Value
+    array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu2;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
 	transfer_hier_alphaAct_mu2 = Phi(hier_alphaAct_mu2);				// for the output
 	transfer_hier_alphaClr_mu2 = Phi(hier_alphaClr_mu2);				 
+	for (g in 1:nMeds_nSes){
+        for (c in 1:nConds){
+            transfer_hier_sensitivity_mu2[g, c] = log(1 + exp(hier_sensitivity_mu2[g, c]));
+        }
+    }
 
     for (p in 1:nParts) {
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
                 transfer_alphaAct2[p, g, c] = Phi(hier_alphaAct_mu2[g, c] + z_alphaAct2[p, g, c]*hier_alpha_sd2);
                 transfer_alphaClr2[p, g, c] = Phi(hier_alphaClr_mu2[g, c] + z_alphaClr2[p, g, c]*hier_alpha_sd2);
+                transfer_sensitivity2[p, g, c] = log(1 + exp(hier_sensitivity_mu2[g, c] + z_sensitivity2[p,g, c]*hier_sensitivity_sd2));
             }
         }
     }
@@ -168,11 +179,11 @@ transformed parameters {
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed/yellow coded and pulled/blue coded 1
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV1[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell1)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell1) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_blue1));
+            soft_max_EV1[i] = exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_push_yell1)/(exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_push_yell1) + exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_pull_blue1));
 
         //  pushed/blue coded 1 and pulled/yellow coded 0
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV1[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue1)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue1) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_yell1));  
+            soft_max_EV1[i] = exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_push_blue1)/(exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_push_blue1) + exp(transfer_sensitivity1[participant[i], medication_session[i], condition[i]]*EV_pull_yell1));  
           
         // change the probability of 1 to near to 1, to avoid further exception in Model block  
         if (soft_max_EV1[i] == 1){
@@ -249,11 +260,11 @@ transformed parameters {
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV2[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell2)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell2) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_blue2));
+            soft_max_EV2[i] = exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_push_yell2)/(exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_push_yell2) + exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_pull_blue2));
 
         // pushed and blue vs pulled and yellow
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV2[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue2)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue2) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_yell2));  
+            soft_max_EV2[i] = exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_push_blue2)/(exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_push_blue2) + exp(transfer_sensitivity2[participant[i], medication_session[i], condition[i]]*EV_pull_yell2));  
 
        // change the probability of 1 to near to 1, to avoid further exception in Model block  
         if (soft_max_EV2[i]==1){
@@ -288,14 +299,14 @@ model {
             hier_alphaAct_neg_mu1[g,c] ~ normal(0,1);
             hier_alphaClr_pos_mu1[g,c] ~ normal(0,1);
             hier_alphaClr_neg_mu1[g,c] ~ normal(0,1);
-            hier_sensitivity_mu[g,c] ~ normal(1,5);
+            hier_sensitivity_mu1[g,c] ~ normal(1,5);
         }
     }
 
     /* Hierarchical sd parameter foe model 1*/
     hier_alpha_sd1 ~ normal(0,1);  
     hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_sensitivity_sd1 ~ normal(0,1);
 
     /* participant-level main paameter for model 1*/
     for (p in 1:nParts) {
@@ -306,7 +317,7 @@ model {
                 z_alphaAct_neg1[p, g, c] ~ normal(0,1);
                 z_alphaClr_pos1[p, g, c] ~ normal(0,1);
                 z_alphaClr_neg1[p, g, c] ~ normal(0,1);
-                z_sensitivity[p, g, c] ~ normal(0,1); 
+                z_sensitivity1[p, g, c] ~ normal(0,1); 
             }
         }
     }
@@ -316,11 +327,13 @@ model {
         for (c in 1:nConds){
             hier_alphaAct_mu2[g,c] ~ normal(0,1);
             hier_alphaClr_mu2[g,c] ~ normal(0,1);
+            hier_sensitivity_mu2[g,c] ~ normal(1,5); 
         }
     }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd2 ~ normal(0, 1);  
+    hier_alpha_sd2 ~ normal(0,.1);  
+    hier_sensitivity_sd2 ~ normal(0,.1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
@@ -328,6 +341,7 @@ model {
             for (c in 1:nConds){
                 z_alphaAct2[p, g, c] ~ normal(0,1);
                 z_alphaClr2[p, g, c] ~ normal(0,1);
+                z_sensitivity2[p, g, c] ~ normal(0,1); 
             }
         }
     }
