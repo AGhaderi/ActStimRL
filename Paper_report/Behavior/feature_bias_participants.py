@@ -66,7 +66,7 @@ sns.stripplot(
 )
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Left response', fontsize='12')
+plt.ylabel('Left reponse', fontsize='12')
 plt.axhline(.5, color='black' , linestyle='--')  
 plt.ylim(0, 1)
 
@@ -89,7 +89,7 @@ sns.stripplot(
 
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Chosen higher amount', fontsize='12')
+plt.ylabel('Higher amount', fontsize='12')
 plt.axhline(.5, color='black' , linestyle='--')
 #plt.text(x=0, y=1, s='***')
 #plt.text(x=1, y=1, s='***')
@@ -114,7 +114,7 @@ sns.stripplot(
 
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Pushed', fontsize='12')
+plt.ylabel('Push reponse', fontsize='12')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, 1)
 
@@ -136,7 +136,7 @@ sns.stripplot(
 )
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Chosen yellow', fontsize='12')
+plt.ylabel('Yellow reponse', fontsize='12')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, 1)
 
@@ -144,7 +144,7 @@ fig.supxlabel('Group label')
 fig.suptitle('Probability of chosing each feature across group and condition', fontsize='12')
 
 # save figure
-plt.savefig('Figures/feature_bias_participants.png', dpi=300)
+plt.savefig('../Figures/feature_bias_participants.png', dpi=300)
 
 
 plt.close()

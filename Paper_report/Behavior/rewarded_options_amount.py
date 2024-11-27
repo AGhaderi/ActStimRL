@@ -50,7 +50,7 @@ plt.setp(gfg.get_legend().get_texts(), fontsize='8')
 plt.setp(gfg.get_legend().get_title(), fontsize='8')  
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Rewarded left', fontsize='10')
+plt.ylabel('Correct left', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
 
@@ -71,7 +71,7 @@ sns.stripplot(
 
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Rewarded push', fontsize='10')
+plt.ylabel('Correct push', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
  
@@ -94,7 +94,7 @@ sns.stripplot(
 #plt.text(x=2, y=.51, s='*')
 plt.title('')
 plt.xlabel('')
-plt.ylabel('Rewarded yellow', fontsize='10')
+plt.ylabel('Correct yellow', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
 
@@ -140,7 +140,7 @@ sns.stripplot(
 
 plt.title('')
 plt.xlabel('', fontsize='10')
-plt.ylabel('Chosen left', fontsize='10')
+plt.ylabel('Left reponse', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
 
@@ -160,7 +160,7 @@ sns.stripplot(
 )
 plt.title('')
 plt.xlabel('', fontsize='10')
-plt.ylabel('Chosen push', fontsize='10')
+plt.ylabel('Push reponse', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
  
@@ -180,7 +180,7 @@ sns.stripplot(
 )
 plt.title('')
 plt.xlabel('', fontsize='10')
-plt.ylabel('Chosen yellow', fontsize='10')
+plt.ylabel('Yellow reponse', fontsize='10')
 plt.axhline(.5, color='black' , linestyle='--')
 plt.ylim(0, .9)
 
@@ -189,5 +189,5 @@ fig.supxlabel('Group label')
 fig.suptitle('Exsisting bias for each feature across group and condition', fontsize='12')
 
 # save figure
-plt.savefig('Figures/rewarded_options_bias_task.png', dpi=300)
+plt.savefig('../Figures/rewarded_options_bias_task.png', dpi=300)
 plt.show()
