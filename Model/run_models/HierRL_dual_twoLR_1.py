@@ -14,7 +14,6 @@ alphaClr_neg[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
 weight[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
 beta[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
 """
-
 import numpy as np 
 import pandas as pd
 import stan
@@ -61,8 +60,14 @@ behAll = behAll[behAll['patient']==partcipant_group]
 #for sub in withdraw_subs:
 #    behAll = behAll[behAll['sub_ID']!=sub] 
 
+#  set the session or medication effect
+if partcipant_group=='HC':
+    medication_session = np.array(behAll.session).astype(int)
+else:
+    medication_session = np.array(behAll.medication).astype(int)
+
 # Number of session 1 and 2
-nSes = 2
+nMeds_nSes = 2
 # Number of conditions (Action vs Color)
 nConds = 2
 # Condition label 1: Act, label 2: Stim
@@ -89,9 +94,9 @@ if modelFit == True:
                 'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),  
-                'nMeds_nSes':nSes,
+                'nMeds_nSes':nMeds_nSes,
                 'nConds':nConds,
-                'medication_session':np.array(behAll.session).astype(int),
+                'medication_session':medication_session,
                 'condition':np.array(behAll.block).astype(int),
                 'p_push_init':.5, 
                 'p_yell_init':.5}
@@ -99,12 +104,12 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_weight': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -152,7 +157,11 @@ sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 
@@ -166,7 +175,10 @@ sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
@@ -177,7 +189,10 @@ sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
@@ -191,7 +206,10 @@ sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
@@ -205,7 +223,10 @@ sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
@@ -219,7 +240,10 @@ sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if medication_session=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
