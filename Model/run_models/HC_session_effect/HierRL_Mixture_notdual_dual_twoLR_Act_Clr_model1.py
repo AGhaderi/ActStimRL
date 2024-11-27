@@ -33,18 +33,26 @@ filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
 model_name = os.path.splitext(filename)[0]
  
+# List of subjects
+subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
+           'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
+           'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 
+           'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 
+           'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
+           'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
+           'sub-090', 'sub-092', 'sub-108', 'sub-109']
+
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
 # Number of chains in MCMC procedure
-n_chains = 4
+n_chains = 3
 # The number of iteration or samples for each chain in MCM procedure
-n_samples=4000
+n_samples=2000
+n_warmup = 1000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # read collected data across all participants
 behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
-# list of subjects
-subList = behAll['sub_ID'].unique()
 
 # set of indicator to the first trial of each participant
 for sub in subList:
@@ -56,10 +64,6 @@ for sub in subList:
 
 # select PD group
 behAll = behAll[behAll['patient']==partcipant_group]
-# withdraw some outlier
-#withdraw_subs = ['sub-030','sub-034','sub-067','sub-069','sub-076','sub-077','sub-083']
-#for sub in withdraw_subs:
-#    behAll = behAll[behAll['sub_ID']!=sub] 
 
 # Number of session 1 and 2
 nSes = 2
@@ -96,20 +100,23 @@ if modelFit == True:
                 'p_push_init':.5, 
                 'p_yell_init':.5}
     # initial sampling
-    initials = [] 
-    for c in range(0, n_chains):
-        chaininit = {
-            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+
+    generate_initials= {
+            'hier_alpha_sd1': .05,        
+            'hier_weight_sd': .05,
+            'z_alphaAct_pos1': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaAct_neg1': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaClr_pos1': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaClr_neg1': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_weight_sd': np.random.uniform(.01, .1),
-            'hier_sensitivity_sd': np.random.uniform(.01, .1),
+            'hier_alpha_sd2': .05,        
+            'z_alphaAct2': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaClr2': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'transfer_sensitivity': np.random.uniform(.1, .5, size=(nParts, nSes, nConds)),
+            'soft_max_EV1': np.repeat(.5, behAll.shape[0]),
+            'soft_max_EV2': np.repeat(.5, behAll.shape[0])
         }
-        initials.append(chaininit)   
+    initials = [generate_initials for _ in range(n_chains)]
 
     # Loading the RL Stan Model
     file_name = f'/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/{model_name}.stan' 
@@ -120,7 +127,7 @@ if modelFit == True:
     # Building Stan Model realted to our proposed model
     posterior = stan.build(stan_model, data = dataStan)
     # Start for taking samples from parameters in the Stan Model
-    fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
+    fit = posterior.sample(num_chains=n_chains, num_warmup=n_warmup, num_samples=n_samples, init=initials)
     # Save Model Fit
     if not os.path.isdir(f'{mainScarch}/realdata/{partcipant_group}/'):
             os.makedirs(f'{mainScarch}/realdata/{partcipant_group}/') 
@@ -132,16 +139,19 @@ else:
     fit = loadPkl['fit']
 
 # Extracting posterior distributions for each of four main unkhown parameters
-alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"] 
-alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
-alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
-alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
+alphaAct_pos1 = fit["transfer_hier_alphaAct_pos_mu1"] 
+alphaAct_neg1 = fit["transfer_hier_alphaAct_neg_mu1"] 
+alphaClr_pos1 = fit["transfer_hier_alphaClr_pos_mu1"] 
+alphaClr_neg1 = fit["transfer_hier_alphaClr_neg_mu1"] 
 weight = fit["transfer_hier_weight_mu"] 
 beta = fit["transfer_hier_sensitivity_mu"]
+alphaAct2 = fit["transfer_hier_alphaAct_mu2"] 
+alphaClr2 = fit["transfer_hier_alphaClr_mu2"] 
+theta = fit["transfer_hier_theta_mu"].flatten()
 # Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(20, 8), tight_layout=True)
+fig = plt.figure(figsize=(20, 12), tight_layout=True)
 rows = 3
-columns = 2
+columns = 4
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
@@ -170,10 +180,10 @@ plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr'])
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alphaAct_pos[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos1[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
@@ -184,10 +194,10 @@ plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_pos[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos1[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
@@ -198,10 +208,10 @@ plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
-sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg1[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
@@ -212,11 +222,49 @@ plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 6)
-sns.histplot(alphaClr_neg[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg1[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg1[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg1[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg1[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Color Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
+plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 7)
+sns.histplot(theta, kde=True, stat='density', bins=100)
+plt.title('Mixture parameter',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 8)
+sns.histplot(alphaAct2[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct2[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct2[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct2[1,1], kde=True, stat='density', bins=100)
+plt.title('Action Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
+plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+ 
+# Action Learning Rate
+fig.add_subplot(rows, columns, 9)
+sns.histplot(alphaClr2[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr2[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr2[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr2[1,1], kde=True, stat='density', bins=100)
+plt.title('Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
 plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
@@ -226,9 +274,4 @@ plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
 fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
-
-# Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-rows = 2
-columns = 2
- 
+  
