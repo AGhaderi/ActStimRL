@@ -6,6 +6,9 @@ from scipy.io import loadmat
 Reversal points denoted by 14 representing change of environemnt after each 14 trials, so there are two reversal points for 42 trials , 
 and 21 representing change of the environemnt for each 21 trials, so there is one  reversal point for 42 trials. Then I collected all sesseions and runs 
 files into on csv file.
+group label 1: PD OFF
+group label 2: HC
+group label 3: PD ON
 """
 # List of subjects
 subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
@@ -109,8 +112,6 @@ temp = dataAll['pushed'].to_numpy().astype(int)
 dataAllClear = dataAll[temp>=0]
 # Save all cleaned data from participants 
 dataAllClear.to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv', index=False)
-dataAllClear[dataAllClear['block']=='Act'].to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll_act.csv', index=False)
-dataAllClear[dataAllClear['block']=='Stim'].to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll_stim.csv', index=False)
 
 # Save all raw data from participants 
 dataAll.to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/rawBehAll.csv', index=False)

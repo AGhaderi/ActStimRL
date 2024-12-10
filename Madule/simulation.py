@@ -1,171 +1,127 @@
-"""simulation for RL_condition.stan code"""
+"""all arguments have 2*2 array dimension"""
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.io import loadmat
 import os
+from scipy import stats
+import sys
+sys.path.append('..')
+from Madule import plots
 
-def set_true_all_parts(alphaAct_mu_arg, alphaAct_sd_arg,
-                    alphaClr_mu_arg, alphaClr_sd_arg,
-                    weightAct_mu_arg, weightAct_sd_arg,
-                    beta_mu_arg, beta_sd_arg, simNumber_arg = 1):
+def generating_hier_grand_truth(hier_weight_mu, hier_alphaAct_pos_mu, hier_alphaAct_neg_mu,
+                                hier_alphaClr_pos_mu, hier_alphaClr_neg_mu, hier_sensitivity_mu,
+                                hier_alpha_sd, hier_weight_sd,  hier_sensitivity_sd,
+                                simNumber):
     """generate and put individual and heirarchical true parameters into task desgin for each participant"""
-    
-    # List of subjects
-    subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
-               'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
-               'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 
-               'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 
-               'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
-               'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
-               'sub-090', 'sub-092', 'sub-108', 'sub-109']
     try:
         # read collected data across data
-        rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/rawBehAll.csv')
-        rawBehAll = rawBehAll.rename(columns={'leftCanBePushed                ': 'leftCanBePushed'})
+        rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/AllBehData/rawBehAll.csv')
+        # list of subjects
+        subList = rawBehAll['sub_ID'].unique()
         # Set true parameters for each session and conditions realted to unkown parameters
         for subName in subList:
             # Get the partisipant's task design from the original behavioral dataset 'originalfMRIbehFiles'
+            rawBehAll = rawBehAll.rename(columns={'leftCanBePushed                ': 'leftCanBePushed'})
             task_design = rawBehAll[rawBehAll['sub_ID']==subName]
             # choose some relevant columns
             task_design = task_design[['session', 'run', 'stimActFirst', 'block', 'stimActBlock', 'trialNumber', 'yellowOnLeftSide', 'leftCanBePushed', 'winAmtLeft', 'winAmtRight', 'winAmtYellow', 'winAmtBlue', 'winAmtPushable', 'winAmtPullable', 'yellowCorrect', 'pushCorrect', 'reverse', 'group', 'patient']]
-            # Put true parameters into the task design and then return it
-            task_desin_parameters = set_true_part(task_design, alphaAct_mu_arg, alphaAct_sd_arg,
-                                                  alphaClr_mu_arg, alphaClr_sd_arg,
-                                                  weightAct_mu_arg, weightAct_sd_arg,
-                                                  beta_mu_arg, beta_sd_arg)
+            # generate new samples from hierarhcial parameters
+            transfer_weight = stats.norm.cdf(np.random.normal(hier_weight_mu,hier_weight_sd))
+            transfer_alphaAct_pos = stats.norm.cdf(np.random.normal(hier_alphaAct_pos_mu,hier_alpha_sd))
+            transfer_alphaAct_neg = stats.norm.cdf(np.random.normal(hier_alphaAct_neg_mu,hier_alpha_sd))
+            transfer_alphaClr_pos = stats.norm.cdf(np.random.normal(hier_alphaClr_pos_mu,hier_alpha_sd))
+            transfer_alphaClr_neg = stats.norm.cdf(np.random.normal(hier_alphaClr_neg_mu,hier_alpha_sd))
+            transfer_sensitivity = np.log(1 + np.exp(np.random.normal(hier_sensitivity_mu,hier_sensitivity_sd)))
+            # Put true parameters into the task design, define new columns of grand truth parameters within predefined task design 
+            task_design[['transfer_alphaAct_pos', 'transfer_alphaAct_neg', 'transfer_alphaClr_pos', 'transfer_alphaClr_neg', 'transfer_weight', 'transfer_sensitivity']] = ""  
+            # Put generated true parameters within the predefined task design dataframe
+            for session in range(2): # session:
+                for condition, block in enumerate(['Act', 'Stim']):
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaAct_pos'] = transfer_alphaAct_pos[session, condition]
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaAct_neg'] = transfer_alphaAct_neg[session, condition]
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaClr_pos'] = transfer_alphaClr_pos[session, condition]
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaClr_neg'] = transfer_alphaClr_neg[session, condition]
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_weight'] = transfer_weight[session, condition]
+                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_sensitivity'] = transfer_sensitivity[session, condition]
             # Directory of simulated data
-            parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/simulation/'
+            parent_dir = '/mnt/scratch/projects/7TPD/amin/simulation'
             # Check existing directory of subject name forlder and simulation number
-            if not os.path.isdir(parent_dir + str(simNumber_arg)):
-                os.mkdir(parent_dir + str(simNumber_arg)) 
-            if not os.path.isdir(parent_dir + str(simNumber_arg) + '/' + subName):
-                os.mkdir(parent_dir + str(simNumber_arg) + '/' + subName)
+            if not os.path.isdir(f'{parent_dir}/{str(simNumber)}'):
+                os.makedirs(f'{parent_dir}/{str(simNumber)}') 
+            if not os.path.isdir(f'{parent_dir}/{str(simNumber)}/{subName}'):
+                os.makedirs(f'{parent_dir}/{str(simNumber)}/{subName}')
             # Save task design plus true parameters for each participant
-            task_desin_parameters.to_csv(parent_dir + str(simNumber_arg) + '/' + subName + '/' +subName +'-task-design-true-param.csv', index=False)
-        # Save Hierarchical true parameters
-        dicHierMeanStdParam= ({'label':['Session 1 - Act', 'session 1- Stim', 'Session 2 - Act', 'session 2- Stim'],
-                               'hierAlphaAct_mu':alphaAct_mu_arg.flatten(),
-                               'hierAlphaAct_sd': np.repeat(alphaAct_sd_arg, 4),
-                               'hierAlphaClr_mu': alphaClr_mu_arg.flatten(),
-                               'hierAlphaClr_sd': np.repeat(alphaClr_sd_arg, 4),
-                               'hierWeightAct_mu': weightAct_mu_arg.flatten(),
-                               'hierWeightAct_sd': np.repeat(weightAct_sd_arg, 4),
-                               'hierBeta_mu': beta_mu_arg.flatten(),
-                               'hierBeta_sd': np.repeat(beta_sd_arg, 4)})
-        dataHierMeanStdParam = pd.DataFrame(dicHierMeanStdParam)
+            task_design.to_csv(f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-task-design-true-param.csv', index=False)
+       
+        # datafram of hierarchical true parameters
+        dataHierMeanStdParam = pd.DataFrame(({'label':['Session 1 - Act', 'session 1- Stim', 'Session 2 - Act', 'session 2- Stim'],
+                                              'hier_alphaAct_pos_mu':hier_alphaAct_pos_mu.flatten(),
+                                              'hier_alphaAct_neg_mu': hier_alphaAct_neg_mu.flatten(),
+                                              'hier_alphaClr_pos_mu': hier_alphaClr_pos_mu.flatten(),
+                                              'hier_alphaClr_neg_mu': hier_alphaClr_neg_mu.flatten(),
+                                              'hier_weight_mu': hier_weight_mu.flatten(),
+                                              'hier_sensitivity_mu': hier_sensitivity_mu.flatten(),
+                                              'hier_alpha_sd': np.repeat(hier_alpha_sd, 4),
+                                              'hier_weight_sd': np.repeat(hier_weight_sd, 4),
+                                              'hier_sensitivity_sd':np.repeat(hier_sensitivity_sd,4)}))
     
         # Save true parameters for hierarchical participant
-        dataHierMeanStdParam.to_csv(parent_dir + str(simNumber_arg) + '/hier-Mean-Std-True-Param.csv', index=False)
+        dataHierMeanStdParam.to_csv(f'{parent_dir}/{str(simNumber)}/hier-true-param.csv', index=False)
         return print("All true parameters for each participant have been generated and saved successfully!")
     except Exception as e:
-        return print("An exception accured within trueParamAllParts function: " + str(e))
- 
-def set_true_part(task_design,
-                  alphaAct_mu, alphaAct_sd,
-                  alphaClr_mu, alphaClr_sd,
-                  weightAct_mu, weightAct_sd,
-                  beta_mu, beta_sd): 
-    """Set true parameters in each condition and session independently.
-    Take random sample for each unkhown parameters from a truncated normal distribution
-    True parameters are generated for each condition and session independently"""
-    
-    # Define new columns of grand truth parameters within predefined task design 
-    task_design[['alphaAct', 'alphaClr', 'weightAct', 'beta']] = ""  
-    # Set number of sessions and conditions, and name of conditions 
-    nsess = 2
-    for s in range(nsess):
-        for c, condition in enumerate(['Act', 'Stim']):
-            # Sensitivity parameter chnages across session but not condition
-            while (True):
-                beta = np.round(np.random.normal(beta_mu[s,c], beta_sd), 5)
-                if beta >= 0 and beta <.2:
-                    break
-                # Learning rate parameter of Action Value chnages across session and condition
-            while (True):
-                alphaAct = np.round(np.random.normal(alphaAct_mu[s,c], alphaAct_sd), 2)
-                if alphaAct >= 0 and alphaAct <= 1:
-                    break  
-            # Learning rate parameter of Color Value chnages across session and condition
-            while (True):
-                alphaClr = np.round(np.random.normal(alphaClr_mu[s,c], alphaClr_sd), 2)
-                if alphaClr >= 0 and alphaClr <= 1:
-                    break
-            if condition == 'Act':
-                # Relative Contribution parameter chnages across session and condition
-                while (True):
-                    weightAct = np.round(np.random.normal(weightAct_mu[s,c], weightAct_sd), 2)
-                    if weightAct >= .6 and weightAct <= 1:
-                        break
-            elif condition == 'Stim':
-                # Relative Contribution parameter chnages across session and condition
-                while (True):
-                    weightAct = np.round(np.random.normal(weightAct_mu[s,c], weightAct_sd), 2)
-                    if weightAct >= 0 and weightAct <= .4:
-                        break
+        return print("An exception accured within generating_hier_grand_truth function: " + str(e))
 
-            # Put generated true parameters of alphaAct, alphaClr and weight Act within the predefined task design dataframe
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'alphaAct'] = alphaAct
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'alphaClr'] = alphaClr
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'weightAct'] = weightAct
-            task_design.loc[(task_design['session'] == s+1)& (task_design['block'] == condition), 'beta'] = beta
-    return task_design  
-
-def simulate_data_true_params(simNumber = 1):
+def simulate_hier_rl(simNumber):
     """Simulated data for each participatn based on predefined True Parameters"""
-    # List of subjects
-    subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
-               'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
-               'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 
-               'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 
-               'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
-               'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
-               'sub-090', 'sub-092', 'sub-108', 'sub-109']
-    try:
-        # Simulation for participant
-        for subName in subList:
-            parent_dir  = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/simulation/' + str(simNumber) + '/' + subName + '/' 
-            # Read predefined task design with true parameters
-            task_design_param = pd.read_csv(parent_dir + subName +'-task-design-true-param.csv')
-            # simulate data
-            simulated_data = simulateActClr(task_design_param)
-            simulated_data.to_csv(parent_dir + subName +'-simulated-task-design-true-param.csv', index=False)
-            
-        return print("All simulations have been done successfully!")
+    # read opbervation to take out the participnats
+    rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/AllBehData/rawBehAll.csv')
+    # list of subjects
+    subList = rawBehAll['sub_ID'].unique()
+    # Directory of simulated data
+    parent_dir  = '/mnt/scratch/projects/7TPD/amin/simulation'
+
+    # Simulation for participant
+    for subName in subList:
+        # Read predefined task design with true parameters
+        task_design = pd.read_csv(f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-task-design-true-param.csv')
+        # simulate data
+        simulated_data = simulate_rl(task_design)
+        simulated_data.to_csv(f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-sim-task-design-true-param.csv', index=False)
     
-    except Exception as e:
-        return print("An exception accured: " + str(e))
-  
-def simulateActClr(task_design_param):
+    return print("All simulations have been done successfully!")
+    
+def simulate_rl(task_design):
     """Simulated data from the predefined true parameters in dataframe task_design_param"""
     for session in [1, 2]: # session
         for reverse in [21, 14]: # two distinct environemnt
             for condition in ['Act', 'Stim']: # condition
                 # get some relevant part data
-                task_design_param_split = task_design_param[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse)]  
+                task_design_param_split = task_design[(task_design['block']==condition)&(task_design['session']==session)&(task_design['reverse']==reverse)]  
 
                 # Predefined conditions for each trial
                 block = task_design_param_split.block.to_numpy()
                 
                 # Predefined Winning amout of reward for Action and Color options
-                winAmtPushable = task_design_param_split.winAmtPushable.to_numpy()
-                winAmtPullable = task_design_param_split.winAmtPullable.to_numpy()
-                winAmtYellow = task_design_param_split.winAmtYellow.to_numpy()
-                winAmtBlue = task_design_param_split.winAmtBlue.to_numpy()  
+                winAmtPushable = task_design_param_split['winAmtPushable'].to_numpy()
+                winAmtPullable = task_design_param_split['winAmtPullable'].to_numpy()
+                winAmtYellow = task_design_param_split['winAmtYellow'].to_numpy()
+                winAmtBlue = task_design_param_split['winAmtBlue'].to_numpy()  
                 
                 # Predefined options on left and right side
-                leftCanBePushed = task_design_param_split.leftCanBePushed.to_numpy()
-                yellowOnLeftSide = task_design_param_split.yellowOnLeftSide.to_numpy()
+                leftCanBePushed = task_design_param_split['leftCanBePushed'].to_numpy()
+                yellowOnLeftSide = task_design_param_split['yellowOnLeftSide'].to_numpy()
                 
                 # Predefined Correct responces for Action and color options
-                pushCorrect = task_design_param_split.pushCorrect.to_numpy()
-                yellowCorrect = task_design_param_split.yellowCorrect.to_numpy()
+                pushCorrect = task_design_param_split['pushCorrect'].to_numpy()
+                yellowCorrect = task_design_param_split['yellowCorrect'].to_numpy()
                 
                 # Predefined Ground truth Parameters
-                alphaAct = task_design_param_split.alphaAct.to_numpy()
-                alphaClr = task_design_param_split.alphaClr.to_numpy()
-                weightAct = task_design_param_split.weightAct.to_numpy()
-                beta = task_design_param_split.beta.to_numpy()
+                transfer_alphaAct_pos = task_design_param_split['transfer_alphaAct_pos'].to_numpy()
+                transfer_alphaAct_neg = task_design_param_split['transfer_alphaAct_neg'].to_numpy()
+                transfer_alphaClr_pos = task_design_param_split['transfer_alphaClr_pos'].to_numpy()
+                transfer_alphaClr_neg = task_design_param_split['transfer_alphaClr_neg'].to_numpy()
+                transfer_weight = task_design_param_split['transfer_weight'].to_numpy()
+                transfer_sensitivity = task_design_param_split['transfer_sensitivity'].to_numpy()
+
                 
                 # Predefined Number of trials
                 n_trials = task_design_param_split.shape[0]
@@ -176,31 +132,31 @@ def simulateActClr(task_design_param):
                 yellowChosen = np.zeros(n_trials).astype(int)
 
                 # Initial reward probability
-                probPush = .5
-                probPull = .5
-                probYell = .5
-                probBlue = .5
-
+                p_push = .5
+                p_pull = .5
+                p_yell = .5
+                p_blue = .5
+                    
                 # Loop over trials
                 for i in range(n_trials):
                     
                     # Compute the Standard Expected Value of each seperated option 
-                    expValuePush = probPush*winAmtPushable[i]
-                    expValuePull = probPull*winAmtPullable[i]
-                    expValueYell = probYell*winAmtYellow[i]
-                    expValueBlue = probBlue*winAmtBlue[i]
+                    EV_push = p_push*winAmtPushable[i]
+                    EV_pull = p_pull*winAmtPullable[i]
+                    EV_yell = p_yell*winAmtYellow[i]
+                    EV_blue = p_blue*winAmtBlue[i]
 
                     # Relative contribution of Action Value LeexpValuePusharning verus Color Value Learning by combining the expected values of option
-                    expValuePushYell = weightAct[i]*expValuePush + (1 - weightAct[i])*expValueYell;
-                    expValuePushBlue = weightAct[i]*expValuePush + (1 - weightAct[i])*expValueBlue;
-                    expValuePullYell = weightAct[i]*expValuePull + (1 - weightAct[i])*expValueYell;
-                    expValuePullBlue = weightAct[i]*expValuePull + (1 - weightAct[i])*expValueBlue;
+                    EV_push_yell = transfer_weight[i]*EV_push + (1 - transfer_weight[i])*EV_yell;
+                    EV_push_blue = transfer_weight[i]*EV_push + (1 - transfer_weight[i])*EV_blue;
+                    EV_pull_yell = transfer_weight[i]*EV_pull + (1 - transfer_weight[i])*EV_yell;
+                    EV_pull_blue = transfer_weight[i]*EV_pull + (1 - transfer_weight[i])*EV_blue;
 
                     # Calculating the soft-max function based on (pushed and yellow) vs (pulled and blue) 
                     if (leftCanBePushed[i] == 1 and yellowOnLeftSide[i] == 1) or (leftCanBePushed[i] == 0 and yellowOnLeftSide[i] == 0):
                         # Applying soft-max function 
-                        nom = np.exp(beta[i]*expValuePushYell)
-                        denom = nom + np.exp(beta[i]*expValuePullBlue)
+                        nom = np.exp(transfer_sensitivity[i]*EV_push_yell)
+                        denom = nom + np.exp(transfer_sensitivity[i]*EV_pull_blue)
                         theta = nom/denom
                         # Make a binary choice response by bernouli 
                         y = np.random.binomial(1, p=theta, size=1) 
@@ -214,8 +170,8 @@ def simulateActClr(task_design_param):
                     # Calculating the soft-max function based on (pushed and blue) vs (pulled and yellow) 
                     elif (leftCanBePushed[i] == 1 and yellowOnLeftSide[i] == 0) or (leftCanBePushed[i] == 0 and yellowOnLeftSide[i] == 1):
                         # Applying soft-max function 
-                        nom = np.exp(beta[i]*expValuePushBlue)
-                        denom = nom + np.exp(beta[i]*expValuePullYell)
+                        nom = np.exp(transfer_sensitivity[i]*EV_push_blue)
+                        denom = nom + np.exp(transfer_sensitivity[i]*EV_pull_yell)
                         theta = nom/denom
                         # Make a binary choice response by bernouli 
                         y = np.random.binomial(1, p=theta, size=1)
@@ -235,22 +191,106 @@ def simulateActClr(task_design_param):
                         
                     # Rl rule update over Action Learning Values for the next trial
                     if pushed[i] == 1:
-                        probPush = probPush + alphaAct[i]*(correctChoice[i] - probPush)
-                        probPull = 1 - probPush           
+                        if correctChoice[i]:
+                            p_push = p_push + transfer_alphaAct_pos[i]*(correctChoice[i] - p_push)
+                        else:
+                            p_push = p_push + transfer_alphaAct_neg[i]*(correctChoice[i] - p_push)
                     elif pushed[i] == 0:
-                        probPull = probPull + alphaAct[i]*(correctChoice[i] - probPull)
-                        probPush = 1 - probPull                      
+                        if correctChoice[i]>0:
+                            p_pull = p_pull + transfer_alphaAct_pos[i]*(correctChoice[i] - p_pull)
+                        else:
+                            p_pull = p_pull + transfer_alphaAct_neg[i]*(correctChoice[i] - p_pull)
+
                     # Rl rule update Color Action Learning values for the next trial
                     if yellowChosen[i] == 1:
-                        probYell = probYell + alphaClr[i]*(correctChoice[i] - probYell)
-                        probBlue = 1 - probYell
+                        if correctChoice[i]>0:
+                            p_yell = p_yell + transfer_alphaClr_pos[i]*(correctChoice[i] - p_yell)
+                        else:
+                            p_yell = p_yell + transfer_alphaClr_neg[i]*(correctChoice[i] - p_yell)
                     elif yellowChosen[i] == 0:
-                        probBlue = probBlue + alphaClr[i]*(correctChoice[i] - probBlue)
-                        probYell = 1 - probBlue  
+                        if correctChoice[i]>0:
+                            p_blue = p_blue + transfer_alphaClr_pos[i]*(correctChoice[i] - p_blue)
+                        else:
+                            p_blue = p_blue + transfer_alphaClr_neg[i]*(correctChoice[i] - p_blue)
 
                 # output results
-                task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'correctChoice'] = correctChoice  
-                task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'pushed'] = pushed  
-                task_design_param.loc[(task_design_param['block']==condition)&(task_design_param['session']==session)&(task_design_param['reverse']==reverse), 'yellowChosen'] = yellowChosen  
+                task_design.loc[(task_design['block']==condition)&(task_design['session']==session)&(task_design['reverse']==reverse), 'pushed'] = pushed  
+                task_design.loc[(task_design['block']==condition)&(task_design['session']==session)&(task_design['reverse']==reverse), 'yellowChosen'] = yellowChosen  
+                task_design.loc[(task_design['block']==condition)&(task_design['session']==session)&(task_design['reverse']==reverse), 'correctChoice'] = correctChoice  
  
-    return task_design_param
+    return task_design
+
+
+
+
+"""Generate True values of Hierarchical parameters"""
+# Simulation number
+simNumber = 1
+
+# Set mean and STD, [[Sess1-Act, Sess1-Clr], [Sess2-Act, Sess-Clr]]
+hier_weight_mu = np.array([[.4, -.4], [.5,-.5]])
+hier_alphaAct_pos_mu = np.array([[-1.5,-3], [-1,-3]])
+hier_alphaAct_neg_mu =  np.array([[-1.5,-3], [-1,-3]])
+hier_alphaClr_pos_mu = np.array([[-3,-1.5], [-3, -1]])
+hier_alphaClr_neg_mu = np.array([[-3,-1.5], [-3,-1]])
+hier_sensitivity_mu = np.array([[-5,-5], [-4.7,-4.7]])
+hier_alpha_sd = np.array([.1])
+hier_weight_sd = np.array([.1])
+hier_sensitivity_sd = np.array([.1])
+
+
+"""True values of individual-level parameters are randomly taken from predefined hierarchical level parameters, 
+Therfpre, call trueParamAllParts function to generate and save true parameters for each participant"""
+generating_hier_grand_truth(hier_weight_mu=hier_weight_mu, hier_alphaAct_pos_mu=hier_alphaAct_pos_mu, hier_alphaAct_neg_mu=hier_alphaAct_neg_mu,
+                              hier_alphaClr_pos_mu=hier_alphaClr_pos_mu, hier_alphaClr_neg_mu=hier_alphaClr_neg_mu,
+                              hier_sensitivity_mu=hier_sensitivity_mu, hier_alpha_sd=hier_alpha_sd, hier_weight_sd=hier_weight_sd, hier_sensitivity_sd=hier_sensitivity_sd,
+                              simNumber=simNumber)
+
+# The Final step is to simulate data from the grand truth parameters that has been generated from previous step
+simulate_hier_rl(simNumber=simNumber)
+
+
+"""Pooling data all data and then save it"""
+# read opbervation to take out the participnats
+rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/AllBehData/rawBehAll.csv')
+# list of subjects
+subList = rawBehAll['sub_ID'].unique()
+ # Dataframe for concatenating data
+dataAll = pd.DataFrame([])
+# Loop over list of participatns
+for subName in subList:
+    # Directory of simulated data
+    parent_dir  = '/mnt/scratch/projects/7TPD/amin/simulation'
+    # Directory of the especifit simulated participant
+    dirc = f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-sim-task-design-true-param.csv'
+    # Read the simulated participant
+    data = pd.read_csv(dirc)
+    # Set the new column of the participants' name
+    data['sub_ID'] = subName
+ 
+    # Concatenating each dataframe
+    dataAll = pd.concat([dataAll, data])    
+    
+# Save concatenated data over all particiapnts
+dataAll.to_csv(f'{parent_dir}/{str(simNumber)}/{str(simNumber)}-all-sim-task-design-true-param.csv', index=False)
+
+# List of subjects
+rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/AllBehData/rawBehAll.csv')
+# list of subjects
+subList = rawBehAll['sub_ID'].unique()
+ 
+for subName in subList:
+    # Directory of simulated data
+    parent_dir  = '/mnt/scratch/projects/7TPD/amin/simulation'
+    # Directory of the especifit simulated participant
+    dirc = f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-sim-task-design-true-param.csv'
+    # Read the excel file
+    data = pd.read_csv(dirc)
+    # Condition sequences for each particiapnt
+    blocks = data.groupby(['session', 'run'])['block'].unique().to_numpy()
+    blocks = np.array([blocks[0], blocks[1], blocks[2], blocks[3]]).flatten()
+    #save file name
+    saveFile = f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-achieva7t_task-DA_beh.png'
+
+    # Plot by a pre implemented madule
+    plots.plotChosenCorrect(data = data, blocks = blocks, subName = subName, saveFile = saveFile)

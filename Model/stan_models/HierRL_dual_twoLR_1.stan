@@ -174,16 +174,16 @@ transformed parameters {
 }
 model { 
     /* Hierarchical mu parameter*/    
-        for (g in 1:nMeds_nSes){
-            for (c in 1:nConds){
-                hier_weight_mu[g,c] ~ normal(0,1);
-                hier_alphaAct_pos_mu[g,c] ~ normal(0,1);
-                hier_alphaAct_neg_mu[g,c] ~ normal(0,1);
-                hier_alphaClr_pos_mu[g,c] ~ normal(0,1);
-                hier_alphaClr_neg_mu[g,c] ~ normal(0,1);
-                hier_sensitivity_mu[g,c] ~ normal(1,5); 
-            }
+    for (g in 1:nMeds_nSes){
+        for (c in 1:nConds){
+            hier_weight_mu[g,c] ~ normal(0,1);
+            hier_alphaAct_pos_mu[g,c] ~ normal(0,1);
+            hier_alphaAct_neg_mu[g,c] ~ normal(0,1);
+            hier_alphaClr_pos_mu[g,c] ~ normal(0,1);
+            hier_alphaClr_neg_mu[g,c] ~ normal(0,1);
+            hier_sensitivity_mu[g,c] ~ normal(0,1); 
         }
+    }
 
     /* Hierarchical sd parameter*/
     hier_alpha_sd ~ normal(0,1);  

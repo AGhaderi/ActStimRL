@@ -55,15 +55,18 @@ for sub in subList:
 
 # select PD group
 behAll = behAll[behAll['patient']==partcipant_group]
-# withdraw some outlier
-#withdraw_subs = ['sub-030','sub-034','sub-067','sub-069','sub-076','sub-077','sub-083']
-#for sub in withdraw_subs:
-#    behAll = behAll[behAll['sub_ID']!=sub] 
+# withdraw some outlier in Healthy control
+if partcipant_group=='HC':
+    withdraw_subs = ['sub-030', 'sub-076', 'sub-083']
+    for sub in withdraw_subs:
+        behAll = behAll[behAll['sub_ID']!=sub] 
 
 #  set the session or medication effect
 if partcipant_group=='HC':
     medication_session = np.array(behAll.session).astype(int)
 else:
+    # group label 1: PD OFF, group label 3: PD ON
+    behAll['medication'] = behAll.group.replace([1, 3], [1, 2])
     medication_session = np.array(behAll.medication).astype(int)
 
 # Number of session 1 and 2
@@ -157,7 +160,7 @@ sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
@@ -175,7 +178,7 @@ sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
@@ -189,7 +192,7 @@ sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
@@ -206,7 +209,7 @@ sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
 plt.title('Positive Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
@@ -223,7 +226,7 @@ sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
@@ -240,7 +243,7 @@ sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
 plt.title('Negative Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-if medication_session=='HC':
+if partcipant_group=='HC':
     plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
 else:
     plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
