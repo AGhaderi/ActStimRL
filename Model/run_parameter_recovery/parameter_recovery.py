@@ -1,11 +1,13 @@
+#!/mrhome/amingk/anaconda3/envs/7tpd/bin/python
 """all arguments have 2*2 array dimension"""
 import numpy as np
 import pandas as pd
 import os
 from scipy import stats
 import sys
-sys.path.append('..')
+sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
 from Madule import plots
+import json
 
 def generating_hier_grand_truth(hier_weight_mu, hier_alphaAct_pos_mu, hier_alphaAct_neg_mu,
                                 hier_alphaClr_pos_mu, hier_alphaClr_neg_mu, hier_sensitivity_mu,
@@ -34,14 +36,14 @@ def generating_hier_grand_truth(hier_weight_mu, hier_alphaAct_pos_mu, hier_alpha
             # Put true parameters into the task design, define new columns of grand truth parameters within predefined task design 
             task_design[['transfer_alphaAct_pos', 'transfer_alphaAct_neg', 'transfer_alphaClr_pos', 'transfer_alphaClr_neg', 'transfer_weight', 'transfer_sensitivity']] = ""  
             # Put generated true parameters within the predefined task design dataframe
-            for session in range(2): # session:
+            for patient_index, patient in enumerate(['HC', 'PD']):
                 for condition, block in enumerate(['Act', 'Stim']):
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaAct_pos'] = transfer_alphaAct_pos[session, condition]
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaAct_neg'] = transfer_alphaAct_neg[session, condition]
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaClr_pos'] = transfer_alphaClr_pos[session, condition]
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_alphaClr_neg'] = transfer_alphaClr_neg[session, condition]
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_weight'] = transfer_weight[session, condition]
-                    task_design.loc[(task_design['session'] == session+1)& (task_design['block'] == block), 'transfer_sensitivity'] = transfer_sensitivity[session, condition]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_alphaAct_pos'] = transfer_alphaAct_pos[patient_index]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_alphaAct_neg'] = transfer_alphaAct_neg[patient_index]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_alphaClr_pos'] = transfer_alphaClr_pos[patient_index]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_alphaClr_neg'] = transfer_alphaClr_neg[patient_index]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_weight'] = transfer_weight[patient_index, condition]
+                    task_design.loc[(task_design['patient'] == patient)& (task_design['block'] == block), 'transfer_sensitivity'] = transfer_sensitivity[patient_index]
             # Directory of simulated data
             parent_dir = '/mnt/scratch/projects/7TPD/amin/simulation'
             # Check existing directory of subject name forlder and simulation number
@@ -53,19 +55,19 @@ def generating_hier_grand_truth(hier_weight_mu, hier_alphaAct_pos_mu, hier_alpha
             task_design.to_csv(f'{parent_dir}/{str(simNumber)}/{subName}/{subName}-task-design-true-param.csv', index=False)
        
         # datafram of hierarchical true parameters
-        dataHierMeanStdParam = pd.DataFrame(({'label':['Session 1 - Act', 'session 1- Stim', 'Session 2 - Act', 'session 2- Stim'],
-                                              'hier_alphaAct_pos_mu':hier_alphaAct_pos_mu.flatten(),
-                                              'hier_alphaAct_neg_mu': hier_alphaAct_neg_mu.flatten(),
-                                              'hier_alphaClr_pos_mu': hier_alphaClr_pos_mu.flatten(),
-                                              'hier_alphaClr_neg_mu': hier_alphaClr_neg_mu.flatten(),
-                                              'hier_weight_mu': hier_weight_mu.flatten(),
-                                              'hier_sensitivity_mu': hier_sensitivity_mu.flatten(),
-                                              'hier_alpha_sd': np.repeat(hier_alpha_sd, 4),
-                                              'hier_weight_sd': np.repeat(hier_weight_sd, 4),
-                                              'hier_sensitivity_sd':np.repeat(hier_sensitivity_sd,4)}))
-    
-        # Save true parameters for hierarchical participant
-        dataHierMeanStdParam.to_csv(f'{parent_dir}/{str(simNumber)}/hier-true-param.csv', index=False)
+        dictionary =  {'hier_alphaAct_pos_mu':hier_alphaAct_pos_mu,
+                      'hier_alphaAct_neg_mu': hier_alphaAct_neg_mu,
+                      'hier_alphaClr_pos_mu': hier_alphaClr_pos_mu,
+                      'hier_alphaClr_neg_mu': hier_alphaClr_neg_mu,
+                      'hier_weight_mu': hier_weight_mu,
+                      'hier_sensitivity_mu': hier_sensitivity_mu,
+                      'hier_alpha_sd': hier_alpha_sd,
+                      'hier_weight_sd': hier_weight_sd,
+                      'hier_sensitivity_sd': hier_sensitivity_sd}
+        # Writing to sample.json
+        with open(f'{parent_dir}/{str(simNumber)}/hier-true-param.json', 'w') as outfile:
+            json.dump(dictionary, outfile)
+
         return print("All true parameters for each participant have been generated and saved successfully!")
     except Exception as e:
         return print("An exception accured within generating_hier_grand_truth function: " + str(e))
@@ -220,25 +222,59 @@ def simulate_rl(task_design):
  
     return task_design
 
-
-
-
 """Generate True values of Hierarchical parameters"""
 # Simulation number
-simNumber = 1
+simNumber = 3
 
-# Set mean and STD, [[Sess1-Act, Sess1-Clr], [Sess2-Act, Sess-Clr]]
-hier_weight_mu = np.array([[.4, -.4], [.5,-.5]])
-hier_alphaAct_pos_mu = np.array([[-1.5,-3], [-1,-3]])
-hier_alphaAct_neg_mu =  np.array([[-1.5,-3], [-1,-3]])
-hier_alphaClr_pos_mu = np.array([[-3,-1.5], [-3, -1]])
-hier_alphaClr_neg_mu = np.array([[-3,-1.5], [-3,-1]])
-hier_sensitivity_mu = np.array([[-5,-5], [-4.7,-4.7]])
-hier_alpha_sd = np.array([.1])
-hier_weight_sd = np.array([.1])
-hier_sensitivity_sd = np.array([.1])
+# grand truth of mean paramaters for each parameter
+weight_Act = np.array([.4, .5, .6, .7, .8, .9, 1, 1.1, 1.2, 1.3, 1.4, 1.5])
+weight_Clr = np.array([-.4, -.5, -.6,  -.7, -.8, -.9, -1, -1.1, -1.2, -1.3, -1.4, -1.5])
+learning_rate = np.array([-1.6, -1.3, -1, -.7, -.6, -.3, 0, .3, .6 , .9, 1.2, 1.5])
+sensitivity = np.array([-5, -4.8, -4.6, -4.2, -4, -3.8, -3.6, -3.4, -3.2 , -3, -2.8, -2.6])
+
+# grand truth of sd paramaters for each parameter
+alpha_sd = np.array([.01, .04, .07, .1, .13, .16, .19, .22, .25, .23, .26, .27])
+weight_sd = np.array([.01, .04, .07, .1, .13, .16, .19, .22, .25, .23, .26, .27])
+sensitivity_sd = np.array([.01, .04, .07, .1, .13, .16, .19, .22, .25, .23, .26, .27])
+
+rng1 = np.random.default_rng(seed=1)
+rng2 = np.random.default_rng(seed=2)
+rng3 = np.random.default_rng(seed=3)
+rng4 = np.random.default_rng(seed=4)
+
+# Shuffle mean
+weight_Act = rng1.choice(weight_Act, replace=False, size=12)
+weight_Clr = rng1.choice(weight_Clr, replace=False, size=12)
+sensitivity = rng1.choice(sensitivity, replace=False, size=12)
+ 
+alphaAct_pos_mu = rng1.choice(learning_rate, replace=False, size=12)
+alphaAct_neg_mu = rng2.choice(learning_rate, replace=False, size=12)
+alphaClr_pos_mu = rng3.choice(learning_rate, replace=False, size=12)
+alphaClr_neg_mu = rng4.choice(learning_rate, replace=False, size=12)
+
+# Shuffle mean
+alpha_sd = rng1.choice(alpha_sd, replace=False, size=12)
+weight_sd = rng1.choice(weight_sd, replace=False, size=12)
+sensitivity_sd = rng1.choice(sensitivity_sd, replace=False, size=12)
+
+#[[[HC-Act, HC-Clr], [PD-Act, PD-Clr]]], , in shape [group, session, condition]
+# [[HC, PD]], in shape [group, session]
+# number of simulation
+# mean
+hier_weight_mu = [[weight_Act[2*(simNumber-1)], weight_Clr[2*(simNumber-1)]], [weight_Act[2*(simNumber-1)+1],weight_Clr[2*(simNumber-1)+1]]]
+hier_alphaAct_pos_mu = [alphaAct_pos_mu[2*(simNumber-1)],alphaAct_pos_mu[2*(simNumber-1)+1]]
+hier_alphaAct_neg_mu = [alphaAct_neg_mu[2*(simNumber-1)],alphaAct_neg_mu[2*(simNumber-1)+1]]
+hier_alphaClr_pos_mu = [alphaClr_pos_mu[2*(simNumber-1)],alphaClr_pos_mu[2*(simNumber-1)+1]]
+hier_alphaClr_neg_mu = [alphaClr_pos_mu[2*(simNumber-1)],alphaClr_neg_mu[2*(simNumber-1)+1]]
+hier_sensitivity_mu = [sensitivity[2*(simNumber-1)], sensitivity[2*(simNumber-1)+1]]
+
+# sd
+hier_alpha_sd = [alpha_sd[2*(simNumber-1)], alpha_sd[2*(simNumber-1)+1]]
+hier_weight_sd = [[weight_sd[2*(simNumber-1)], weight_sd[2*(simNumber-1)]], [weight_sd[2*(simNumber-1)+1],weight_sd[2*(simNumber-1)+1]]]
+hier_sensitivity_sd = [sensitivity_sd[2*(simNumber-1)], sensitivity_sd[2*(simNumber-1)+1]]
 
 
+ 
 """True values of individual-level parameters are randomly taken from predefined hierarchical level parameters, 
 Therfpre, call trueParamAllParts function to generate and save true parameters for each participant"""
 generating_hier_grand_truth(hier_weight_mu=hier_weight_mu, hier_alphaAct_pos_mu=hier_alphaAct_pos_mu, hier_alphaAct_neg_mu=hier_alphaAct_neg_mu,
@@ -248,8 +284,7 @@ generating_hier_grand_truth(hier_weight_mu=hier_weight_mu, hier_alphaAct_pos_mu=
 
 # The Final step is to simulate data from the grand truth parameters that has been generated from previous step
 simulate_hier_rl(simNumber=simNumber)
-
-
+ 
 """Pooling data all data and then save it"""
 # read opbervation to take out the participnats
 rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/AllBehData/rawBehAll.csv')

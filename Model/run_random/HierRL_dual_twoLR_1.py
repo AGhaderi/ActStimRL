@@ -38,12 +38,11 @@ modelFit = True
 n_chains = 4
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
-# Directory of simulated data
-parent_dir  = '/mnt/scratch/projects/7TPD/amin/simulation'
-# number of simulation
-simNumber = 3
+# Main directory of the subject
+parent_dir = '/mnt/scratch/projects/7TPD/amin/simulation/agent'
+agent_random = 'high-amt'
 # read collected data across all participants
-behAll = pd.read_csv(f'{parent_dir}/{str(simNumber)}/{str(simNumber)}-all-sim-task-design-true-param.csv')
+behAll = pd.read_csv(f'{parent_dir}/{agent_random}-task-design-true-param.csv')
 # list of subjects
 subList = behAll['sub_ID'].unique()
 
@@ -57,9 +56,19 @@ for sub in subList:
 
 # select PD group
 behAll = behAll[behAll['patient']==partcipant_group]
+# withdraw some outlier in Healthy control
+if partcipant_group=='HC':
+    withdraw_subs = ['sub-030', 'sub-076', 'sub-083']
+    for sub in withdraw_subs:
+        behAll = behAll[behAll['sub_ID']!=sub] 
 
 #  set the session or medication effect
-medication_session = np.array(behAll.session).astype(int)
+if partcipant_group=='HC':
+    medication_session = np.array(behAll.session).astype(int)
+else:
+    # group label 1: PD OFF, group label 3: PD ON
+    behAll['medication'] = behAll.group.replace([1, 3], [1, 2])
+    medication_session = np.array(behAll.medication).astype(int)
 
 # Number of session 1 and 2
 nMeds_nSes = 2
@@ -72,19 +81,19 @@ nParts = len(np.unique(behAll.sub_ID))
 # participant indeces
 behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nParts +1))
 # The adrees name of pickle file
-pickelDir = f'{parent_dir}/{str(simNumber)}/{partcipant_group}/{model_name}.pkl'
+pickelDir = f'{parent_dir}/{partcipant_group}-{agent_random}.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
     dataStan = {'N':behAll.shape[0],  
                 'nParts':nParts,  
-                'pushed':np.array(behAll.pushed).astype(int),  # should be integer
-                'yellowChosen':np.array(behAll.yellowChosen).astype(int), # should be integer
+                'pushed':np.array(behAll.pushed_agent).astype(int),  # should be integer
+                'yellowChosen':np.array(behAll.yellowChosen_agent).astype(int), # should be integer
                 'winAmtPushable':np.array(behAll.winAmtPushable), 
                 'winAmtPullable':np.array(behAll.winAmtPullable),
                 'winAmtYellow':np.array(behAll.winAmtYellow), 
                 'winAmtBlue':np.array(behAll.winAmtPullable),
-                'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
+                'rewarded':np.array(behAll.correctChoice_agent).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),  
                 'nMeds_nSes':nMeds_nSes,
@@ -120,9 +129,6 @@ if modelFit == True:
     # Start for taking samples from parameters in the Stan Model
     fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
     # Save Model Fit
-    if not os.path.isdir(f'{parent_dir}/{str(simNumber)}/{partcipant_group}/'):
-            os.makedirs(f'{parent_dir}/{str(simNumber)}/{partcipant_group}/') 
-    # Save Model Fit
     utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
     """Loading the pickle file of model fit from the subject directory if modelFit = False"""
@@ -130,128 +136,122 @@ else:
     fit = loadPkl['fit']
 
 # Extracting posterior distributions for each of four main unkhown parameters
-estimated_hier_alphaAct_pos_mu = fit["hier_alphaAct_pos_mu"] 
-estimated_hier_alphaAct_neg_mu = fit["hier_alphaAct_neg_mu"] 
-estimated_hier_alphaClr_pos_mu = fit["hier_alphaClr_pos_mu"] 
-estimated_hier_alphaClr_neg_mu = fit["hier_alphaClr_neg_mu"] 
-estimated_hier_weight_mu = fit["hier_weight_mu"] 
-estimated_hier_sensitivity_mu = fit["hier_sensitivity_mu"]
-estimated_hier_alpha_sd = fit['hier_alpha_sd'].flatten()
-estimated_hier_weight_sd = fit['hier_weight_sd'].flatten()
-estimated_hier_sensitivity_sd = fit['hier_sensitivity_sd'].flatten()
-
-# grand truth
-grand_trusth = pd.read_csv(f'{parent_dir}/{str(simNumber)}/hier-true-param.csv')
-true_hier_alphaAct_pos_mu = np.array(grand_trusth["hier_alphaAct_pos_mu"]) 
-true_hier_alphaAct_neg_mu = np.array(grand_trusth["hier_alphaAct_neg_mu"]) 
-true_hier_alphaClr_pos_mu = np.array(grand_trusth["hier_alphaClr_pos_mu"]) 
-true_hier_alphaClr_neg_mu = np.array(grand_trusth["hier_alphaClr_neg_mu"]) 
-true_hier_weight_mu =  np.array(grand_trusth["hier_weight_mu"]) 
-true_hier_sensitivity_mu =  np.array(grand_trusth["hier_sensitivity_mu"])
-true_hier_alpha_sd =  np.array(grand_trusth['hier_alpha_sd'].unique())[0]
-true_hier_weight_sd =  np.array(grand_trusth['hier_weight_sd'].unique())[0]
-true_hier_sensitivity_sd =  np.array(grand_trusth['hier_sensitivity_sd'].unique())[0]
-
+alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"] 
+alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
+alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
+alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
+weight = fit["transfer_hier_weight_mu"] 
+beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(20, 12), tight_layout=True)
-rows = 4
+fig = plt.figure(figsize=(20, 8), tight_layout=True)
+rows = 3
 columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(estimated_hier_weight_mu[0,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_weight_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_weight_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_weight_mu[1,1], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Weighting parameter',  fontsize=18)
+sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
+sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
+plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 
-
+plt.xlim(0, 1)
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(estimated_hier_sensitivity_mu[0,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_sensitivity_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_sensitivity_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_sensitivity_mu[1,1], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Sensitivity',  fontsize=18)
+sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(estimated_hier_alphaAct_pos_mu[0,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_pos_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_pos_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_pos_mu[1,1], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Positive Action Learning Rate',  fontsize=18)
+sns.histplot(alphaAct_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr'])
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
-
+plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(estimated_hier_alphaClr_pos_mu[0,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_pos_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_pos_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_pos_mu[1,1], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Positive Color Learning Rate',  fontsize=18)
+sns.histplot(alphaClr_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr'])
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
-
+plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
-sns.histplot(estimated_hier_alphaAct_neg_mu[0,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_neg_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_neg_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaAct_neg_mu[1,1], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Negative Action Learning Rate',  fontsize=18)
+sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
-
+plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 6)
-sns.histplot(estimated_hier_alphaClr_neg_mu[0,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_neg_mu[1,0], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_neg_mu[1,1], kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alphaClr_neg_mu[0,0], kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- Negative Color Learning Rate',  fontsize=18)
+sns.histplot(alphaClr_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Color Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
-
-
-
-# Action Learning Rate
-fig.add_subplot(rows, columns, 7)
-sns.histplot(estimated_hier_weight_sd, kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_alpha_sd, kde=True, stat='density', bins=100)
-sns.histplot(estimated_hier_sensitivity_sd, kde=True, stat='density', bins=100)
-plt.title(f'{partcipant_group}- standard deviation',  fontsize=18)
-plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$STD$',  fontsize=18)
-plt.legend(['Wighting', 'Learning rate', 'Sensitivity']) 
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-
+plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{parent_dir}/{str(simNumber)}/{partcipant_group}/{model_name}.png', dpi=500)
- 
+fig.savefig(f'{parent_dir}/{partcipant_group}-{agent_random}.png', dpi=500)
+
+# Figure of model fit results in two column and two rows
+fig = plt.figure(figsize=(10, 6), tight_layout=True)
+rows = 2
+columns = 2
  
