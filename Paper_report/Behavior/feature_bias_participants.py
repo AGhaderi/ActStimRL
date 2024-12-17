@@ -26,7 +26,7 @@ behAll['chosenHighWinAmt'] = chosenAmount>=50
 # gtoup label 1,2 3 are PD-OFF, HC and PF-ON respectively
 behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
 # gtoup label 1,2 3 are PD-OFF, HC and PF-ON respectively
-behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Act', 'Clr'])
+behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
 
 """The same as the figure above but differnt action and color conditions.
 """
@@ -49,20 +49,26 @@ cm = 1/2.54  # centimeters in inches
 fig = plt.figure(figsize=(20*cm, 16*cm), tight_layout=True)
 row = 2
 column = 2
+# Define the color palette for the hue categories
+custom_palette = {
+    'HC': 'blue',
+    'PD-ON': 'red',
+    'PD-OFF': '#FF7F7F'  # Light red in hex
+}
 
 # Chosen left
 fig.add_subplot(row, column, 1)
 ax = sns.barplot(
-    data = left_groups, x='group', y='leftChosen', hue='Condition',  
+    data = left_groups, x='Condition', y='leftChosen', hue='group',  
     edgecolor="black",
     errcolor="black",
     errwidth=1.5,
     capsize = 0.1,
     alpha=0.5,
-    errorbar="sd", legend=True)
+    errorbar="sd", legend=True, palette=custom_palette)
 sns.stripplot(
-    data=left_groups, x='group', y='leftChosen', hue='Condition', 
-     dodge=True, alpha=0.6, ax=ax, legend=False
+    data=left_groups, x='Condition', y='leftChosen', hue='group', 
+     dodge=True, alpha=0.6, ax=ax, legend=False, palette=custom_palette
 )
 plt.title('')
 plt.xlabel('')
@@ -74,17 +80,17 @@ plt.ylim(0, 1)
 # probability of higher amunt chosen
 fig.add_subplot(row, column, 2)
 ax = sns.barplot(
-    data = amt_groups, x='group', y='chosenHighWinAmt', hue='Condition',  
+    data = amt_groups, x='Condition', y='chosenHighWinAmt', hue='group',  
     edgecolor="black",
     errcolor="black",
     errwidth=1.5,
     capsize = 0.1,
     alpha=0.5,
-    errorbar="sd", legend=False)
+    errorbar="sd", legend=False, palette=custom_palette)
 
 sns.stripplot(
-    data=amt_groups, x='group', y='chosenHighWinAmt', hue='Condition', 
-     dodge=True, alpha=0.6, ax=ax, legend=False
+    data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', 
+     dodge=True, alpha=0.6, ax=ax, legend=False, palette=custom_palette
 )
 
 plt.title('')
@@ -99,17 +105,17 @@ plt.ylim(0, 1)
 # probability of pushed
 fig.add_subplot(row, column, 3)
 ax = sns.barplot(
-    data = pushed_groups, x='group', y='pushed', hue='Condition',  
+    data = pushed_groups, x='Condition', y='pushed', hue='group',  
     edgecolor="black",
     errcolor="black",
     errwidth=1.5,
     capsize = 0.1,
     alpha=0.5,
-    errorbar="sd", legend=False)
+    errorbar="sd", legend=False, palette=custom_palette)
 
 sns.stripplot(
-    data=pushed_groups, x='group', y='pushed', hue='Condition', 
-     dodge=True, alpha=0.6, ax=ax, legend=False
+    data=pushed_groups, x='Condition', y='pushed', hue='group', 
+     dodge=True, alpha=0.6, ax=ax, legend=False, palette=custom_palette
 )
 
 plt.title('')
@@ -122,17 +128,17 @@ plt.ylim(0, 1)
 # probability of yellow choisen
 fig.add_subplot(row, column, 4)
 ax = sns.barplot(
-    data = yellow_groups, x='group', y='yellowChosen', hue='Condition',  
+    data = yellow_groups, x='Condition', y='yellowChosen', hue='group',  
     edgecolor="black",
     errcolor="black",
     errwidth=1.5,
     capsize = 0.1,
     alpha=0.5,
-    errorbar="sd", legend=False)
+    errorbar="sd", legend=False, palette=custom_palette)
 
 sns.stripplot(
-    data=yellow_groups, x='group', y='yellowChosen', hue='Condition', 
-     dodge=True, alpha=0.6, ax=ax, legend=False
+    data=yellow_groups, x='Condition', y='yellowChosen', hue='group', 
+     dodge=True, alpha=0.6, ax=ax, legend=False, palette=custom_palette
 )
 plt.title('')
 plt.xlabel('')
