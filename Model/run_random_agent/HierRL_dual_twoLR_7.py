@@ -40,7 +40,7 @@ n_chains = 4
 n_samples=4000
 # Main directory of the subject
 parent_dir = '/mnt/scratch/projects/7TPD/amin/simulation/agent'
-agent_random = 'high-amt'
+agent_random = 'high-prob'
 # read collected data across all participants
 behAll = pd.read_csv(f'{parent_dir}/{agent_random}-task-design-true-param.csv')
 # list of subjects
@@ -111,7 +111,7 @@ if modelFit == True:
             'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -167,17 +167,15 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+sns.histplot(beta[0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1], kde=True, stat='density', bins=100)
 plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
 if partcipant_group=='HC':
-    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+    plt.legend(['Sess1', 'Sess2']) 
 else:
-    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+    plt.legend(['OFF', 'ON']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)

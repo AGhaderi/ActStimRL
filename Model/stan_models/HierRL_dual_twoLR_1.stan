@@ -181,7 +181,7 @@ model {
             hier_alphaAct_neg_mu[g,c] ~ normal(0,2);
             hier_alphaClr_pos_mu[g,c] ~ normal(0,2);
             hier_alphaClr_neg_mu[g,c] ~ normal(0,2);
-            hier_sensitivity_mu[g,c] ~ normal(0,2); 
+            hier_sensitivity_mu[g,c] ~ normal(0,4); 
         }
     }
 

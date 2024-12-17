@@ -26,7 +26,7 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
+partcipant_group = 'HC'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
@@ -39,9 +39,10 @@ n_chains = 4
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
-subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
+parent_dir = '/mnt/scratch/projects/7TPD/amin/simulation/agent'
+agent_random = 'high-prob'
 # read collected data across all participants
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+behAll = pd.read_csv(f'{parent_dir}/{agent_random}-task-design-true-param.csv')
 # list of subjects
 subList = behAll['sub_ID'].unique()
 
@@ -79,22 +80,20 @@ behAll.block = behAll.block.replace(['Act', 'Stim'], [1, 2])
 nParts = len(np.unique(behAll.sub_ID))
 # participant indeces
 behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nParts +1))
-# main directory of saving
-mainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}.pkl'
+pickelDir = f'{parent_dir}/{partcipant_group}-{agent_random}-{agent_random}.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
     dataStan = {'N':behAll.shape[0],  
                 'nParts':nParts,  
-                'pushed':np.array(behAll.pushed).astype(int),  # should be integer
-                'yellowChosen':np.array(behAll.yellowChosen).astype(int), # should be integer
+                'pushed':np.array(behAll.pushed_agent).astype(int),  # should be integer
+                'yellowChosen':np.array(behAll.yellowChosen_agent).astype(int), # should be integer
                 'winAmtPushable':np.array(behAll.winAmtPushable), 
                 'winAmtPullable':np.array(behAll.winAmtPullable),
                 'winAmtYellow':np.array(behAll.winAmtYellow), 
                 'winAmtBlue':np.array(behAll.winAmtPullable),
-                'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
+                'rewarded':np.array(behAll.correctChoice_agent).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),  
                 'nMeds_nSes':nMeds_nSes,
@@ -129,9 +128,6 @@ if modelFit == True:
     posterior = stan.build(stan_model, data = dataStan)
     # Start for taking samples from parameters in the Stan Model
     fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials)
-    # Save Model Fit
-    if not os.path.isdir(f'{mainScarch}/realdata/{partcipant_group}/'):
-            os.makedirs(f'{mainScarch}/realdata/{partcipant_group}/') 
     # Save Model Fit
     utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
@@ -252,7 +248,7 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
+fig.savefig(f'{parent_dir}/{partcipant_group}-{agent_random}-{agent_random}.png', dpi=500)
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)

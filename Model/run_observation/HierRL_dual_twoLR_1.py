@@ -26,7 +26,7 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
+partcipant_group = 'HC'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
@@ -82,7 +82,7 @@ behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nPa
 # main directory of saving
 mainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}.pkl'
+pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -113,10 +113,9 @@ if modelFit == True:
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
-            'hier_alphaAct_sd': np.random.uniform(.01, .1, size=nConds),        
-            'hier_alphaAct_sd': np.random.uniform(.01, .1, size=nConds),        
-            'hier_weight_sd': np.random.uniform(.01, .1, size=nConds),
-            'hier_sensitivity_sd': np.random.uniform(.01, .1, size=nConds),
+            'hier_alpha_sd': np.random.uniform(.01, .1),        
+            'hier_weight_sd': np.random.uniform(.01, .1),
+            'hier_sensitivity_sd': np.random.uniform(.01, .1),
         }
         initials.append(chaininit)   
 
@@ -253,7 +252,7 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
+fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.png', dpi=500)
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)

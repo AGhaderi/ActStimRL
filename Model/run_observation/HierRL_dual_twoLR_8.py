@@ -82,7 +82,7 @@ behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nPa
 # main directory of saving
 mainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}.pkl'
+pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -112,7 +112,7 @@ if modelFit == True:
             'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -145,7 +145,7 @@ alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"]
 alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
 alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
 weight = fit["transfer_hier_weight_mu"] 
-beta = fit["transfer_hier_sensitivity_mu"]
+beta = fit["transfer_hier_sensitivity_mu"].flatten()
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
 rows = 3
@@ -171,17 +171,10 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
+sns.histplot(beta, kde=True, stat='density', bins=100)
 plt.title('Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
-if partcipant_group=='HC':
-    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
-else:
-    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
@@ -252,7 +245,7 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
+fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.png', dpi=500)
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(10, 6), tight_layout=True)

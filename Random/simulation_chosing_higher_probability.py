@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import os
+import sys
+sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
+from Madule import plots
 
 # read collected data across data
 rawBehAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/rawBehAll.csv')
@@ -123,3 +126,23 @@ if not os.path.isdir(f'{parent_dir}'):
     os.makedirs(f'{parent_dir}') 
 
 rawBehAll.to_csv(f'{parent_dir}/high-prob-task-design-true-param.csv', index=False)
+
+
+ 
+# choice correct plot
+rawBehAll['pushed'] =rawBehAll['pushed_agent']
+rawBehAll['yellowChosen'] = rawBehAll['yellowChosen_agent']
+for subName in subList:
+    # Read the excel file
+    data = rawBehAll[rawBehAll['sub_ID']==subName]
+    # Condition sequences for each particiapnt
+    blocks = data.groupby(['session', 'run'])['block'].unique().to_numpy()
+    blocks = np.array([blocks[0], blocks[1], blocks[2], blocks[3]]).flatten()
+    #save file name
+    saveFile = f'{parent_dir}/high-prib/{subName}-achieva7t_task-DA_beh.png'
+    # Check existing directory of subject name forlder and simulation number
+    if not os.path.isdir(f'{parent_dir}/high-prib/'):
+        os.makedirs(f'{parent_dir}/high-prib/') 
+
+    # Plot by a pre implemented madule
+    plots.plotChosenCorrect(data = data, blocks = blocks, subName = subName, saveFile = saveFile)

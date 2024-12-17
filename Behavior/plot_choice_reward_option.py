@@ -34,3 +34,4 @@ for subName in subList:
     saveFile = subMainDirec + subName + '/' + subName + '_achieva7t_task-DA_beh.png'
     # Plot by a pre implemented madule
     plots.plotChosenCorrect(data = data, blocks = blocks, subName = subName, saveFile = saveFile)
+    #plotChosenCorrect_modofied1, plotChosenCorrect_modofied2, plotChosenCorrect_modofied3, plotChosenCorrect_modofied4, plotChosenCorrect_modofied5
