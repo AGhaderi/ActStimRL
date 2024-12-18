@@ -99,11 +99,11 @@ transformed parameters {
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
     array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
-	transfer_hier_alphaAct_pos_mu1 = Phi(hier_alphaAct_pos_mu1);				// for the output
-	transfer_hier_alphaAct_neg_mu1 = Phi(hier_alphaAct_neg_mu1);				 
-	transfer_hier_alphaClr_pos_mu1 = Phi(hier_alphaClr_pos_mu1);				 
-	transfer_hier_alphaClr_neg_mu1 = Phi(hier_alphaClr_neg_mu1);	
-    transfer_hier_weight_mu = Phi(hier_weight_mu);
+	transfer_hier_alphaAct_pos_mu1 = inv_logit(hier_alphaAct_pos_mu1);				// for the output
+	transfer_hier_alphaAct_neg_mu1 = inv_logit(hier_alphaAct_neg_mu1);				 
+	transfer_hier_alphaClr_pos_mu1 = inv_logit(hier_alphaClr_pos_mu1);				 
+	transfer_hier_alphaClr_neg_mu1 = inv_logit(hier_alphaClr_neg_mu1);	
+    transfer_hier_weight_mu = inv_logit(hier_weight_mu);
 	for (g in 1:nMeds_nSes){
         for (c in 1:nConds){
             transfer_hier_sensitivity_mu[g, c] = log(1 + exp(hier_sensitivity_mu[g, c]));
@@ -113,11 +113,11 @@ transformed parameters {
     for (p in 1:nParts) {
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
-                transfer_weight[p, g, c] = Phi(hier_weight_mu[g, c] + z_weight[p, g, c]*hier_weight_sd);
-                transfer_alphaAct_pos1[p, g, c] = Phi(hier_alphaAct_pos_mu1[g, c] + z_alphaAct_pos1[p, g, c]*hier_alpha_sd1);
-                transfer_alphaAct_neg1[p, g, c] = Phi(hier_alphaAct_neg_mu1[g, c] + z_alphaAct_neg1[p, g, c]*hier_alpha_sd1);
-                transfer_alphaClr_pos1[p, g, c] = Phi(hier_alphaClr_pos_mu1[g, c] + z_alphaClr_pos1[p, g, c]*hier_alpha_sd1);
-                transfer_alphaClr_neg1[p, g, c] = Phi(hier_alphaClr_neg_mu1[g, c] + z_alphaClr_neg1[p, g, c]*hier_alpha_sd1);
+                transfer_weight[p, g, c] = inv_logit(hier_weight_mu[g, c] + z_weight[p, g, c]*hier_weight_sd);
+                transfer_alphaAct_pos1[p, g, c] = inv_logit(hier_alphaAct_pos_mu1[g, c] + z_alphaAct_pos1[p, g, c]*hier_alpha_sd1);
+                transfer_alphaAct_neg1[p, g, c] = inv_logit(hier_alphaAct_neg_mu1[g, c] + z_alphaAct_neg1[p, g, c]*hier_alpha_sd1);
+                transfer_alphaClr_pos1[p, g, c] = inv_logit(hier_alphaClr_pos_mu1[g, c] + z_alphaClr_pos1[p, g, c]*hier_alpha_sd1);
+                transfer_alphaClr_neg1[p, g, c] = inv_logit(hier_alphaClr_neg_mu1[g, c] + z_alphaClr_neg1[p, g, c]*hier_alpha_sd1);
                 transfer_sensitivity[p, g, c] = log(1 + exp(hier_sensitivity_mu[g, c] + z_sensitivity[p,g, c]*hier_sensitivity_sd));
             }
         }
@@ -132,14 +132,14 @@ transformed parameters {
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaAct_mu2;   // Hierarchical Learning rate for Action Learning Value
     array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_mu2;   // Hierarchical Learning rate for Color Learning Value
 
-	transfer_hier_alphaAct_mu2 = Phi(hier_alphaAct_mu2);				// for the output
-	transfer_hier_alphaClr_mu2 = Phi(hier_alphaClr_mu2);				 
+	transfer_hier_alphaAct_mu2 = inv_logit(hier_alphaAct_mu2);				// for the output
+	transfer_hier_alphaClr_mu2 = inv_logit(hier_alphaClr_mu2);				 
 
     for (p in 1:nParts) {
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
-                transfer_alphaAct2[p, g, c] = Phi(hier_alphaAct_mu2[g, c] + z_alphaAct2[p, g, c]*hier_alpha_sd2);
-                transfer_alphaClr2[p, g, c] = Phi(hier_alphaClr_mu2[g, c] + z_alphaClr2[p, g, c]*hier_alpha_sd2);
+                transfer_alphaAct2[p, g, c] = inv_logit(hier_alphaAct_mu2[g, c] + z_alphaAct2[p, g, c]*hier_alpha_sd2);
+                transfer_alphaClr2[p, g, c] = inv_logit(hier_alphaClr_mu2[g, c] + z_alphaClr2[p, g, c]*hier_alpha_sd2);
             }
         }
     }

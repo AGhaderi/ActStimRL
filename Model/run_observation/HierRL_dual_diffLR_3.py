@@ -1,13 +1,4 @@
 #!/mrhome/amingk/anaconda3/envs/7tpd/bin/python
-"""Model 1 provide session effect (OFF vs ON) in Parkinson's disease in both Action and Color values leanring condition.
-alpha : Learning rate for Action/Color value learning
-weightAct : Weighting pratameter showing Relative contribution of Action Value Learning verus Color Value Learning
-beta : Sensitivity parameter
-It assumes session anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
-alpha[2,2] two session effect (OFF vs ON), two Conditions [Act, Clr]
-weightAct[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-beta[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-"""
 
 import numpy as np 
 import pandas as pd
@@ -21,31 +12,24 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC'
+partcipant_group = 'PD'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
 model_name = os.path.splitext(filename)[0]
  
-# List of subjects
-subList = ['sub-004', 'sub-010', 'sub-012', 'sub-025', 'sub-026', 'sub-029', 'sub-030',
-           'sub-033', 'sub-034', 'sub-036', 'sub-040', 'sub-041', 'sub-042', 'sub-044', 
-           'sub-045', 'sub-047', 'sub-048', 'sub-052', 'sub-054', 'sub-056', 'sub-059', 
-           'sub-060', 'sub-064', 'sub-065', 'sub-067', 'sub-069', 'sub-070', 'sub-071', 
-           'sub-074', 'sub-075', 'sub-076', 'sub-077', 'sub-078', 'sub-079', 'sub-080', 
-           'sub-081', 'sub-082', 'sub-083', 'sub-085', 'sub-087', 'sub-088', 'sub-089', 
-           'sub-090', 'sub-092', 'sub-108', 'sub-109']
-
 # If you want to model fit or just recall ex model fit
-modelFit = False
+modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 4
+n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
 # read collected data across all participants
 behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+# list of subjects
+subList = behAll['sub_ID'].unique()
 
 # set of indicator to the first trial of each participant
 for sub in subList:
@@ -57,9 +41,22 @@ for sub in subList:
 
 # select PD group
 behAll = behAll[behAll['patient']==partcipant_group]
+# withdraw some outlier in Healthy control
+if partcipant_group=='HC':
+    withdraw_subs = ['sub-030', 'sub-076', 'sub-083']
+    for sub in withdraw_subs:
+        behAll = behAll[behAll['sub_ID']!=sub] 
+
+#  set the session or medication effect
+if partcipant_group=='HC':
+    medication_session = np.array(behAll.session).astype(int)
+else:
+    # group label 1: PD OFF, group label 3: PD ON
+    behAll['medication'] = behAll.group.replace([1, 3], [1, 2])
+    medication_session = np.array(behAll.medication).astype(int)
 
 # Number of session 1 and 2
-nSes = 2
+nMeds_nSes = 2
 # Number of conditions (Action vs Color)
 nConds = 2
 # Condition label 1: Act, label 2: Stim
@@ -86,9 +83,9 @@ if modelFit == True:
                 'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),  
-                'nMeds_nSes':nSes,
+                'nMeds_nSes':nMeds_nSes,
                 'nConds':nConds,
-                'medication_session':np.array(behAll.session).astype(int),
+                'medication_session':medication_session,
                 'condition':np.array(behAll.block).astype(int),
                 'p_push_init':.5, 
                 'p_yell_init':.5}
@@ -96,9 +93,12 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alpha': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_weight': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nSes, nConds)),
+            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
@@ -126,12 +126,15 @@ else:
     fit = loadPkl['fit']
 
 # Extracting posterior distributions for each of four main unkhown parameters
-alpha = fit["transfer_hier_alpha_mu"] 
+alphaAct_pos = fit["transfer_hier_alphaAct_pos_mu"] 
+alphaAct_neg = fit["transfer_hier_alphaAct_neg_mu"] 
+alphaClr_pos = fit["transfer_hier_alphaClr_pos_mu"] 
+alphaClr_neg = fit["transfer_hier_alphaClr_neg_mu"] 
 weight = fit["transfer_hier_weight_mu"] 
 beta = fit["transfer_hier_sensitivity_mu"]
 # Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-rows = 2
+fig = plt.figure(figsize=(20, 8), tight_layout=True)
+rows = 3
 columns = 2
 
 # Weghtening
@@ -140,39 +143,95 @@ sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
 sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
 sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
 sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
-plt.title('Weighting parameter', fontsize=12)
-plt.ylabel('Density', fontsize=12)
-plt.xlabel('$w_{(A)}$', fontsize=14)
-plt.xlim(0, 1)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+plt.title('Weighting parameter',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel('$w_{(A)}$',  fontsize=18)
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+
+plt.xlim(0, 1)
 # Sensitivity
 fig.add_subplot(rows, columns, 2)
-sns.histplot(beta[0,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[0,1], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,0], kde=True, stat='density', bins=100)
-sns.histplot(beta[1,1], kde=True, stat='density', bins=100)
-plt.title('Sensitivity', fontsize=12)
-plt.ylabel('Density', fontsize=12)
-plt.xlabel(r'$\beta$', fontsize=14)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+sns.histplot(beta[0], kde=True, stat='density', bins=100)
+sns.histplot(beta[1], kde=True, stat='density', bins=100)
+plt.title('Sensitivity',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$\beta$',  fontsize=18)
+plt.legend(['Act', 'Clr']) 
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(alpha[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alpha[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alpha[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alpha[1,1], kde=True, stat='density', bins=100)
-plt.title('Learning Rate', fontsize=12)
-plt.ylabel('Density', fontsize=12)
-plt.xlabel(r'$ \alpha$', fontsize=14)
-plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+sns.histplot(alphaAct_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Action Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 4)
+sns.histplot(alphaClr_pos[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_pos[1,1], kde=True, stat='density', bins=100)
+plt.title('Positive Color Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 5)
+sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Action Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Action Learning Rate
+fig.add_subplot(rows, columns, 6)
+sns.histplot(alphaClr_neg[0,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[0,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,0], kde=True, stat='density', bins=100)
+sns.histplot(alphaClr_neg[1,1], kde=True, stat='density', bins=100)
+plt.title('Negative Color Learning Rate',  fontsize=18)
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ \alpha_{(C)} $',  fontsize=18)
+if partcipant_group=='HC':
+    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
+else:
+    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=300)
+fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
 
-# Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-rows = 2
-columns = 2
- 

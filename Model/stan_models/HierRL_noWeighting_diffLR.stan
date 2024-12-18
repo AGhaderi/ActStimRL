@@ -12,25 +12,24 @@ data {
     array[N] int<lower=1> indicator;                   // indicator of the first trial of each participant, the first is denoted 1 otherwise 0
     int<lower=1> nMeds_nSes;                         // Number of medication_session level (OFF vs ON)
     int<lower=1> nConds;                        // Number of condition, Action and Color value learning
-    array[N] int<lower=1, upper=2> medication_session;   // 1 indecates OFF medication_session and 2 indicates On medication_session
+    array[N] int<lower=1, upper=2> medication_session;       // 1 indecates OFF medication_session and 2 indicates On medication_session
     array[N] int<lower=1, upper=2> condition;   // 1 indecates first codition (Action) and 2 indicates second condition (Color)
     real<lower=0, upper=1> p_push_init;         // Initial value of reward probability for pushed responce
     real<lower=0, upper=1> p_yell_init;         // Initial value of reward probability for Color responce
 }
 parameters {
     /* Hierarchical mu parameter*/                               
-    array[nMeds_nSes, nConds] real hier_alpha_mu;    // Mean Hierarchical Learning rate for action/color Learning Value and medication_session effect
-    array[nMeds_nSes, nConds] real hier_weight_mu;   // Mean Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nMeds_nSes, nConds] real hier_alphaAct_mu;    // Mean Hierarchical Learning rate for action Learning Value and medication_session effect
+    array[nMeds_nSes, nConds] real hier_alphaClr_mu;    // Mean Hierarchical Learning rate for color Learning Value and medication_session effect
     array[nMeds_nSes, nConds] real hier_sensitivity_mu;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
     /* Hierarchical sd parameter*/                               
     real<lower=0> hier_alpha_sd;      // Between-participant variability Learning rate for Learning Value
-    real<lower=0> hier_weight_sd;     // Between-participant variability Wieghtening of Action Learning Value against to Color Learnig Value
     real<lower=0> hier_sensitivity_sd;   // Between-participant variability sensitivity
 
     /* participant-level main paameter*/
-    array[nParts, nMeds_nSes, nConds] real z_alpha;   // Learning rate for Action/Color Learning Value
-    array[nParts, nMeds_nSes, nConds] real z_weight;  // Wieghtening of Action Learning Value against to Learnig Value
+    array[nParts, nMeds_nSes, nConds] real z_alphaAct;   // Learning rate for Action Learning Value
+    array[nParts, nMeds_nSes, nConds] real z_alphaClr;   // Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real z_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
 
 }
@@ -44,24 +43,21 @@ transformed parameters {
     real EV_pull;  // Standard Expected Value of pull action
     real EV_yell;  // Standard Expected Value of yellow action
     real EV_blue;  // Standard Expected Value of blue action
-    real EV_push_yell;      // Weighting two strategies between push action and yellow color values learning
-    real EV_push_blue;      // Weighting two strategies between push action and blue color values learning
-    real EV_pull_yell;      // Weighting two strategies between pull action and yellow color values learning
-    real EV_pull_blue;      // Weighting two strategies between pull action and blue color values learning
-    vector[N] soft_max_EV;  //  The soft-max function for each trial, trial-by-trial probability
+    vector[N] soft_max_Act;  //  The soft-max function for each trial for Action value learing
+    vector[N] soft_max_Stim;  //  The soft-max function for each trial for Color value learning
    
     /* Transfer individual parameters */
-    array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alpha;   // Learning rate for Action/Color Learning Value
-    array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaAct;   // Learning rate for Action Learning Value
+    array[nParts, nMeds_nSes, nConds] real<lower=0, upper=1> transfer_alphaClr;   // Learning rate for Color Learning Value
     array[nParts, nMeds_nSes, nConds] real<lower=0> transfer_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     /* Transfer Hierarchical parameters just for output*/
-    array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alpha_mu;   // Hierarchical Learning rate for Action/Color Learning Value
-    array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaAct_mu;   // Hierarchical Learning rate for Action Learning Value
+    array[nMeds_nSes, nConds] real<lower=0, upper=1> transfer_hier_alphaClr_mu;   // Hierarchical Learning rate for Color Learning Value
     array[nMeds_nSes, nConds] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
-	transfer_hier_alpha_mu = Phi(hier_alpha_mu);				// for the output
-    transfer_hier_weight_mu = Phi(hier_weight_mu);
+	transfer_hier_alphaAct_mu = inv_logit(hier_alphaAct_mu);				// for the output
+	transfer_hier_alphaClr_mu = inv_logit(hier_alphaClr_mu);				 
 	for (g in 1:nMeds_nSes){
         for (c in 1:nConds){
             transfer_hier_sensitivity_mu[g, c] = log(1 + exp(hier_sensitivity_mu[g, c]));
@@ -71,8 +67,8 @@ transformed parameters {
     for (p in 1:nParts) {
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
-                transfer_weight[p, g, c] = Phi(hier_weight_mu[g, c] + z_weight[p, g, c]*hier_weight_sd);
-                transfer_alpha[p, g, c] = Phi(hier_alpha_mu[g, c] + z_alpha[p, g, c]*hier_alpha_sd);
+                transfer_alphaAct[p, g, c] = inv_logit(hier_alphaAct_mu[g, c] + z_alphaAct[p, g, c]*hier_alpha_sd);
+                transfer_alphaClr[p, g, c] = inv_logit(hier_alphaClr_mu[g, c] + z_alphaClr[p, g, c]*hier_alpha_sd);
                 transfer_sensitivity[p, g, c] = log(1 + exp(hier_sensitivity_mu[g, c] + z_sensitivity[p,g, c]*hier_sensitivity_sd));
             }
         }
@@ -93,36 +89,28 @@ transformed parameters {
         EV_yell = p_yell*winAmtYellow[i];
         EV_blue = p_blue*winAmtBlue[i];
        
-        // Relative contribution of Action Value Learning verus Color Value Learning
-        EV_push_yell = transfer_weight[participant[i], medication_session[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], medication_session[i], condition[i]])*EV_yell;
-        EV_push_blue = transfer_weight[participant[i], medication_session[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], medication_session[i], condition[i]])*EV_blue;
-        EV_pull_yell = transfer_weight[participant[i], medication_session[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], medication_session[i], condition[i]])*EV_yell;
-        EV_pull_blue = transfer_weight[participant[i], medication_session[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], medication_session[i], condition[i]])*EV_blue;
-       
-        /* Calculating the soft-max function over weightening Action and Color conditions*/ 
-        // pushed and yellow vs pulled and blue
-        if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_yell) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_blue));
-
-        // pushed and blue vs pulled and yellow
-        if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push_blue) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull_yell));  
+        /* Calculating the soft-max function*/ 
+        // pushed  vs pulled
+        soft_max_Act[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_push) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_pull));
+        
+        // yellow vs blue 
+        soft_max_Stim[i] = exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_yell)/(exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_yell) + exp(transfer_sensitivity[participant[i], medication_session[i], condition[i]]*EV_blue));  
           
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
         if (pushed[i] == 1){
-            p_push = p_push + transfer_alpha[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_push); 
+            p_push = p_push + transfer_alphaAct[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_push); 
         }
         else{
-            p_pull = p_pull + transfer_alpha[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_pull);
+            p_pull = p_pull + transfer_alphaAct[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_pull);
         }   
 
         /*Color value learning*/
         if (yellowChosen[i] == 1){
-           p_yell = p_yell + transfer_alpha[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_yell);
+           p_yell = p_yell + transfer_alphaClr[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_yell);
         }    
         else{
-           p_blue = p_blue + transfer_alpha[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_blue);
+           p_blue = p_blue + transfer_alphaClr[participant[i], medication_session[i], condition[i]]*(rewarded[i] - p_blue);
         }
     }   
 }
@@ -130,23 +118,22 @@ model {
     /* Hierarchical mu parameter*/    
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
-                hier_weight_mu[g,c] ~ normal(0,1);
-                hier_alpha_mu[g,c] ~ normal(0,1);
-                hier_sensitivity_mu[g,c] ~ normal(1,5); 
+                hier_alphaAct_mu[g,c] ~ normal(0,2);
+                hier_alphaClr_mu[g,c] ~ normal(0,2);
+                hier_sensitivity_mu[g,c] ~ normal(0,4); 
             }
         }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,.1) T[0,];  
-    hier_weight_sd ~ normal(0,.1) T[0,]; 
-    hier_sensitivity_sd ~ normal(0,.1) T[0,];
+    hier_alpha_sd ~ normal(0,1);  
+    hier_sensitivity_sd ~ normal(0,1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
         for (g in 1:nMeds_nSes){
             for (c in 1:nConds){
-                z_weight[p, g, c] ~ normal(0,1);
-                z_alpha[p, g, c] ~ normal(0,1);
+                z_alphaAct[p, g, c] ~ normal(0,1);
+                z_alphaClr[p, g, c] ~ normal(0,1);
                 z_sensitivity[p, g, c] ~ normal(0,1); 
             }
         }
@@ -154,13 +141,14 @@ model {
 
     /* RL likelihood */
     for (i in 1:N) { 
-        pushed[i] ~ bernoulli(soft_max_EV[i]);
+        pushed[i] ~ bernoulli(soft_max_Act[i]);
+        yellowChosen[i] ~ bernoulli(soft_max_Stim[i]);
         }
 }
 generated quantities { 
    vector[N] log_lik;  
     /*  RL Log density likelihood */
     for (i in 1:N) {
-        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
+        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_Act[i]) + bernoulli_lpmf(yellowChosen[i] | soft_max_Stim[i]);
         }
 }

@@ -1,19 +1,5 @@
 #!/mrhome/amingk/anaconda3/envs/7tpd/bin/python
-"""Model 1 provide session effect (OFF vs ON) in Parkinson's disease in both Action and Color values leanring condition.
-alphaAct_pos : Positive Learning rate for Action Value Learning
-alphaAct_pos : Negative Learning rate for Action Value Learning
-alphaClr_pos : Positive Learning rate for Color value learning
-alphaClr_neg : Negative Learning rate for Color value learning
-weight : Weighting pratameter showing Relative contribution of Action Value Learning verus Color Value Learning
-beta : Sensitivity parameter
-It assumes session anc conidtion can change all latent parameters, therfore we will have the follwong number of parameters
-alphaAct_pos[2,2] two session effect (OFF vs ON), two Conditions [Act, Clr]
-alphaAct_pos[2,2] two session effect (OFF vs ON), two Conditions [Act, Clr]
-alphaClr_pos[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-alphaClr_neg[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-weight[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-beta[2,2]  two session effect (OFF vs ON), two Conditions [Act, Clr]
-"""
+
 import numpy as np 
 import pandas as pd
 import stan
@@ -26,7 +12,7 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC'
+partcipant_group = 'PD'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
@@ -35,7 +21,7 @@ model_name = os.path.splitext(filename)[0]
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 4
+n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
@@ -82,7 +68,7 @@ behAll.sub_ID = behAll.sub_ID.replace(np.unique(behAll.sub_ID), np.arange(1, nPa
 # main directory of saving
 mainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.pkl'
+pickelDir = f'{mainScarch}/realdata/{partcipant_group}/{model_name}.pkl'
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
     # Put required data for stan model
@@ -111,7 +97,7 @@ if modelFit == True:
             'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
-            'z_weight': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
+            'z_weight': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_weight_sd': np.random.uniform(.01, .1),
@@ -153,17 +139,12 @@ columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
-sns.histplot(weight[0,0], kde=True, stat='density', bins=100)
-sns.histplot(weight[0,1], kde=True, stat='density', bins=100)
-sns.histplot(weight[1,0], kde=True, stat='density', bins=100)
-sns.histplot(weight[1,1], kde=True, stat='density', bins=100)
+sns.histplot(weight[0], kde=True, stat='density', bins=100)
+sns.histplot(weight[1], kde=True, stat='density', bins=100)
 plt.title('Weighting parameter',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel('$w_{(A)}$',  fontsize=18)
-if partcipant_group=='HC':
-    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
-else:
-    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
@@ -252,10 +233,5 @@ plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
 # Save figure of parameter distribution 
-fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}1.png', dpi=500)
+fig.savefig(f'{mainScarch}/realdata/{partcipant_group}/{model_name}.png', dpi=500)
 
-# Figure of model fit results in two column and two rows
-fig = plt.figure(figsize=(10, 6), tight_layout=True)
-rows = 2
-columns = 2
- 
