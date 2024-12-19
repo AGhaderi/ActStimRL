@@ -25,9 +25,9 @@ n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
-subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
+subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/'
 # read collected data across all participants
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+behAll = pd.read_csv(f'{subMainDirec}/AllBehData/behAll.csv')
 # list of subjects
 subList = behAll['sub_ID'].unique()
 

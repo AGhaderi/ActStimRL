@@ -19,9 +19,9 @@ partcipant_group = 'HC'
 # main directory of saving
 mainScarch = '/mnt/scratch/projects/7TPD/amin/'
 # pickle file in the scratch folder in HC
-pickelDir_HC = f'{mainScarch}/realdata/HC/HierRL_dual_twoLR_1.pkl'
+pickelDir_HC = f'{mainScarch}/realdata/HC/HierRL_dual_diffLR_1.pkl'
 # pickle file in the scratch folder in PD
-pickelDir_PD = f'{mainScarch}/realdata/PD/HierRL_dual_twoLR_1.pkl'
+pickelDir_PD = f'{mainScarch}/realdata/PD/HierRL_dual_diffLR_1.pkl'
 """Loading the pickle file of model fit from the subject directory"""
 loadPkl_HC = utils.load_pickle(load_path=pickelDir_HC)
 loadPkl_PD = utils.load_pickle(load_path=pickelDir_PD)
@@ -30,7 +30,7 @@ fit_PD = loadPkl_PD['fit']
 
 # main directory to save figures
 mainScarch = '/mnt/scratch/projects/7TPD/amin'
-model_name = 'HierRL_dual_twoLR_1'
+model_name = 'HierRL_dual_diffLR_1'
 
 # Extracting posterior distributions for each of four main unkhown parameters in HC
 transfer_hier_alphaAct_pos_mu_HC = fit_HC["transfer_hier_alphaAct_pos_mu"] 

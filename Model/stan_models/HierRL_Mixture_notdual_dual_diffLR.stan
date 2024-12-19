@@ -347,7 +347,7 @@ model {
     }
 
     /* Mixture model*/
-    hier_theta_mu ~ normal(0,1);
+    hier_theta_mu ~ normal(0,2);
     hier_theta_sd ~ normal(0,1);
 
     for (p in 1:nParts) {

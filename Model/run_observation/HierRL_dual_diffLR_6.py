@@ -12,22 +12,22 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
+partcipant_group = 'HC'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
 model_name = os.path.splitext(filename)[0]
  
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
 # Number of chains in MCMC procedure
 n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
-subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
+subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/'
 # read collected data across all participants
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+behAll = pd.read_csv(f'{subMainDirec}/AllBehData/behAll.csv')
 # list of subjects
 subList = behAll['sub_ID'].unique()
 
@@ -172,8 +172,6 @@ plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 4)
-sns.histplot(alphaClr_pos[0], kde=True, stat='density', bins=100)
-sns.histplot(alphaClr_pos[1], kde=True, stat='density', bins=100)
 sns.histplot(alphaClr_pos[0], kde=True, stat='density', bins=100)
 sns.histplot(alphaClr_pos[1], kde=True, stat='density', bins=100)
 plt.title('Positive Color Learning Rate',  fontsize=18)

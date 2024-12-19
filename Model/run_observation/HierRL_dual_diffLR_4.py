@@ -25,9 +25,9 @@ n_chains = 10
 # The number of iteration or samples for each chain in MCM procedure
 n_samples=4000
 # Main directory of the subject
-subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/'
+subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/'
 # read collected data across all participants
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/data_BehModel/originalfMRIbehFiles/AllBehData/behAll.csv')
+behAll = pd.read_csv(f'{subMainDirec}/AllBehData/behAll.csv')
 # list of subjects
 subList = behAll['sub_ID'].unique()
 
@@ -200,17 +200,12 @@ plt.xlim(0, 1)
 
 # Action Learning Rate
 fig.add_subplot(rows, columns, 5)
-sns.histplot(alphaAct_neg[0,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[0,1], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,0], kde=True, stat='density', bins=100)
-sns.histplot(alphaAct_neg[1,1], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[0], kde=True, stat='density', bins=100)
+sns.histplot(alphaAct_neg[1], kde=True, stat='density', bins=100)
 plt.title('Negative Action Learning Rate',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ \alpha_{(A)} $',  fontsize=18)
-if partcipant_group=='HC':
-    plt.legend(['Sess1-Act', 'Sess1-Clr', 'Sess2-Act', 'Sess2-Clr']) 
-else:
-    plt.legend(['OFF-Act', 'OFF-Clr', 'ON-Act', 'ON-Clr']) 
+plt.legend(['Act', 'Clr']) 
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
