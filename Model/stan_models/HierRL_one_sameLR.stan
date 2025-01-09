@@ -132,14 +132,14 @@ model {
             for (c in 1:nConds){
                 hier_weight_mu[g,c] ~ normal(0,2);
                 hier_alpha_mu[g,c] ~ normal(0,2);
-                hier_sensitivity_mu[g,c] ~ normal(0,4); 
+                hier_sensitivity_mu[g,c] ~ normal(0,3); 
             }
         }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,1);  
-    hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_alpha_sd ~ normal(0,.5);  
+    hier_weight_sd ~ normal(0,.5); 
+    hier_sensitivity_sd ~ normal(0,.5);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {

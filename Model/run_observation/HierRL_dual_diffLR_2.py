@@ -12,7 +12,7 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
+partcipant_group = 'HC'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
@@ -21,9 +21,9 @@ model_name = os.path.splitext(filename)[0]
 # If you want to model fit or just recall ex model fit
 modelFit = True
 # Number of chains in MCMC procedure
-n_chains = 10
+n_chains = 8
 # The number of iteration or samples for each chain in MCM procedure
-n_samples=4000
+n_samples=3000
 # Main directory of the subject
 subMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/'
 # read collected data across all participants

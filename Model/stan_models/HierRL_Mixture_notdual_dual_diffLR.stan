@@ -302,14 +302,14 @@ model {
             hier_alphaAct_neg_mu1[g,c] ~ normal(0,2);
             hier_alphaClr_pos_mu1[g,c] ~ normal(0,2);
             hier_alphaClr_neg_mu1[g,c] ~ normal(0,2);
-            hier_sensitivity_mu[g,c] ~ normal(0,2);
+            hier_sensitivity_mu[g,c] ~ normal(0,3);
         }
     }
 
     /* Hierarchical sd parameter foe model 1*/
-    hier_alpha_sd1 ~ normal(0,1);  
-    hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_alpha_sd1 ~ normal(0,.5);  
+    hier_weight_sd ~ normal(0,.5); 
+    hier_sensitivity_sd ~ normal(0,.5);
 
     /* participant-level main paameter for model 1*/
     for (p in 1:nParts) {
@@ -347,8 +347,8 @@ model {
     }
 
     /* Mixture model*/
-    hier_theta_mu ~ normal(0,1);
-    hier_theta_sd ~ normal(0,1);
+    hier_theta_mu ~ normal(0,2);
+    hier_theta_sd ~ normal(0,.5);
 
     for (p in 1:nParts) {
         z_theta[p] ~ normal(0,1); 

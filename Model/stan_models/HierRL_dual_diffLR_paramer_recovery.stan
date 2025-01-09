@@ -170,15 +170,15 @@ model {
     hier_alphaAct_neg_mu ~ normal(0,2);
     hier_alphaClr_pos_mu ~ normal(0,2);
     hier_alphaClr_neg_mu ~ normal(0,2);
-    hier_sensitivity_mu ~ normal(0,4); 
+    hier_sensitivity_mu ~ normal(0,3); 
 
     for (c in 1:nConds){
         hier_weight_mu[c] ~ normal(0,1);
     }
 
-    hier_alpha_sd ~ normal(0,1);  
-    hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_alpha_sd ~ normal(0,.5);  
+    hier_weight_sd ~ normal(0,.5); 
+    hier_sensitivity_sd ~ normal(0,.5);
 
     /* Hierarchical sd parameter*/
     

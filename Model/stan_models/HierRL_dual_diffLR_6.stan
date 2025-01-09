@@ -176,13 +176,13 @@ model {
             hier_weight_mu[c] ~ normal(0,2);
             hier_alphaAct_pos_mu[c] ~ normal(0,2);
             hier_alphaAct_neg_mu[c] ~ normal(0,2);
-            hier_sensitivity_mu[c] ~ normal(0,4); 
+            hier_sensitivity_mu[c] ~ normal(0,3); 
         }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,1);  
-    hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_alpha_sd ~ normal(0,.5);  
+    hier_weight_sd ~ normal(0,.5); 
+    hier_sensitivity_sd ~ normal(0,.5);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
