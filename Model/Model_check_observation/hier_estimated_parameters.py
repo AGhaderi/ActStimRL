@@ -48,7 +48,7 @@ transfer_hier_alphaClr_neg_mu_PD = fit_PD["transfer_hier_alphaClr_neg_mu"]
 transfer_hier_weight_mu_PD = fit_PD["transfer_hier_weight_mu"] 
 transfer_hier_sensitivity_mu_PD = fit_PD["transfer_hier_sensitivity_mu"]
 
-# plot of learning rate in irrelavant condition
+########################################################### plot of learning rate in irrelavant condition group seperately
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=2, ncols=4, figsize=(21*mm, 7*mm))
 axs = axs.flatten()
@@ -128,7 +128,7 @@ plt.tight_layout()
 fig.savefig(f'{mainScarch}/realdata/{model_name}_irrelavant_lr.png', dpi=500)
 
 
-# plot of learning rate in relavant condition
+########################################################### plot of learning rate in relavant condition  group seperately
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=2, ncols=4, figsize=(21*mm, 7*mm))
 axs = axs.flatten()
@@ -241,7 +241,7 @@ fig.savefig(f'{mainScarch}/realdata/{model_name}_relavant_lr.png', dpi=500)
 
 
 
-# plot of learning rate in relavant condition
+########################################################### plot of weighting parameters each group seperately
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(21*mm, 5*mm))
 axs = axs.flatten()
@@ -278,4 +278,4 @@ plt.tight_layout()
 # save
 fig.savefig(f'{mainScarch}/realdata/{model_name}_weighting.png', dpi=500)
 
-
+### 

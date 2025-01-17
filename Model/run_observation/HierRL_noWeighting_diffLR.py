@@ -97,7 +97,6 @@ if modelFit == True:
             'z_alphaClr': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nMeds_nSes, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
         }
         initials.append(chaininit)   

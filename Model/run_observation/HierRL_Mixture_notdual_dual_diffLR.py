@@ -12,7 +12,7 @@ import nest_asyncio
 import os
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
+partcipant_group = 'HC'
 # Get the filename of the currently running script
 filename = os.path.basename(__file__)
 # Remove the .py extension from the filename
