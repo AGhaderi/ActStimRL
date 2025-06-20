@@ -9,7 +9,7 @@ import pandas as pd
 import seaborn as sns
 
 # read collected data across data
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/AllBehData/behAll.csv')
+behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Behavioral_modeling/BehData/AllBehData/behAll.csv')
 # rearrange trial number
 behAll['trialNumber'].replace(
        [44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -56,43 +56,50 @@ custom_palette = {
     'PD-ON': 'red',
     'PD-OFF': '#FF7F7F'  # Light red in hex
 }
+from matplotlib.legend_handler import HandlerTuple
 
 # Chosen left
-ax = sns.violinplot( data = left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], legend=True, palette=custom_palette)
+ax = sns.boxplot(data = left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], legend=True, palette=custom_palette, showfliers=False)
+sns.stripplot(data = left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], dodge=True, alpha=1, size=4, legend=False, color='black')
 axs[0].set_title('')
 axs[0].set_xlabel('')
 axs[0].set_ylabel('Left reponse', fontsize='12')
 axs[0].axhline(.5, color='black' , linestyle='--')  
-axs[0].set_ylim(0, 1.2)
+axs[0].set_ylim(.1,1)
 axs[0].legend(fontsize=8, loc='upper left')
 
 
 # probability of higher amunt chosen
-ax = sns.violinplot( data = amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], legend=False, palette=custom_palette)
+ax = sns.boxplot(data = amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], legend=False, palette=custom_palette, showfliers=False)
+sns.stripplot(data = amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], dodge=True, alpha=1, size=4, legend=False, color='black')
 axs[1].set_title('')
 axs[1].set_xlabel('')
 axs[1].set_ylabel('Higher amount', fontsize='12')
 axs[1].axhline(.5, color='black' , linestyle='--')  
-axs[1].set_ylim(0, 1.2)
+axs[1].set_ylim(.1,1)
+#axs[1].text(x=0, y=1.1, s='***')
+#axs[1].text(x=1, y=1.1, s='***')
 
- 
+  
 # probability of pushed
-ax = sns.violinplot( data = pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], legend=False, palette=custom_palette)
+ax = sns.boxplot(data = pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], legend=False, palette=custom_palette, showfliers=False)
+sns.stripplot(data = pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], dodge=True, alpha=1, size=4, legend=False, color='black')
 axs[2].set_title('')
 axs[2].set_xlabel('')
 axs[2].set_ylabel('Push reponse', fontsize='12')
 axs[2].axhline(.5, color='black' , linestyle='--')  
-axs[2].set_ylim(0, 1.2)
+axs[2].set_ylim(.1,1)
 
   
 
 # probability of yellow choisen
-ax = sns.violinplot( data = yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], legend=False, palette=custom_palette)
+ax = sns.boxplot(data = yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], legend=False, palette=custom_palette, showfliers=False)
+sns.stripplot(data = yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], dodge=True, alpha=1, size=4, legend=False, color='black')
 axs[3].set_title('')
 axs[3].set_xlabel('')
 axs[3].set_ylabel('Yellow reponse', fontsize='12')
 axs[3].axhline(.5, color='black' , linestyle='--')  
-axs[3].set_ylim(0, 1.2)
+axs[3].set_ylim(.1,1)
 
 fig.supxlabel('Condition')
 fig.suptitle('Probability of chosing each feature across group and condition', fontsize='12')
@@ -101,5 +108,5 @@ fig.suptitle('Probability of chosing each feature across group and condition', f
 fig.tight_layout()
 
 # save figure
-plt.savefig('../../Figures/feature_bias_participants.png', dpi=300)
+plt.savefig('../../Figures/feature_bias_participants.png', dpi=400)
  

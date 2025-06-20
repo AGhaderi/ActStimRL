@@ -6,11 +6,11 @@ import pandas as pd
 from scipy.io import loadmat
 
 # Read original action first amd color first task design to get reward schedule
-dataActFirst = loadmat('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/predefined-task-values/ExpStruct_ActFirst_winOnly.mat')  
-dataClrFirst = loadmat('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/predefined-task-values/ExpStruct_StimFirst_winOnly.mat')  
+dataActFirst = loadmat('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Behavioral_modeling/predefined-task-values/ExpStruct_ActFirst_winOnly.mat')  
+dataClrFirst = loadmat('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Behavioral_modeling/predefined-task-values/ExpStruct_StimFirst_winOnly.mat')  
 
 # read collected data across data
-behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Amin/BehData/AllBehData/behAll.csv')
+behAll = pd.read_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/Behavioral_modeling/BehData/AllBehData/behAll.csv')
 # rearrange trial number
 behAll['trialNumber'].replace(
        [44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -112,13 +112,16 @@ for block in ['Act', 'Stim']:
             axs[idx].scatter(np.arange(1, 43), dataActFirst['triallist1_2'][0], s=10, c='grey', marker='o')
             axs[idx].scatter(np.arange(1, 43), -(dataClrFirst['triallist1_1'][0]-1) + .01, s=10, c='grey', marker='o')     
         elif block=='Act' and reverse==14:
-            axs[idx].set_title('Act- Two reversal point')
+            axs[idx].set_title('Act- Two reversal points')
             axs[idx].scatter(np.arange(1, 43), -(dataActFirst['triallist1_1'][0]-1), s=10, c='grey', marker='o')
             axs[idx].scatter(np.arange(1, 43), dataClrFirst['triallist2_1'][0] + .01, s=10, c='grey', marker='o')     
         elif block=='Stim' and reverse==14:
-            axs[idx].set_title('Clr- two reversal point')
+            axs[idx].set_title('Clr- two reversal points')
             axs[idx].scatter(np.arange(1, 43), -(dataActFirst['triallist2_1'][0]-1), s=10, c='grey', marker='o')
             axs[idx].scatter(np.arange(1, 43), -(dataClrFirst['triallist2_2'][0]-1) + .01, s=10, c='grey', marker='o')     
+        
+        
+        #axs[idx].set_ylim(0,1)
 
         idx +=1
 fig.supxlabel('Trials')
