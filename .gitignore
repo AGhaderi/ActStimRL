@@ -6,6 +6,6 @@ build
 *.vscode
 DataManaging
 old_behavior
-others
-old_random
+*/others
+*/old_random
 retired_code
