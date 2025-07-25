@@ -17,16 +17,16 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC'
-  
+partcipant_group = 'HC' 
+
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
 # read collected data across all participants
-behAll = pd.read_csv(f'{readMainDirec}/NoNanBehAll.csv')
+behAll = pd.read_csv(f'{readMainDirec}/NoNanOutlierBehAll.csv')
 
 
-# select group and condition
-behAll = behAll[behAll['patient']==partcipant_group]
+# select group 
+behAll = behAll[(behAll['patient']==partcipant_group)]
 
 # number of participant
 nParts = len(np.unique(behAll['sub_ID']))
@@ -36,7 +36,6 @@ behAll['sub_ID'] = behAll['sub_ID'].replace(np.unique(behAll.sub_ID), np.arange(
 nConds = 2
 # Condition label 1: Act, label 2: Stim
 behAll.block = behAll.block.replace(['Act', 'Stim'], [1, 2])
-
 
 # If you want to model fit or just recall ex model fit
 modelFit = True
@@ -53,6 +52,7 @@ pickelDir = f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/{model_name
 # Check out if it does not exist
 if not os.path.isdir(f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/'):
         os.makedirs(f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/') 
+
  
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
@@ -69,20 +69,17 @@ if modelFit == True:
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),
                 'nConds':nConds,
-                'condition':np.array(behAll.block).astype(int),
-}
+                'condition':np.array(behAll.block).astype(int)}
     # initial sampling
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alphaAct_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaAct_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaClr_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_alphaClr_neg': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts,nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_sensitivity_sd': np.random.uniform(.001, .01),
-            'transfer_sensitivity': np.random.uniform(.03, .07, size=(nParts, nConds))
+            'hier_sensitivity_sd': np.random.uniform(.01, .1),
+            'transfer_sensitivity': np.random.uniform(.3, .7, size=nParts)
         }
         initials.append(chaininit)   
 
@@ -106,79 +103,53 @@ else:
  
 # Extracting posterior distributions for each of four main unkhown parameters
 hier_weight_mu = fit["transfer_hier_weight_mu"] 
-hier_alphaAct_pos_mu = fit["transfer_hier_alphaAct_pos_mu"]  
-hier_alphaAct_neg_mu = fit["transfer_hier_alphaAct_neg_mu"] 
-hier_alphaClr_pos_mu = fit["transfer_hier_alphaClr_pos_mu"]
-hier_alphaClr_neg_mu = fit["transfer_hier_alphaClr_neg_mu"] 
+hier_alpha_pos_mu = fit["transfer_hier_alpha_pos_mu"]
+hier_alpha_neg_mu = fit["transfer_hier_alpha_neg_mu"] 
 hier_sensitivity_mu = fit["transfer_hier_sensitivity_mu"] 
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
 rows = 2
-columns = 3
+columns = 2
 
 # Weghtening
 fig.add_subplot(rows, columns, 1)
 sns.histplot(hier_weight_mu[0], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Weighting',  fontsize=18)
-plt.legend(['Act', 'Clr']) 
+plt.legend(['Act', 'Clr'])
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ w $',  fontsize=18)
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
-# Positive Learnign Rate in Action value learning
+# Positive Learnign Rate
 fig.add_subplot(rows, columns, 2)
-sns.histplot(hier_alphaAct_pos_mu[0], kde=True, stat='density', bins=100)
-sns.histplot(hier_alphaAct_pos_mu[1], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_pos_mu[0], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_pos_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Positive Learnign Rate',  fontsize=18)
-plt.legend(['Act', 'Clr']) 
+plt.legend(['Act', 'Clr'])
 plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$ +\alpha_{(A)} $',  fontsize=18)
+plt.xlabel(r'$ +\alpha $',  fontsize=18)
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
- 
-# Negative Learnign Rate in Action value learning
+
+# Positive Learnign Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(hier_alphaAct_neg_mu[0], kde=True, stat='density', bins=100)
-sns.histplot(hier_alphaAct_neg_mu[1], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_neg_mu[0], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_neg_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Negative Learnign Rate',  fontsize=18)
-plt.legend(['Act', 'Clr']) 
+plt.legend(['Act', 'Clr'])
 plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$ -\alpha_{(A)} $',  fontsize=18)
+plt.xlabel(r'$ -\alpha $',  fontsize=18)
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
- 
-# Positive Learnign Rate in Color value learning
-fig.add_subplot(rows, columns, 4)
-sns.histplot(hier_alphaClr_pos_mu[0], kde=True, stat='density', bins=100)
-sns.histplot(hier_alphaClr_pos_mu[1], kde=True, stat='density', bins=100)
-plt.title('Hierarchical Positive Learnign Rate',  fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$ +\alpha_{(C)} $',  fontsize=18)
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
- 
-# Negative Learnign Rate in Color value learning
-fig.add_subplot(rows, columns, 5)
-sns.histplot(hier_alphaClr_neg_mu[0], kde=True, stat='density', bins=100)
-sns.histplot(hier_alphaClr_neg_mu[1], kde=True, stat='density', bins=100)
-plt.title('Hierarchical Negative Learnign Rate',  fontsize=18)
-plt.legend(['Act', 'Clr']) 
-plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$ -\alpha_{(C)} $',  fontsize=18)
-plt.yticks(fontsize=20)
-plt.xticks(fontsize=20)
-plt.xlim(0, 1)
-  
+
 # Sensitivity
-fig.add_subplot(rows, columns, 6)
+fig.add_subplot(rows, columns, 4)
 sns.histplot(hier_sensitivity_mu[0], kde=True, stat='density', bins=100)
 sns.histplot(hier_sensitivity_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Sensitivity',  fontsize=18)

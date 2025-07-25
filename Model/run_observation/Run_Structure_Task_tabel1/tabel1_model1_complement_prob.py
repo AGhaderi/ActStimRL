@@ -25,7 +25,7 @@ readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
 behAll = pd.read_csv(f'{readMainDirec}/NoNanOutlierBehAll.csv')
 
 
-# select group and condition
+# select group
 behAll = behAll[(behAll['patient']==partcipant_group)]
 # number of condition
 nConds = 2
@@ -77,7 +77,6 @@ if modelFit == True:
             'z_weight': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'z_sensitivity': np.random.uniform(-1, 1, size=nParts),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_weight_sd': np.random.uniform(.01, .1),
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
             'transfer_weight': np.random.uniform(.3, .7, size=nParts),
             'transfer_sensitivity': np.random.uniform(.3, .7, size=nParts)

@@ -21,7 +21,7 @@ model_name = 'tabel3_model2_complement_prob'
 # The adrees name of pickle file
 pickelDir_HC = f'{writewriteMainScarch}/Behavioral/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
 # pickle file in the scratch folder in PD
-pickelDir_PD = f'{writewriteMainScarch}/Behavioral/Tabel3/PD/tabel3_model2_complement_prob_PD.pkl'
+pickelDir_PD = f'{writewriteMainScarch}/Behavioral/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
 """Loading the pickle file of model fit from the subject directory"""
 loadPkl_HC = utils.load_pickle(load_path=pickelDir_HC)
 loadPkl_PD = utils.load_pickle(load_path=pickelDir_PD)
@@ -29,22 +29,10 @@ fit_HC = loadPkl_HC['fit']
 fit_PD = loadPkl_PD['fit']
  
 # Extracting posterior distributions for each of four main unkhown parameters in HC
-transfer_hier_alphaAct_pos_mu_HC = fit_HC["transfer_hier_alphaAct_pos_mu"] 
-transfer_hier_alphaAct_neg_mu_HC = fit_HC["transfer_hier_alphaAct_neg_mu"] 
-transfer_hier_alphaClr_pos_mu_HC = fit_HC["transfer_hier_alphaClr_pos_mu"] 
-transfer_hier_alphaClr_neg_mu_HC = fit_HC["transfer_hier_alphaClr_neg_mu"] 
 transfer_hier_weight_mu_HC = fit_HC["transfer_hier_weight_mu"] 
-transfer_hier_sensitivity_mu_HC = fit_HC["transfer_hier_sensitivity_mu"]
 
 # Extracting posterior distributions for each of four main unkhown parameters in PD
-transfer_hier_alphaAct_pos_mu_PD = fit_PD["transfer_hier_alphaAct_pos_mu"] 
-transfer_hier_alphaAct_neg_mu_PD = fit_PD["transfer_hier_alphaAct_neg_mu"] 
-transfer_hier_alphaClr_pos_mu_PD = fit_PD["transfer_hier_alphaClr_pos_mu"] 
-transfer_hier_alphaClr_neg_mu_PD = fit_PD["transfer_hier_alphaClr_neg_mu"] 
 transfer_hier_weight_mu_PD = fit_PD["transfer_hier_weight_mu"] 
-transfer_hier_sensitivity_mu_PD = fit_PD["transfer_hier_sensitivity_mu"]
-
-
 
 # create a folder weighting_posterior
 # Check out if it does not exist
@@ -60,8 +48,8 @@ mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
 
 sns.kdeplot(data=transfer_hier_weight_mu_PD[0,0], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
-sns.kdeplot(data=transfer_hier_weight_mu_PD[1,0], ax=axs, multiple="stack", color='red', alpha=.7, label='PD-ON')
-axs.legend(fontsize=6)
+sns.kdeplot(data=transfer_hier_weight_mu_PD[0,1], ax=axs, multiple="stack", color='red', alpha=.7, label='PD-ON')
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_ylim(0,25)
 axs.set_xticks(np.arange(0,1.1,.1))
@@ -76,7 +64,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-sns.kdeplot(data=transfer_hier_weight_mu_PD[1,0]-transfer_hier_weight_mu_PD[0,0], ax=axs, multiple="stack", color='grey', alpha=.8)
+sns.kdeplot(data=transfer_hier_weight_mu_PD[0,1]-transfer_hier_weight_mu_PD[0,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 axs.axvline(x = 0, color = 'green', linestyle='--')
 #axs.set_xlim(-.5,.5)
 #axs.set_xticks(np.arange(-.5,.7,.2))
@@ -89,7 +77,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 
 
 # Bayes Factor
-i = np.mean((transfer_hier_weight_mu_PD[1,0]-transfer_hier_weight_mu_PD[0,0])>0)
+i = np.mean((transfer_hier_weight_mu_PD[0,1]-transfer_hier_weight_mu_PD[0,0])>0)
 bf = i/(1-i)
 print('Weighting parameter of actoin value learning across Medication in PD: ', bf)
 
@@ -98,17 +86,21 @@ print('Weighting parameter of actoin value learning across Medication in PD: ', 
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
  
-sns.kdeplot(data=transfer_hier_weight_mu_PD[0,1], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
+sns.kdeplot(data=transfer_hier_weight_mu_PD[1,0], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
 sns.kdeplot(data=transfer_hier_weight_mu_PD[1,1], ax=axs, multiple="stack", color='red', alpha=.7, label='PD-ON')
-axs.legend(fontsize=6)
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_ylim(0,25)
 axs.set_xticks(np.arange(0,1.1,.1))
 axs.tick_params(axis='both', labelsize=6)
 axs.set_xlabel("", fontsize=6)
 axs.set_ylabel("Density", fontsize=6)
-
 plt.tight_layout()
+axs.text(0.5, 0.5, 'BF = 12.9', 
+         transform=axs.transAxes,  # coordinates in axis (0–1) space
+         ha='center', va='top', 
+         fontsize=6, fontweight='bold')
+
 fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{model_name}_PD_Clr_weighting.png', dpi=500)
 
 
@@ -116,7 +108,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-sns.kdeplot(data=transfer_hier_weight_mu_PD[1,1]-transfer_hier_weight_mu_PD[0,1], ax=axs, multiple="stack", color='grey', alpha=.8)
+sns.kdeplot(data=transfer_hier_weight_mu_PD[1,1]-transfer_hier_weight_mu_PD[1,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 axs.axvline(x = 0, color = 'green', linestyle='--')
 #axs.set_xlim(-.5,.5)
 #axs.set_xticks(np.arange(-.5,.7,.2))
@@ -129,7 +121,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 
 
 # Bayes Factor
-i = np.mean((transfer_hier_weight_mu_PD[1,1]-transfer_hier_weight_mu_PD[0,1])>0)
+i = np.mean((transfer_hier_weight_mu_PD[1,1]-transfer_hier_weight_mu_PD[1,0])>0)
 bf = i/(1-i)
 print('Weighting parameter of Color value learning across Medication in PD: ', bf)
 
@@ -141,8 +133,8 @@ mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
 
 sns.kdeplot(data=transfer_hier_weight_mu_HC[0,0], ax=axs, multiple="stack", color='blue', alpha=.2, label='HC-Sess1')
-sns.kdeplot(data=transfer_hier_weight_mu_HC[1,0], ax=axs, multiple="stack", color='blue', alpha=.7, label='HC-Sess2')
-axs.legend(fontsize=6)
+sns.kdeplot(data=transfer_hier_weight_mu_HC[0,1], ax=axs, multiple="stack", color='blue', alpha=.7, label='HC-Sess2')
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_xticks(np.arange(0,1.1,.1))
 axs.tick_params(axis='both', labelsize=6)
@@ -157,7 +149,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-sns.kdeplot(data=transfer_hier_weight_mu_HC[1,0]-transfer_hier_weight_mu_HC[0,0], ax=axs, multiple="stack", color='grey', alpha=.8)
+sns.kdeplot(data=transfer_hier_weight_mu_HC[0,1]-transfer_hier_weight_mu_HC[0,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 axs.axvline(x = 0, color = 'green', linestyle='--')
 #axs.set_xlim(-.5,.5)
 #axs.set_xticks(np.arange(-.5,.7,.2))
@@ -170,7 +162,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 
 
 # Bayes Factor
-i = np.mean((transfer_hier_weight_mu_HC[1,0]-transfer_hier_weight_mu_HC[0,0])>0)
+i = np.mean((transfer_hier_weight_mu_HC[0,1]-transfer_hier_weight_mu_HC[0,0])>0)
 bf = i/(1-i)
 print('Weighting parameter of action value learning across session in HC: ', bf)
 
@@ -179,9 +171,9 @@ print('Weighting parameter of action value learning across session in HC: ', bf)
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
  
-sns.kdeplot(data=transfer_hier_weight_mu_HC[0,1], ax=axs, multiple="stack", color='blue', alpha=.2, label='HC-Sess1')
+sns.kdeplot(data=transfer_hier_weight_mu_HC[1,0], ax=axs, multiple="stack", color='blue', alpha=.2, label='HC-Sess1')
 sns.kdeplot(data=transfer_hier_weight_mu_HC[1,1], ax=axs, multiple="stack", color='blue', alpha=.7, label='HC-Sess2')
-axs.legend(fontsize=6)
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_ylim(0,25)
 axs.set_xticks(np.arange(0,1.1,.1))
@@ -197,7 +189,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-sns.kdeplot(data=transfer_hier_weight_mu_HC[1,1]-transfer_hier_weight_mu_HC[0,1], ax=axs, multiple="stack", color='grey', alpha=.8)
+sns.kdeplot(data=transfer_hier_weight_mu_HC[1,1]-transfer_hier_weight_mu_HC[1,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 axs.axvline(x = 0, color = 'green', linestyle='--')
 #axs.set_xlim(-.5,.5)
 #axs.set_xticks(np.arange(-.5,.7,.2))
@@ -210,7 +202,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 
 
 # Bayes Factor
-i = np.mean((transfer_hier_weight_mu_HC[1,1]-transfer_hier_weight_mu_HC[0,1])>0)
+i = np.mean((transfer_hier_weight_mu_HC[1,1]-transfer_hier_weight_mu_HC[1,0])>0)
 bf = i/(1-i)
 print('Weighting parameter of color value learning across session in HC: ', bf)
 
@@ -221,8 +213,8 @@ mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
  
 sns.kdeplot(data=transfer_hier_weight_mu_PD[0,0], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
-sns.kdeplot(data=np.concatenate([transfer_hier_weight_mu_HC[0,0], transfer_hier_weight_mu_HC[1,0]]), ax=axs, multiple="stack", color='blue', alpha=.7, label='HC')
-axs.legend(fontsize=6)
+sns.kdeplot(data=np.concatenate([transfer_hier_weight_mu_HC[0,0], transfer_hier_weight_mu_HC[0,1]]), ax=axs, multiple="stack", color='blue', alpha=.7, label='HC')
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_xticks(np.arange(0,1.1,.1))
 axs.tick_params(axis='both', labelsize=6)
@@ -230,6 +222,11 @@ axs.set_xlabel("", fontsize=6)
 axs.set_ylabel("Density", fontsize=6)
 
 plt.tight_layout()
+axs.text(0.5, 0.5, 'BF = 12.9', 
+         transform=axs.transAxes,  # coordinates in axis (0–1) space
+         ha='center', va='top', 
+         fontsize=6, fontweight='bold')
+
 fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{model_name}_HC_PD_OFF_Act_weighting.png', dpi=500)
  
 
@@ -237,7 +234,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-weight_HC_action = np.concatenate([transfer_hier_weight_mu_HC[0,0], transfer_hier_weight_mu_HC[1,0]])
+weight_HC_action = np.concatenate([transfer_hier_weight_mu_HC[0,0], transfer_hier_weight_mu_HC[0,1]])
 np.random.shuffle(weight_HC_action)
 sns.kdeplot(data=weight_HC_action[:24000]- transfer_hier_weight_mu_PD[0,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 
@@ -263,9 +260,9 @@ mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(10*mm, 5*mm))
 
 
-sns.kdeplot(data=transfer_hier_weight_mu_PD[0,1], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
-sns.kdeplot(data=np.concatenate([transfer_hier_weight_mu_HC[0,1], transfer_hier_weight_mu_HC[1,1]]), ax=axs, multiple="stack", color='blue', alpha=.7, label='HC')
-axs.legend(fontsize=6)
+sns.kdeplot(data=transfer_hier_weight_mu_PD[1,0], ax=axs, multiple="stack", color='red', alpha=.2, label='PD-OFF')
+sns.kdeplot(data=np.concatenate([transfer_hier_weight_mu_HC[1,0], transfer_hier_weight_mu_HC[1,1]]), ax=axs, multiple="stack", color='blue', alpha=.7, label='HC')
+axs.legend(fontsize=6, loc='upper left')
 axs.set_xlim(0,1)
 axs.set_ylim(0,25)
 axs.set_xticks(np.arange(0,1.1,.1))
@@ -281,9 +278,9 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 mm = 1/2.54  # centimeters in inches
 fig, axs = plt.subplots(nrows=1, ncols=1, figsize=(6*mm, 4*mm))
 
-weight_HC_color = np.concatenate([transfer_hier_weight_mu_HC[0,1], transfer_hier_weight_mu_HC[1,1]])
+weight_HC_color = np.concatenate([transfer_hier_weight_mu_HC[1,0], transfer_hier_weight_mu_HC[1,1]])
 np.random.shuffle(weight_HC_color)
-sns.kdeplot(data=weight_HC_color[:24000]- transfer_hier_weight_mu_PD[0,1], ax=axs, multiple="stack", color='grey', alpha=.8)
+sns.kdeplot(data=weight_HC_color[:24000]- transfer_hier_weight_mu_PD[1,0], ax=axs, multiple="stack", color='grey', alpha=.8)
 axs.axvline(x = 0, color = 'green', linestyle='--')
 #axs.set_xlim(-.5,.5)
 #axs.set_xticks(np.arange(-.5,.7,.2))
@@ -296,7 +293,7 @@ fig.savefig(f'{writewriteMainScarch}/Behavioral/Tabel3/weighting_Posterior/{mode
 
 
 # Bayes Factor
-i = np.mean((weight_HC_color[:24000]- transfer_hier_weight_mu_PD[0,1])>0)
+i = np.mean((weight_HC_color[:24000]- transfer_hier_weight_mu_PD[1,0])>0)
 bf = i/(1-i)
 print('Weighting parameter of color value learning betwen PD-OFF and HC: ', bf)
 

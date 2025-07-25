@@ -14,9 +14,10 @@ from scipy import stats
 
 for partcipant_group in ['HC', 'PD']:
     # name of table
-    tabel = 'Table2'
+    tabel = 'Tabel2'
+
     list_model = ['tabel2_model1_complement_prob', 'tabel2_model2_complement_prob', 'tabel2_model3_complement_prob',
-                'tabel2_model4_complement_prob', 'tabel2_model5_complement_prob']
+                  'tabel2_model4_complement_prob', 'tabel2_model5_complement_prob', 'tabel2_model6_complement_prob']
     # declare waice variable
     waic = np.zeros(len(list_model))
     log_lppd_models = np.zeros(len(list_model))
@@ -36,12 +37,11 @@ for partcipant_group in ['HC', 'PD']:
         model_Comparision_criteria = utils.waic(log_likelihood=log_lik)
         waic[i] = model_Comparision_criteria['waic']
 
-
     ## waic
-    print(f'WAIC in {partcipant_group} for: ',tabel, ' : ', np.round(waic))
+    print(f'WAIC in {partcipant_group} for: ',tabel, ' : ', waic)
     #dwaic
-    dWAIC = np.round(waic - np.min(waic))
+    dWAIC = waic - np.min(waic)
     print(f'dWAIC in {partcipant_group}  for: ',tabel, ' : ',dWAIC)
     # realtive weight
     weight = [np.exp(-.5*dWAIC[i])/np.sum(np.exp(-.5*dWAIC)) for i in range(len(dWAIC))]
-    print(f'weight in {partcipant_group}  for: ',tabel, ' : ', np.round(weight))
+    print(f'weight in {partcipant_group}  for: ',tabel, ' : ', weight)

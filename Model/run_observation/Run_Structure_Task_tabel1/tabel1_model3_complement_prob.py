@@ -17,7 +17,7 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD' 
+partcipant_group = 'HC' 
 
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'

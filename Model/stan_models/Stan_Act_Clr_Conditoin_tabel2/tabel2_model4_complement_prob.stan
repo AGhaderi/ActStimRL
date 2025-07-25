@@ -1,5 +1,6 @@
 /*
-Model 1 in Table 2. Checking oput whether paramters are changed by condition or not.
+Model 3 in Table 1.
+RL(w, +alpha, -alpha, beta)
 */
 
 data {
@@ -16,29 +17,24 @@ data {
     array[N] int<lower=1> indicator;                   // indicator of the first trial of each participant, the first is denoted 1 otherwise 0
     int<lower=1> nConds;                        // Number of condition, Action and Color value learning
     array[N] int<lower=1, upper=2> condition;   // 1 indecates first condition (Action) and 2 indicates second condition (Color)
-
 }
 parameters {
     /* Hierarchical mu parameter*/                               
-    real hier_alphaAct_pos_mu;  // Mean Hierarchical Positive Learning rate for action Learning Value  
-    real hier_alphaAct_neg_mu;  // Mean Hierarchical Negative Learning rate for action Learning Value  
-    real hier_alphaClr_pos_mu;  // Mean Hierarchical Positive Learning rate for color Learning Value  
-    real hier_alphaClr_neg_mu;  // Mean Hierarchical Negative Learning rate for color Learning Value  
-    array[nConds] real hier_weight_mu;        // Mean Hierarchical Wieghting
-    array[nConds] real hier_sensitivity_mu;   // Mean Hierarchical snesitivity
+    array[nConds] real hier_alpha_pos_mu;    // Mean Hierarchical Positive Learning rate
+    real hier_alpha_neg_mu;    // Mean Hierarchical Negative Learning rate 
+    array[nConds] real hier_weight_mu;       // Mean Hierarchical Weighting 
+    array[nConds] real hier_sensitivity_mu;  // Mean Hierarchical snesitivity
     
     /* Hierarchical sd parameter*/                               
-    real<lower=0> hier_alpha_sd;      // Between-participant variability Learning rate for Learning Value
-    real<lower=0> hier_weight_sd;     // Between-participant variability Wieghting
+    real<lower=0> hier_alpha_sd;      // Between-participant variability Learning rate
+    real<lower=0> hier_weight_sd;     // Between-participant variability Wieghtening
     real<lower=0> hier_sensitivity_sd;   // Between-participant variability sensitivity
 
     /* participant-level main paameter*/
-    array[nParts] real z_alphaAct_pos;   // IndividualPositive Learning rate for Action Learning Value
-    array[nParts] real z_alphaAct_neg;   // Individual Negative Learning rate for Action Learning Value
-    array[nParts] real z_alphaClr_pos;   // Individual Positive Learning rate for Color Learning Value
-    array[nParts] real z_alphaClr_neg;   // Individual Negative Learning rate for Color Learning Value
-    array[nParts, nConds] real z_weight;         // Individual weighing
-    array[nParts, nConds] real z_sensitivity;    // Inidividual sensitivity 
+    array[nParts, nConds] real z_alpha_pos;   // Positive Learning rate
+    array[nParts] real z_alpha_neg;   // Negative Learning rate
+    array[nParts, nConds] real z_weight;  // Wieghtening
+    array[nParts, nConds] real z_sensitivity;         // Sensitivity  
 
 }
 transformed parameters {
@@ -56,37 +52,29 @@ transformed parameters {
     vector[N] soft_max_EV;  //  The soft-max function for each trial, trial-by-trial probability
    
     /* Transfer individual parameters */
-    array[nParts] real<lower=0, upper=1> transfer_alphaAct_pos;   // Transfered Poistive Learning rate for Action Learning Value
-    array[nParts] real<lower=0, upper=1> transfer_alphaAct_neg;   // Transfered Negative Learning rate for Action Learning Value
-    array[nParts] real<lower=0, upper=1> transfer_alphaClr_pos;   // Transfered  Positive Learning rate for Color Learning Value
-    array[nParts] real<lower=0, upper=1> transfer_alphaClr_neg;   // Transfered  Negative Learning rate for Color Learning Value
-    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;         // Transfered  Wieghtening  
-    array[nParts, nConds] real<lower=0> transfer_sensitivity;             // Transfered sensitivity 
+    array[nParts, nConds] real<lower=0, upper=1> transfer_alpha_pos;   // Poistive Learning rate  
+    array[nParts] real<lower=0, upper=1> transfer_alpha_neg;   // Negative Learning rate  
+    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening  
+    array[nParts, nConds] real<lower=0> transfer_sensitivity;         // Sensitivity 
     
     /* Transfer Hierarchical parameters just for output*/
-    real<lower=0, upper=1> transfer_hier_alphaAct_pos_mu;   // Hierarchical Positive Learning rate for Action Learning Value
-    real<lower=0, upper=1> transfer_hier_alphaAct_neg_mu;   // Hierarchical Negative Learning rate for Action Learning Value
-    real<lower=0, upper=1> transfer_hier_alphaClr_pos_mu;   // Hierarchical Positive Learning rate for Color Learning Value
-    real<lower=0, upper=1> transfer_hier_alphaClr_neg_mu;   // Hierarchical Negative  Learning rate for Color Learning Value
-    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;         // Hierarchical Wieghtening 
+    array[nConds] real<lower=0, upper=1> transfer_hier_alpha_pos_mu;   // Hierarchical Positive Learning rate
+    real<lower=0, upper=1> transfer_hier_alpha_neg_mu;   // Hierarchical Negative Learning rate
+    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening
     array[nConds] real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity
 
-	transfer_hier_alphaAct_pos_mu = inv_logit(hier_alphaAct_pos_mu);				// for the output
-	transfer_hier_alphaAct_neg_mu = inv_logit(hier_alphaAct_neg_mu);				 
-	transfer_hier_alphaClr_pos_mu = inv_logit(hier_alphaClr_pos_mu);				 
-	transfer_hier_alphaClr_neg_mu = inv_logit(hier_alphaClr_neg_mu);				 
+	transfer_hier_alpha_pos_mu = inv_logit(hier_alpha_pos_mu);				// for the output
+	transfer_hier_alpha_neg_mu = inv_logit(hier_alpha_neg_mu);				 
     transfer_hier_weight_mu = inv_logit(hier_weight_mu);
     for (c in 1:nConds){
         transfer_hier_sensitivity_mu[c] = log(1 + exp(hier_sensitivity_mu[c]));
     }
-    
+
     for (p in 1:nParts) {
-        transfer_alphaAct_pos[p] = inv_logit(hier_alphaAct_pos_mu + z_alphaAct_pos[p]*hier_alpha_sd);
-        transfer_alphaAct_neg[p] = inv_logit(hier_alphaAct_neg_mu + z_alphaAct_neg[p]*hier_alpha_sd);
-        transfer_alphaClr_pos[p] = inv_logit(hier_alphaClr_pos_mu + z_alphaClr_pos[p]*hier_alpha_sd);
-        transfer_alphaClr_neg[p] = inv_logit(hier_alphaClr_neg_mu + z_alphaClr_neg[p]*hier_alpha_sd);
+        transfer_alpha_neg[p] = inv_logit(hier_alpha_neg_mu + z_alpha_neg[p]*hier_alpha_sd);
         for (c in 1:nConds){
             transfer_weight[p,c] = inv_logit(hier_weight_mu[c] + z_weight[p,c]*hier_weight_sd);
+            transfer_alpha_pos[p,c] = inv_logit(hier_alpha_pos_mu[c] + z_alpha_pos[p,c]*hier_alpha_sd);
             transfer_sensitivity[p,c] = log(1 + exp(hier_sensitivity_mu[c] + z_sensitivity[p,c]*hier_sensitivity_sd));
         }
     }
@@ -104,7 +92,7 @@ transformed parameters {
         EV_yell = p_yell*winAmtYellow[i];
         EV_blue = (1-p_yell)*winAmtBlue[i];
        
-        // Relative contribution of Action Value Learning verus Color Value Learning
+        // Relative contribution of ion Value Learning verus Color Value Learning
         EV_push_yell = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
         EV_push_blue = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
         EV_pull_yell = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
@@ -124,21 +112,21 @@ transformed parameters {
         if (pushed[i] == 1){
             // positive RPE
             if((rewarded[i] - p_push)>=0 ){ 
-                p_push = p_push + transfer_alphaAct_pos[participant[i]]*(rewarded[i] - p_push);
+                p_push = p_push + transfer_alpha_pos[participant[i], condition[i]]*(rewarded[i] - p_push);
             } 
             // negative RPE
             else{
-                p_push = p_push + transfer_alphaAct_neg[participant[i]]*(rewarded[i] - p_push); 
+                p_push = p_push + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_push); 
             }
         }
         else{
             // positive RPE
-            if((rewarded[i] + p_push -1)>=0){ 
-                p_push = p_push - transfer_alphaAct_pos[participant[i]]*(rewarded[i] + p_push -1);
+            if((rewarded[i] + p_push - 1)>=0){ 
+                p_push = p_push - transfer_alpha_pos[participant[i], condition[i]]*(rewarded[i] + p_push - 1);
             } 
             // negative RPE
             else{
-                p_push = p_push - transfer_alphaAct_neg[participant[i]]*(rewarded[i] + p_push -1);
+                p_push = p_push - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_push - 1);
             }
         }   
 
@@ -146,52 +134,48 @@ transformed parameters {
         if (yellowChosen[i] == 1){
             // positive RPE
             if((rewarded[i] - p_yell)>=0){ 
-                p_yell = p_yell + transfer_alphaClr_pos[participant[i]]*(rewarded[i] - p_yell);
+                p_yell = p_yell + transfer_alpha_pos[participant[i], condition[i]]*(rewarded[i] - p_yell);
             } 
             // negative RPE
             else{
-                p_yell = p_yell + transfer_alphaClr_neg[participant[i]]*(rewarded[i] - p_yell);
+                p_yell = p_yell + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_yell);
             }
         }    
         else{
             // positive RPE
-            if((rewarded[i] + p_yell -1)>=0){ 
-                p_yell = p_yell - transfer_alphaClr_pos[participant[i]]*(rewarded[i] + p_yell - 1);
+            if((rewarded[i] + p_yell - 1)>=0){ 
+                p_yell = p_yell - transfer_alpha_pos[participant[i], condition[i]]*(rewarded[i] + p_yell - 1);
             } 
             // negative RPE
             else{
-                p_yell= p_yell - transfer_alphaClr_neg[participant[i]]*(rewarded[i] + p_yell -1);
+                p_yell = p_yell - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_yell - 1);
             }
         }
     }   
 }
 model { 
-    /* Hierarchical mu parameter*/    
-    hier_alphaAct_pos_mu ~ normal(0,2);
-    hier_alphaAct_neg_mu ~ normal(0,2);
-    hier_alphaClr_pos_mu ~ normal(0,2);
-    hier_alphaClr_neg_mu ~ normal(0,2);
+    /* Hierarchical mu parameter*/
+    hier_alpha_neg_mu ~ normal(0,2);
     for (c in 1:nConds){
         hier_weight_mu[c] ~ normal(0,2);
+        hier_alpha_pos_mu[c] ~ normal(0,2);
         hier_sensitivity_mu[c] ~ normal(0,3); 
     }
 
-     /* Hierarchical sd parameter*/
+    /* Hierarchical sd parameter*/
     hier_alpha_sd ~ normal(0,.5);  
     hier_weight_sd ~ normal(0,.5); 
     hier_sensitivity_sd ~ normal(0,.5);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
-        z_alphaAct_pos[p] ~ normal(0,1);
-        z_alphaAct_neg[p] ~ normal(0,1);
-        z_alphaClr_pos[p] ~ normal(0,1);
-        z_alphaClr_neg[p] ~ normal(0,1);
+        z_alpha_neg[p] ~ normal(0,1);
         for (c in 1:nConds){
             z_weight[p,c] ~ normal(0,1);
+            z_alpha_pos[p,c] ~ normal(0,1);
             z_sensitivity[p,c] ~ normal(0,1); 
         }
-     }
+    }
 
     /* RL likelihood */
     for (i in 1:N) { 

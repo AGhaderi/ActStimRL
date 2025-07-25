@@ -15,11 +15,13 @@ data {
     array[N] int<lower=0, upper=1> rewarded;           // 1 for rewarding and 0 for punishment
     array[N] int<lower=1> participant;                 // participant index for each trial
     array[N] int<lower=1> indicator;                   // indicator of the first trial of each participant, the first is denoted 1 otherwise 0
+    int<lower=1> nConds;                        // Number of condition, Action and Color value learning
+    array[N] int<lower=1, upper=2> condition;   // 1 indecates first condition (Action) and 2 indicates second condition (Color)
 }
 parameters {
     /* Hierarchical mu parameter*/                               
     real hier_alpha_mu;    // Mean Hierarchical Learning rate for action/color Learning Value and medication_session effect
-    real hier_weight_mu;   // Mean Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nConds] real hier_weight_mu;   // Mean Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
     real hier_sensitivity_mu;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
     /* Hierarchical sd parameter*/                               
@@ -29,7 +31,7 @@ parameters {
 
     /* participant-level main paameter*/
     array[nParts] real z_alpha;       // Learning rate for Action/Color Learning Value
-    array[nParts] real z_weight;      // Wieghtening of Action Learning Value against to Learnig Value
+    array[nParts, nConds] real z_weight;      // Wieghtening of Action Learning Value against to Learnig Value
     array[nParts] real z_sensitivity; // With a higher sensitivity value θ, choices are more sensitive to value differences
 
 }
@@ -49,12 +51,12 @@ transformed parameters {
    
     /* Transfer individual parameters */
     array[nParts] real<lower=0, upper=1> transfer_alpha;   // Learning rate for Action/Color Learning Value
-    array[nParts] real<lower=0, upper=1> transfer_weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
     array[nParts] real<lower=0> transfer_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
     
     /* Transfer Hierarchical parameters just for output*/
     real<lower=0, upper=1> transfer_hier_alpha_mu;   // Hierarchical Learning rate for Action/Color Learning Value
-    real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
+    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
     real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
 
 	transfer_hier_alpha_mu = inv_logit(hier_alpha_mu);				// for the output
@@ -62,7 +64,9 @@ transformed parameters {
 	transfer_hier_sensitivity_mu = log(1 + exp(hier_sensitivity_mu));
 
     for (p in 1:nParts) {
-        transfer_weight[p] = inv_logit(hier_weight_mu + z_weight[p]*hier_weight_sd);
+        for (c in 1:nConds){
+            transfer_weight[p,c] = inv_logit(hier_weight_mu[c] + z_weight[p,c]*hier_weight_sd);
+        }
         transfer_alpha[p] = inv_logit(hier_alpha_mu + z_alpha[p]*hier_alpha_sd);
         transfer_sensitivity[p] = log(1 + exp(hier_sensitivity_mu + z_sensitivity[p]*hier_sensitivity_sd));
     }
@@ -82,10 +86,10 @@ transformed parameters {
         EV_blue = (1-p_yell)*winAmtBlue[i];
        
         // Relative contribution of Action Value Learning verus Color Value Learning
-        EV_push_yell = transfer_weight[participant[i]]*EV_push + (1 - transfer_weight[participant[i]])*EV_yell;
-        EV_push_blue = transfer_weight[participant[i]]*EV_push + (1 - transfer_weight[participant[i]])*EV_blue;
-        EV_pull_yell = transfer_weight[participant[i]]*EV_pull + (1 - transfer_weight[participant[i]])*EV_yell;
-        EV_pull_blue = transfer_weight[participant[i]]*EV_pull + (1 - transfer_weight[participant[i]])*EV_blue;
+        EV_push_yell = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
+        EV_push_blue = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
+        EV_pull_yell = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
+        EV_pull_blue = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed and yellow vs pulled and blue
@@ -115,8 +119,10 @@ transformed parameters {
     }   
 }
 model { 
-    /* Hierarchical mu parameter*/    
-    hier_weight_mu ~ normal(0,2);
+    /* Hierarchical mu parameter*/   
+    for (c in 1:nConds){
+        hier_weight_mu[c] ~ normal(0,2);
+    }
     hier_alpha_mu ~ normal(0,2);
     hier_sensitivity_mu ~ normal(0,3); 
 
@@ -127,7 +133,9 @@ model {
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
-        z_weight[p] ~ normal(0,1);
+        for (c in 1:nConds){
+            z_weight[p,c] ~ normal(0,1);
+        }
         z_alpha[p] ~ normal(0,1);
         z_sensitivity[p] ~ normal(0,1); 
     }
