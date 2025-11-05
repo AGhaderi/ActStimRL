@@ -49,7 +49,7 @@ elif partcipant_group=='PD':
     medication_session = np.array(behAll.medication).astype(int)
 
 # If you want to model fit or just recall ex model fit
-modelFit = False
+modelFit = True
 # Number of chains in MCMC procedure
 n_chains = 8
 # The number of iteration or samples for each chain in MCM procedure
