@@ -19,7 +19,7 @@ rng = np.random.default_rng(123)
 # wirtten main directory  
 writewriteMainScarch = '/mnt/scratch/projects/7TPD/amin'
 # name of model
-model_name = 'tabel3_model2_complement_prob'
+model_name = 'tabel3_model1_complement_prob'
 # The adrees name of pickle file
 pickelDir_HC = f'{writewriteMainScarch}/Behavioral/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
 # pickle file in the scratch folder in PD

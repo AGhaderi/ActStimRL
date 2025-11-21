@@ -17,16 +17,16 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC' 
+participant_group = 'PD' 
 
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
 # read collected data across all participants
-behAll = pd.read_csv(f'{readMainDirec}/NoNanOutlierBehAll.csv')
+behAll = pd.read_csv(f'{readMainDirec}/NoNanBehAll.csv')
 
 
 # select group 
-behAll = behAll[(behAll['patient']==partcipant_group)]
+behAll = behAll[(behAll['patient']==participant_group)]
 
 # number of participant
 nParts = len(np.unique(behAll['sub_ID']))
@@ -48,10 +48,10 @@ n_warmup = 1000
 # main directory of saving
 writeMainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
+pickelDir = f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/{model_name}_{participant_group}.pkl'
 # Check out if it does not exist
-if not os.path.isdir(f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/'):
-        os.makedirs(f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/') 
+if not os.path.isdir(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/'):
+        os.makedirs(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/') 
 
  
 if modelFit == True: 
@@ -64,7 +64,7 @@ if modelFit == True:
                 'winAmtPushable':np.array(behAll.winAmtPushable), 
                 'winAmtPullable':np.array(behAll.winAmtPullable),
                 'winAmtYellow':np.array(behAll.winAmtYellow), 
-                'winAmtBlue':np.array(behAll.winAmtPullable),
+                'winAmtBlue':np.array(behAll.winAmtBlue),
                 'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int),
@@ -157,5 +157,5 @@ plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
  
 # Save figure of parameter distribution 
-fig.savefig(f'{writeMainScarch}/Behavioral/Tabel2/{partcipant_group}/{model_name}_{partcipant_group}.png', dpi=500)
+fig.savefig(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/{model_name}_{participant_group}.png', dpi=500)
 

@@ -22,7 +22,7 @@ partcipant_group = 'HC'
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
 # read collected data across all participants
-behAll = pd.read_csv(f'{readMainDirec}/NoNanOutlierBehAll.csv')
+behAll = pd.read_csv(f'{readMainDirec}/NoNanBehAll.csv')
 
 
 # select group  
@@ -60,7 +60,7 @@ if modelFit == True:
                 'winAmtPushable':np.array(behAll.winAmtPushable), 
                 'winAmtPullable':np.array(behAll.winAmtPullable),
                 'winAmtYellow':np.array(behAll.winAmtYellow), 
-                'winAmtBlue':np.array(behAll.winAmtPullable),
+                'winAmtBlue':np.array(behAll.winAmtBlue),
                 'rewarded':np.array(behAll.correctChoice).astype(int), # should be integer   
                 'participant':np.array(behAll.sub_ID).astype(int),      
                 'indicator':np.array(behAll.indicator).astype(int)}

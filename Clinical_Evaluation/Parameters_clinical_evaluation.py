@@ -84,7 +84,7 @@ map_med_weighting_clr_PD = map_weighting_PD[:,1, 1] - map_weighting_PD[:,1, 0]
 map_mean_weighting_clr_PD = np.mean([map_weighting_PD[:,1, 1], map_weighting_PD[:,1, 0]], axis=0)
 
 # PD medication effect in weighting parameter across both action and color value learning
-map_med_weighting_PD = (map_weighting_PD[:,0, 1] - map_weighting_PD[:,0, 0]) - (map_weighting_PD[:,1, 1] - map_weighting_PD[:,1, 0])
+map_med_weighting_PD = (map_weighting_PD[:,0, 1] - map_weighting_PD[:,0, 0]) + (map_weighting_PD[:,1, 1] - map_weighting_PD[:,1, 0])
 # PD in weighting parameter across both action and color value learning
 map_mean_weighting_PD = np.mean([map_weighting_PD[:,0, 1],map_weighting_PD[:,0, 0], 1- map_weighting_PD[:,1, 1], 1-map_weighting_PD[:,1, 0]], axis=0)
 
@@ -162,6 +162,10 @@ parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting_act']=map_mean_we
 parameter_clinical_evaluation.loc[mask_HC, 'map_mean_weighting_clr']=map_mean_weighting_clr_HC
 parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting_clr']=map_mean_weighting_clr_PD
 
+# mean weighting
+parameter_clinical_evaluation.loc[mask_HC, 'map_mean_weighting']=map_mean_weighting_HC
+parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting']=map_mean_weighting_PD
+
 # medication effect PD
 parameter_clinical_evaluation.loc[mask_PD, 'map_med_alpha_pos']=map_med_alpha_pos_PD
 parameter_clinical_evaluation.loc[mask_PD, 'map_med_alpha_neg']=map_med_alpha_neg_PD
@@ -170,6 +174,8 @@ parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting_act']=map_med_weig
 parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting_clr']=map_med_weighting_clr_PD
 parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting']=map_med_weighting_PD
 
+# differnce UPDRS
+parameter_clinical_evaluation.loc[mask_PD, 'med_UPDRS'] = parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
  
 # csv save colinical evaluation
 if not os.path.isdir('/mnt/scratch/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'):
