@@ -17,7 +17,7 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC' 
+partcipant_group = 'PD' 
 
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
@@ -116,7 +116,7 @@ else:
 # Extracting posterior distributions for each of four main unkhown parameters
 hier_weight_mu = fit["transfer_hier_weight_mu"] 
 hier_alpha_pos_mu = fit["transfer_hier_alpha_pos_mu"] 
-hier_alpha_neg_mu = fit["transfer_hier_alpha_neg_mu"].flatten() 
+hier_alpha_neg_mu = fit["transfer_hier_alpha_neg_mu"] 
 hier_sensitivity_mu = fit["transfer_hier_sensitivity_mu"]  
 
 # Figure of model fit results in two column and two rows
@@ -131,7 +131,10 @@ sns.histplot(hier_weight_mu[0,1], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1,0], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1,1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Weighting',  fontsize=18)
-plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ w $',  fontsize=18)
 plt.yticks(fontsize=20)
@@ -143,7 +146,10 @@ fig.add_subplot(rows, columns, 2)
 sns.histplot(hier_alpha_pos_mu[0], kde=True, stat='density', bins=100)
 sns.histplot(hier_alpha_pos_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Positive Learnign Rate',  fontsize=18)
-plt.legend(['Sess1', 'Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Sess1', 'Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['OFF', 'ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ +\alpha $',  fontsize=18)
 plt.yticks(fontsize=20)
@@ -169,7 +175,10 @@ sns.histplot(hier_sensitivity_mu[0,1], kde=True, stat='density', bins=100)
 sns.histplot(hier_sensitivity_mu[1,0], kde=True, stat='density', bins=100)
 sns.histplot(hier_sensitivity_mu[1,1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Sensitivity',  fontsize=18)
-plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
  

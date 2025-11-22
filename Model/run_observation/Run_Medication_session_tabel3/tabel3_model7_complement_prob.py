@@ -86,12 +86,12 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts)),
-            'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts, nConds, nMeds_nSes)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds, nMeds_nSes)),
-            'hier_alpha_sd': np.random.uniform(.01, .1),        
-            'hier_sensitivity_sd': np.random.uniform(.01, .02),
-            'transfer_sensitivity': np.random.uniform(.03, .07, size=(nParts, nConds, nMeds_nSes))
+            'transfer_alpha_pos': np.random.uniform(.4, .6, size=(nParts)),
+            'transfer_alpha_neg': np.random.uniform(.4, .6, size=(nParts, nConds, nMeds_nSes)),
+            'transfer_sensitivity': np.random.uniform(.03, .07, size=(nParts, nConds, nMeds_nSes)),
+            'transfer_weight':np.random.uniform(.4, .6, size=(nParts, nConds)),
+            'hier_alpha_sd': np.random.uniform(.01, .02),        
+            'hier_sensitivity_sd': np.random.uniform(.01, .02)
         }
         initials.append(chaininit)   
 
@@ -131,7 +131,10 @@ sns.histplot(hier_weight_mu[0,1], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1,0], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1,1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Weighting',  fontsize=18)
-plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ w $',  fontsize=18)
 plt.yticks(fontsize=20)
@@ -155,7 +158,10 @@ sns.histplot(hier_alpha_neg_mu[0,1], kde=True, stat='density', bins=100)
 sns.histplot(hier_alpha_neg_mu[1,0], kde=True, stat='density', bins=100)
 sns.histplot(hier_alpha_neg_mu[1,1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Negative Learnign Rate',  fontsize=18)
-plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$ -\alpha $',  fontsize=18)
 plt.yticks(fontsize=20)
@@ -169,7 +175,10 @@ sns.histplot(hier_sensitivity_mu[0,1], kde=True, stat='density', bins=100)
 sns.histplot(hier_sensitivity_mu[1,0], kde=True, stat='density', bins=100)
 sns.histplot(hier_sensitivity_mu[1,1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Sensitivity',  fontsize=18)
-plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+if partcipant_group=='HC':
+    plt.legend(['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2']) 
+elif partcipant_group=='PD':
+    plt.legend(['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON']) 
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
  
