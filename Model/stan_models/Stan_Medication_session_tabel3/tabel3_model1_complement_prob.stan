@@ -41,8 +41,8 @@ parameters {
 }
 transformed parameters {
     /* probability of each features and their combination */
-    real p_push;   // Probability of reward for pushing responce
-    real p_yell;   // Probability of reward for yrllow responce
+    real p_push=0.5;   // Probability of reward for pushing responce
+    real p_yell=0.5;   // Probability of reward for yrllow responce
     real EV_push;  // Standard Expected Value of push action
     real EV_pull;  // Standard Expected Value of pull action
     real EV_yell;  // Standard Expected Value of yellow action
@@ -51,7 +51,7 @@ transformed parameters {
     real EV_push_blue;      // Weighting two strategies between push action and blue color values learning
     real EV_pull_yell;      // Weighting two strategies between pull action and yellow color values learning
     real EV_pull_blue;      // Weighting two strategies between pull action and blue color values learning
-    vector[N] soft_max_EV;  //  The soft-max function for each trial, trial-by-trial probability
+    vector[N] soft_max_EV=rep_vector(0.5,N);  //  The soft-max function for each trial, trial-by-trial probability
    
     /* Transfer individual parameters */
     array[nParts, nMeds_nSes] real<lower=0, upper=1> transfer_alpha_pos;   // Poistive Learning rate  
@@ -111,12 +111,12 @@ transformed parameters {
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed/yellow coded and pulled/blue coded 1
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_push_yell)/(exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_push_yell) + exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_pull_blue));
+            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_yell - EV_pull_blue));
 
         //  pushed/blue coded 1 and pulled/yellow coded 0
         else if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_push_blue)/(exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_push_blue) + exp(transfer_sensitivity[participant[i], condition[i], medication_session[i]]*EV_pull_yell));  
-          
+            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_blue - EV_pull_yell));
+
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
         if (pushed[i] == 1){
@@ -177,9 +177,9 @@ model {
     }
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,.5);  
-    hier_weight_sd ~ normal(0,.5); 
-    hier_sensitivity_sd ~ normal(0,.5);
+    hier_alpha_sd ~ normal(0,1);  
+    hier_weight_sd ~ normal(0,1); 
+    hier_sensitivity_sd ~ normal(0,1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {

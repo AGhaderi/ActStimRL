@@ -131,16 +131,5 @@ for sub in withdraw_subs1:
 # Save all no nan and outlier data from participants 
 NoNanBehAll.to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/NoNanBehAll.csv', index=False)
 
-# second exclusion based on weighting parameters of Model
-withdraw_subs2 = ['sub-030','sub-067', 'sub-069', 'sub-108']
-for sub in withdraw_subs2:
-    NoNanBehAll = NoNanBehAll[NoNanBehAll['sub_ID']!=sub] 
-# Save all no nan and outlier data from participants 
-NoNanBehAll.to_csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/NoNanOutlierBehAll.csv', index=False)
-
-
-
-
-
 
 

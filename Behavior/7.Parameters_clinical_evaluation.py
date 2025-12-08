@@ -24,7 +24,7 @@ def get_mode_density(values):
 
 
 ################################ model in PD
-pickelDir_PD = f'/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Behavioral_Modeling/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
+pickelDir_PD = f'/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Hier-RL-Model/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
 loadPkl_PD = utils.load_pickle(load_path=pickelDir_PD)
 fit_PD = loadPkl_PD['fit']
   
@@ -33,30 +33,30 @@ transfer_alpha_pos_PD = fit_PD["transfer_alpha_pos"]
 transfer_alpha_neg_PD = fit_PD["transfer_alpha_neg"] 
 transfer_sensitivity_PD = fit_PD["transfer_sensitivity"] 
 transfer_weight_PD = fit_PD["transfer_weight"]
- 
-
 
 # dimetion of array
 nParts= transfer_alpha_pos_PD.shape[0]
 nMeds= transfer_alpha_pos_PD.shape[1]
 nConds = 2
+
 # Initialize array for modes
 map_alpha_pos_PD = np.zeros((nParts, nMeds))
-map_alpha_neg_PD = np.zeros((nParts, nMeds))
-map_sensitivity_PD = np.zeros((nParts, nMeds))
+map_alpha_neg_PD = np.zeros((nParts, nConds, nMeds))
+map_sensitivity_PD = np.zeros((nParts, nConds, nMeds))
+map_weighting_PD = np.zeros((nParts, nConds, nMeds))
+
+# positive LR
 for i in range(nParts):
     for j in range(nMeds):
         map_alpha_pos_PD[i,j] = get_mode_density(transfer_alpha_pos_PD[i,j]) 
-        map_alpha_neg_PD[i,j] = get_mode_density(transfer_alpha_neg_PD[i,j]) 
-        map_sensitivity_PD[i,j] = get_mode_density(transfer_sensitivity_PD[i,j]) 
 
-# seighting parameters
-map_weighting_PD = np.zeros((nParts, nConds, nMeds))
+# Negative LR, weighting parameter, sensitivity
 for i in range(nParts):
     for j in range(nConds):
         for k in range(nMeds):
+            map_alpha_neg_PD[i,j,k] = get_mode_density(transfer_alpha_neg_PD[i,j,k]) 
             map_weighting_PD[i,j, k] = get_mode_density(transfer_weight_PD[i,j,k]) 
-
+            map_sensitivity_PD[i,j,k] = get_mode_density(transfer_sensitivity_PD[i,j, k]) 
 
 # PD medication effect in positive learning rate
 map_med_alpha_pos_PD = map_alpha_pos_PD[:,1] - map_alpha_pos_PD[:,0]
@@ -64,14 +64,16 @@ map_med_alpha_pos_PD = map_alpha_pos_PD[:,1] - map_alpha_pos_PD[:,0]
 map_mean_alpha_pos_PD = np.mean([map_alpha_pos_PD[:,1], map_alpha_pos_PD[:,0]], axis=0)
 
 # PD medication effect in negative learning rate
-map_med_alpha_neg_PD = map_alpha_neg_PD[:,1]- map_alpha_neg_PD[:,0]
+map_med_alpha_neg_PD = np.mean([map_alpha_neg_PD[:,0,1],map_alpha_neg_PD[:,1,1]], axis=0) - np.mean([map_alpha_neg_PD[:,0,0],map_alpha_neg_PD[:,1,0]], axis=0) 
 # PD in negative learning rate
-map_mean_alpha_neg_PD = np.mean([map_alpha_neg_PD[:,1], map_alpha_neg_PD[:,0]], axis=0)
+map_mean_alpha_neg_PD = np.mean([map_alpha_neg_PD[:,0,1], map_alpha_neg_PD[:,0,0],
+                                 map_alpha_neg_PD[:,1,0], map_alpha_neg_PD[:,1,1]], axis=0)
 
 # PD medication effect in sensitivity
-map_med_sensitivity_PD = map_sensitivity_PD[:,1]- map_sensitivity_PD[:,0]
+map_med_sensitivity_PD = np.mean([map_sensitivity_PD[:,0,1],map_sensitivity_PD[:,1,1]], axis=0)- np.mean([map_sensitivity_PD[:,0,0],map_sensitivity_PD[:,1,0]], axis=0)
 # PD in sensitivity
-map_mean_sensitivity_PD = np.mean([map_sensitivity_PD[:,1], map_sensitivity_PD[:,0]], axis=0)
+map_mean_sensitivity_PD = np.mean([map_sensitivity_PD[:,0,0], map_sensitivity_PD[:,0,1],
+                                   map_sensitivity_PD[:,1,0], map_sensitivity_PD[:,1,1]], axis=0)
 
 # PD medication effect in weighting parameter in action value learning
 map_med_weighting_act_PD = map_weighting_PD[:,0, 1] - map_weighting_PD[:,0, 0]
@@ -89,7 +91,7 @@ map_med_weighting_PD = (map_weighting_PD[:,0, 1] - map_weighting_PD[:,0, 0]) + (
 map_mean_weighting_PD = np.mean([map_weighting_PD[:,0, 1],map_weighting_PD[:,0, 0], 1- map_weighting_PD[:,1, 1], 1-map_weighting_PD[:,1, 0]], axis=0)
 
 ################################ model in HC
-pickelDir_HC = f'/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Behavioral_Modeling/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
+pickelDir_HC = f'/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Hier-RL-Model/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
 loadPkl_HC = utils.load_pickle(load_path=pickelDir_HC)
 fit_HC = loadPkl_HC['fit']
   
@@ -103,28 +105,31 @@ transfer_weight_HC = fit_HC["transfer_weight"]
 
 # dimetion of array
 nParts= transfer_alpha_pos_HC.shape[0]
-nMeds= transfer_alpha_pos_HC.shape[1]
+nMeds= 2
 nConds = 2
 # Initialize array for modes
 map_alpha_pos_HC = np.zeros((nParts, nMeds))
-map_alpha_neg_HC = np.zeros((nParts, nMeds))
+map_alpha_neg_HC = np.zeros((nParts, nConds, nMeds))
+map_weighting_HC = np.zeros((nParts, nConds, nMeds))
+map_sensitivity_HC = np.zeros((nParts, nConds, nMeds))
+
+# positive LR
 for i in range(nParts):
     for j in range(nMeds):
         map_alpha_pos_HC[i,j] = get_mode_density(transfer_alpha_pos_HC[i,j]) 
-        map_alpha_neg_HC[i,j] = get_mode_density(transfer_alpha_neg_HC[i,j]) 
 
-# seighting parameters
-map_weighting_HC = np.zeros((nParts, nConds, nMeds))
-map_sensitivity_HC = np.zeros((nParts, nConds, nMeds))
+# Negative LR, weighting parameter, sensitivity
 for i in range(nParts):
     for j in range(nConds):
         for k in range(nMeds):
-            map_weighting_HC[i,j, k] = get_mode_density(transfer_weight_HC[i,j,k]) 
-            map_sensitivity_HC[i,j,k] = get_mode_density(transfer_sensitivity_HC[i,j, k]) 
+            map_alpha_neg_HC[i,j,k] = get_mode_density(transfer_alpha_neg_HC[i,j,k]) 
+            map_weighting_HC[i,j,k] = get_mode_density(transfer_weight_HC[i,j,k]) 
+            map_sensitivity_HC[i,j,k] = get_mode_density(transfer_sensitivity_HC[i,j,k]) 
 
 # mean of learning rate across session 1 and 2
 map_mean_alpha_pos_HC = np.mean([map_alpha_pos_HC[:,1],map_alpha_pos_HC[:,0]], axis=0)
-map_mean_alpha_neg_HC = np.mean([map_alpha_neg_HC[:,1],map_alpha_neg_HC[:,0]], axis=0) 
+map_mean_alpha_neg_HC = np.mean([map_alpha_neg_HC[:,0,1],map_alpha_neg_HC[:,0,0],
+                                 map_alpha_neg_HC[:,1,0],map_alpha_neg_HC[:,1,1]], axis=0) 
 # mean of sensitivty across session 1 and 2
 map_mean_sensitivity_HC = np.mean([map_sensitivity_HC[:,0,0],map_sensitivity_HC[:,0,1],map_sensitivity_HC[:,1,0],map_sensitivity_HC[:,1,1],], axis=0)  
 # mean of weighting across session 1 and 2 inn action value learning

@@ -14,7 +14,8 @@ from scipy import stats
 # name of table
 tabel = 'Tabel1'
 list_model = ['tabel1_model1_complement_prob', 'tabel1_model2_complement_prob', 
-              'tabel1_model3_complement_prob', 'tabel1_model4_complement_prob']
+              'tabel1_model3_complement_prob', 'tabel1_model4_complement_prob',
+              'tabel1_model5_complement_prob']
 
 for partcipant_group in ['HC', 'PD']:
     # declare waice variable
@@ -24,9 +25,9 @@ for partcipant_group in ['HC', 'PD']:
     for i, model_name in enumerate(list_model):
         print(model_name)
         # main directory of saving
-        writeMainScarch = '/mnt/scratch/projects/7TPD/amin'
+        writeMainScarch = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
         # The adrees name of pickle file
-        pickelDir = f'{writeMainScarch}/Behavioral/{tabel}/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
+        pickelDir = f'{writeMainScarch}/Hier-RL-Model/{tabel}/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
                           
         """Loading the pickle file of model fit from the subject directory"""
         loadPkl = utils.load_pickle(load_path=pickelDir)

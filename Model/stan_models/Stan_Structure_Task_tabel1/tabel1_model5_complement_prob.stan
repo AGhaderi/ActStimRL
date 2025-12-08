@@ -6,10 +6,10 @@ RL(w, +alpha, -alpha, beta)
 data {
     int<lower=1> N;        // Number of trial-level observations
     int<lower=1> nParts;   // Number of participants
-    array[N] int<lower=0, upper=1> pushed;             // 1 if pushed and 0 if pulled 
+    array[N] int<lower=0, upper=1> leftChosen;           // 1 if left and 0 if right 
     array[N] int<lower=0, upper=1> yellowChosen;       // 1 if yellow color is chosen and 0 if yellow color is not chosen 
-    array[N] real<lower=0, upper=100> winAmtPushable;  // The amount of values feedback when pushing is correct response
-    array[N] real<lower=0, upper=100> winAmtPullable;  // The amount of values feedback when pulling is correct response
+    array[N] real<lower=0, upper=100> winAmtLeft;  // The amount of values feedback when left is correct response
+    array[N] real<lower=0, upper=100> winAmtRight;  // The amount of values feedback when right is correct response
     array[N] real<lower=0, upper=100> winAmtYellow;    // The amount of values feedback when yellow chosen is correct response 
     array[N] real<lower=0, upper=100> winAmtBlue;      // The amount of values feedback when blue chosen is correct response 
     array[N] int<lower=0, upper=1> rewarded;           // 1 for rewarding and 0 for punishment
@@ -39,17 +39,17 @@ parameters {
 }
 transformed parameters {
     /* probability of each features and their combination */
-    real p_push;   // Probability of reward for pushing responce
-    real p_yell;   // Probability of reward for yrllow responce
-    real EV_push;  // Standard Expected Value of push action
-    real EV_pull;  // Standard Expected Value of pull action
+    real p_left=0.5;   // Probability of reward for left responce
+    real p_yell=0.5;   // Probability of reward for yrllow responce
+    real EV_left;  // Standard Expected Value of left action
+    real EV_right;  // Standard Expected Value of right action
     real EV_yell;  // Standard Expected Value of yellow action
     real EV_blue;  // Standard Expected Value of blue action
-    real EV_push_yell;      // Weighting two strategies between push action and yellow color values learning
-    real EV_push_blue;      // Weighting two strategies between push action and blue color values learning
-    real EV_pull_yell;      // Weighting two strategies between pull action and yellow color values learning
-    real EV_pull_blue;      // Weighting two strategies between pull action and blue color values learning
-    vector[N] soft_max_EV;  //  The soft-max function for each trial, trial-by-trial probability
+    real EV_left_yell;      // Weighting two strategies between left action and yellow color values learning
+    real EV_left_blue;      // Weighting two strategies between left action and blue color values learning
+    real EV_right_yell;      // Weighting two strategies between right action and yellow color values learning
+    real EV_right_blue;      // Weighting two strategies between right action and blue color values learning
+    vector[N] soft_max_EV=rep_vector(0.5,N);  //  The soft-max function for each trial, trial-by-trial probability
    
     /* Transfer individual parameters */
     array[nParts] real<lower=0, upper=1> transfer_alpha_pos;   // Poistive Learning rate  
@@ -81,50 +81,48 @@ transformed parameters {
    for (i in 1:N) {
         // Restart probability of variable for each environemnt and condition
         if (indicator[i]==1){
-            p_push = .5;
-            p_yell = .5;
+            p_left = 0.5;
+            p_yell = 0.5;
         }
         // Calculating the Standard Expected Value
-        EV_push = p_push*winAmtPushable[i];
-        EV_pull = (1-p_push)*winAmtPullable[i];
+        EV_left = p_left*winAmtLeft[i];
+        EV_right = (1-p_left)*winAmtRight[i];
         EV_yell = p_yell*winAmtYellow[i];
         EV_blue = (1-p_yell)*winAmtBlue[i];
        
-        // Relative contribution of ion Value Learning verus Color Value Learning
-        EV_push_yell = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
-        EV_push_blue = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
-        EV_pull_yell = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
-        EV_pull_blue = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
+       // Relative contribution of ion Value Learning verus Color Value Learning
+        EV_left_yell = transfer_weight[participant[i], condition[i]]*EV_left + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
+        EV_left_blue = transfer_weight[participant[i], condition[i]]*EV_left + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
+        EV_right_yell = transfer_weight[participant[i], condition[i]]*EV_right + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
+        EV_right_blue = transfer_weight[participant[i], condition[i]]*EV_right + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
-        // pushed/yellow coded and pulled/blue coded 1
-        if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i]]*EV_push_yell)/(exp(transfer_sensitivity[participant[i]]*EV_push_yell) + exp(transfer_sensitivity[participant[i]]*EV_pull_blue));
-
-        //  pushed/blue coded 1 and pulled/yellow coded 0
-        if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i]]*EV_push_blue)/(exp(transfer_sensitivity[participant[i]]*EV_push_blue) + exp(transfer_sensitivity[participant[i]]*EV_pull_yell));  
-          
+        // left/yellow coded and right/blue coded 1
+        if ((leftChosen[i] == 1 && yellowChosen[i] == 1) || (leftChosen[i] == 0 && yellowChosen[i] == 0))
+            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i]] * (EV_left_yell - EV_right_blue));
+        //  left/blue coded 1 and right/yellow coded 0
+        else if ((leftChosen[i] == 1 && yellowChosen[i] == 0) || (leftChosen[i] == 0 && yellowChosen[i] == 1))
+            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i]] * (EV_left_blue - EV_right_yell));
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
-        if (pushed[i] == 1){
+        if (leftChosen[i] == 1){
             // positive RPE
-            if((rewarded[i] - p_push)>=0 ){ 
-                p_push = p_push + transfer_alpha_pos[participant[i]]*(rewarded[i] - p_push);
+            if((rewarded[i] - p_left)>=0 ){ 
+                p_left = p_left + transfer_alpha_pos[participant[i]]*(rewarded[i] - p_left);
             } 
             // negative RPE
             else{
-                p_push = p_push + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_push); 
+                p_left = p_left + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_left); 
             }
         }
         else{
             // positive RPE
-            if((rewarded[i] + p_push - 1)>=0){ 
-                p_push = p_push - transfer_alpha_pos[participant[i]]*(rewarded[i] + p_push - 1);
+            if((rewarded[i] + p_left - 1)>=0){ 
+                p_left = p_left - transfer_alpha_pos[participant[i]]*(rewarded[i] + p_left - 1);
             } 
             // negative RPE
             else{
-                p_push = p_push - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_push - 1);
+                p_left = p_left - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_left - 1);
             }
         }   
 
@@ -149,7 +147,7 @@ transformed parameters {
                 p_yell = p_yell - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_yell - 1);
             }
         }
-    }   
+    }    
 }
 model { 
     /* Hierarchical mu parameter*/
@@ -161,9 +159,9 @@ model {
     hier_sensitivity_mu ~ normal(0,3); 
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,1);  
-    hier_weight_sd ~ normal(0,1); 
-    hier_sensitivity_sd ~ normal(0,1);
+    hier_alpha_sd ~ normal(0,0.5);  
+    hier_weight_sd ~ normal(0,0.5); 
+    hier_sensitivity_sd ~ normal(0,0.5);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
@@ -177,13 +175,13 @@ model {
 
     /* RL likelihood */
     for (i in 1:N) { 
-        pushed[i] ~ bernoulli(soft_max_EV[i]);
+        leftChosen[i] ~ bernoulli(soft_max_EV[i]);
         }
 }
 generated quantities { 
    vector[N] log_lik;  
     /*  RL Log density likelihood */
     for (i in 1:N) {
-        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
+        log_lik[i] = bernoulli_lpmf(leftChosen[i] | soft_max_EV[i]);
     }
 }

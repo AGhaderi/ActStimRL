@@ -25,9 +25,9 @@ for partcipant_group in ['HC', 'PD']:
     for i, model_name in enumerate(list_model):
         print(model_name)
         # main directory of saving
-        writeMainScarch = '/mnt/scratch/projects/7TPD/amin'
+        writeMainScarch = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
         # The adrees name of pickle file
-        pickelDir = f'{writeMainScarch}/Behavioral/{tabel}/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
+        pickelDir = f'{writeMainScarch}/Hier-RL-Model/{tabel}/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
         """Loading the pickle file of model fit from the subject directory"""
         loadPkl = utils.load_pickle(load_path=pickelDir)
         fit = loadPkl['fit'] 
