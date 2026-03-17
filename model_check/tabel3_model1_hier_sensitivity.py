@@ -12,7 +12,7 @@ import os
 # wirtten main directory  
 writewriteMainScarch = '/mnt/scratch/projects/7TPD/amin'
 # name of model
-model_name = 'tabel3_model1_complement_prob'
+model_name = 'tabel3_model1'
 # The adrees name of pickle file
 pickelDir_HC = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/HC/{model_name}_HC.pkl'
 # pickle file in the scratch folder in PD

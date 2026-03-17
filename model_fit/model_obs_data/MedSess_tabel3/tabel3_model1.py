@@ -17,7 +17,7 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'HC' 
+partcipant_group = 'PD' 
 
 # read collected data across all participants
 behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)

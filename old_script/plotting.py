@@ -9,8 +9,8 @@ import os
 from scipy.io import loadmat
 from . import config 
 
-def plotHighRewardOptionTrial(
-        readBehFile= config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+def plotChoicePropTrial(
+        readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE,
         save_path = config.FIGURES_DIR,
         window_size: int = 4
     ):
@@ -27,12 +27,110 @@ def plotHighRewardOptionTrial(
     window_size : int
         Rolling mean window size for smoothing choice curves.
 
+    Notes
+    -----
+    - Automatically processes Stim/Act * 1-reversal/2-reversal conditions.
     """
 
+    # ===========================================
     # Load full dataset across all participants
+    # ===========================================
     behAll = pd.read_csv(f"{readBehFile}")
+
+    # Fix trial numbering (replace 44-85 -> 2-43)
+    behAll["trialNumber"] = behAll["trialNumber"].replace(
+                                    list(range(44, 86)),
+                                    list(range(2, 44)))
+    # participatns
+    sub_ID = behAll["sub_ID"].unique()
+  
+    # ===========================================
+    # Loop through conditions
+    # ===========================================
+
+    # Compute "highRewardOption" relevant option
+    behAll['highRewardOption'] = np.nan
+    for sub in sub_ID:
+        for block in ["Act", "Stim"]:
+            for session in [1,2]:
+                for run in [1,2]:
+                    # filter behavioral data
+                    behAllCond = behAll.loc[(behAll["sub_ID"] == sub)&(behAll["block"] == block)&
+                                            (behAll["run"] == run)&(behAll["session"] == session)].copy()
+                    if len(behAllCond)!=0:
+                        # extract phases
+                        phases = behAllCond['phase'].unique()
+
+                        # create mask
+                        mask_phase1 = ((behAll["sub_ID"] == sub) &
+                                        (behAll["block"] == block) &
+                                        (behAll["run"] == run) &
+                                        (behAll["session"] == session) &
+                                        (behAll["phase"] == 'phase1'))
+                        
+                        mask_phase2 = ((behAll["sub_ID"] == sub) &
+                                        (behAll["block"] == block) &
+                                        (behAll["run"] == run) &
+                                        (behAll["session"] == session) &
+                                        (behAll["phase"] == 'phase2'))
+                        
+                        mask_phase3 = ((behAll["sub_ID"] == sub) &
+                                        (behAll["block"] == block) &
+                                        (behAll["run"] == run) &
+                                        (behAll["session"] == session) &
+                                        (behAll["phase"] == 'phase3'))
+                            
+                        if block == 'Act':
+
+                            # test if the higher probability reward is push, pull, push or pull, push, pull
+                            mean_phase1 = behAllCond[behAllCond['phase']=='phase1']['pushCorrect'].mean()
+                            
+                            if mean_phase1>.5: # push, pull,push
+                                if len(phases)==2:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase1']['pushed']
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase2']['pushed']                        
+                                if len(phases)==3:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase1']['pushed']
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase2']['pushed']
+                                    behAll.loc[mask_phase3, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase3']['pushed']
+
+                            else: # pull, push,pull, should be reserved
+                                if len(phases)==2:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase1']['pushed']==0).astype(int)
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase2']['pushed']==0).astype(int)                       
+                                if len(phases)==3:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase1']['pushed']==0).astype(int)   
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase2']['pushed']==0).astype(int)   
+                                    behAll.loc[mask_phase3, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase3']['pushed']==0).astype(int)   
+
+                        if block == 'Stim':
+
+                            # test if the higher probability reward is push, pull, push or pull,push,pull
+                            mean_phase1 = behAllCond[behAllCond['phase']=='phase1']['yellowCorrect'].mean()
+                            
+                            if mean_phase1>.5: # push, pull,push
+                                if len(phases)==2:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase1']['yellowChosen']
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase2']['yellowChosen']                        
+                                if len(phases)==3:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase1']['yellowChosen']
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase2']['yellowChosen']
+                                    behAll.loc[mask_phase3, 'highRewardOption'] = behAllCond[behAllCond['phase']=='phase3']['yellowChosen']
+
+                            else: # pull, push,pull, reverse
+                                if len(phases)==2:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase1']['yellowChosen']==0).astype(int)
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase2']['yellowChosen']==0).astype(int)                       
+                                if len(phases)==3:
+                                    behAll.loc[mask_phase1, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase1']['yellowChosen']==0).astype(int)   
+                                    behAll.loc[mask_phase2, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase2']['yellowChosen']==0).astype(int)   
+                                    behAll.loc[mask_phase3, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase3']['yellowChosen']==0).astype(int)   
+
+ 
+    # ===========================================
+    # Set up figure
+    # ===========================================
     
-    # Set up figure    
     mm = 1 / 2.54
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
     axs = axs.flatten()
@@ -42,8 +140,11 @@ def plotHighRewardOptionTrial(
         for reverse in [14, 21]:
             behAllCond = behAll.loc[(behAll["block"] == block) &(behAll["reverse"] == reverse)].copy()
 
+            # ==========================================================
             # Compute average across subjects for each group × trial
-            beh_group = behAllCond.groupby( ["group", "trialNumber_new"], as_index=False)["relevantHighRewardOptionPattern"].mean()
+            # ==========================================================
+
+            beh_group = behAllCond.groupby( ["group", "trialNumber"], as_index=False)["highRewardOption"].mean()
 
             # Rolling averages for each participant group
             groups = {
@@ -55,14 +156,16 @@ def plotHighRewardOptionTrial(
         
             for group_id, (_, color) in groups.items():
                 y = beh_group.loc[
-                    beh_group["group"] == group_id, "relevantHighRewardOptionPattern"
+                    beh_group["group"] == group_id, "highRewardOption"
                 ]
                 moving_avg = y.rolling(window=window_size, min_periods=1).mean()
                 axs[idx].plot(np.arange(1, 43), moving_avg, color=color, linewidth=3)
 
             axs[idx].axhline(0.5, linestyle="--", color="black")
 
+            # ==========================================================
             # Add reversal markers
+            # ==========================================================
             if reverse == 21:
                 axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
                 axs[idx].plot([0, 21], [.75, .75], color='green')
@@ -88,22 +191,25 @@ def plotHighRewardOptionTrial(
 
             idx += 1
 
+    # ===========================================
     # Global labels
+    # ===========================================
     fig.supxlabel("Trial")
-    #fig.supylabel("Choice Proportion")
+    fig.supylabel("Choice Proportion")
 
     fig.tight_layout()
     # Save figure
-    plt.savefig(f'{save_path}/relevantHighRewardOptionTrial.pdf')
-    
+    plt.savefig(f'{save_path}/ChoicePropTrial.pdf')
 
-def plotIrrelevantOptionTrial(
-        readBehFile= config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+
+
+def plotChoicePropTria_lOld(
+        readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE,
         save_path = config.FIGURES_DIR,
         window_size: int = 4
     ):
     """
-    Plot irrelevant choice behavior (color in Act, action in Clr) and reversal structure
+    Plot choice behavior (high-reward option proportion) and reversal structure
     across all participants and all trials.
 
     Parameters
@@ -115,23 +221,74 @@ def plotIrrelevantOptionTrial(
     window_size : int
         Rolling mean window size for smoothing choice curves.
 
+    Notes
+    -----
+    - Automatically processes Stim/Act * 1-reversal/2-reversal conditions.
     """
 
+    # ===========================================
     # Load full dataset across all participants
+    # ===========================================
     behAll = pd.read_csv(f"{readBehFile}")
 
-    # Set up figure    
+    # Fix trial numbering (replace 44–85 → 2–43)
+    behAll["trialNumber"] = behAll["trialNumber"].replace(
+                                    list(range(44, 86)),
+                                    list(range(2, 44)))
+
+    # ===========================================
+    # Set up figure
+    # ===========================================
     mm = 1 / 2.54
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
     axs = axs.flatten()
     idx = 0
+
+    # ===========================================
+    # Loop through conditions
     # ===========================================
     for block in ["Act", "Stim"]:
         for reverse in [14, 21]:
-            behAllCond = behAll.loc[(behAll["block"] == block) &(behAll["reverse"] == reverse)].copy()
 
+            behAllCond = behAll.loc[
+                (behAll["block"] == block) &
+                (behAll["reverse"] == reverse)
+            ].copy()
+
+            # ==========================================================
+            # Compute "highRewardOption" depending on block/reversal
+            # ==========================================================
+            chosenOption = np.zeros(behAllCond.shape[0])
+
+            if block == "Stim" and reverse == 21:
+                chosenOption[behAllCond['stimActFirst']=='Stim'] = -(behAllCond.loc[behAllCond['stimActFirst']=='Stim']['yellowChosen']-1)
+                chosenOption[behAllCond['stimActFirst']=='Act'] = behAllCond.loc[behAllCond['stimActFirst']=='Act']['yellowChosen']
+                axs[idx].set_title("Color-value")
+
+            elif block == "Act" and reverse == 21:
+                chosenOption[behAllCond['stimActFirst']=='Stim'] = -(behAllCond.loc[behAllCond['stimActFirst']=='Stim']['pushed']-1)
+                chosenOption[behAllCond['stimActFirst']=='Act'] = behAllCond.loc[behAllCond['stimActFirst']=='Act']['pushed']
+                axs[idx].set_title("Action-value")
+
+            elif block == "Stim" and reverse == 14:
+                chosenOption[behAllCond['stimActFirst']=='Stim'] = -(behAllCond.loc[behAllCond['stimActFirst']=='Stim']['yellowChosen']-1)
+                chosenOption[behAllCond['stimActFirst']=='Act'] = -(behAllCond.loc[behAllCond['stimActFirst']=='Act']['yellowChosen']-1)
+                axs[idx].set_title("Color-value")
+
+            elif block == "Act" and reverse == 14:
+                chosenOption[behAllCond['stimActFirst']=='Stim'] = behAllCond.loc[behAllCond['stimActFirst']=='Stim']['pushed']
+                chosenOption[behAllCond['stimActFirst']=='Act'] = -(behAllCond.loc[behAllCond['stimActFirst']=='Act']['pushed']-1)
+                axs[idx].set_title("Action-value")
+
+            behAllCond["highRewardOption"] = chosenOption
+
+            # ==========================================================
             # Compute average across subjects for each group × trial
-            beh_group = behAllCond.groupby( ["group", "trialNumber_new"], as_index=False)["irrelevantHighRewardOption"].mean()
+            # ==========================================================
+            beh_group = behAllCond.groupby(
+                ["group", "trialNumber"],
+                as_index=False
+            )["highRewardOption"].mean()
 
             # Rolling averages for each participant group
             groups = {
@@ -139,24 +296,33 @@ def plotIrrelevantOptionTrial(
                 2: ("HC", config.COLORS['HC']),
                 3: ("PD-ON", config.COLORS['PD-ON']),
             }
-        
-        
+
             for group_id, (_, color) in groups.items():
                 y = beh_group.loc[
-                    beh_group["group"] == group_id, "irrelevantHighRewardOption"
+                    beh_group["group"] == group_id, "highRewardOption"
                 ]
                 moving_avg = y.rolling(window=window_size, min_periods=1).mean()
                 axs[idx].plot(np.arange(1, 43), moving_avg, color=color, linewidth=3)
 
             axs[idx].axhline(0.5, linestyle="--", color="black")
 
+            # ==========================================================
             # Add reversal markers
+            # ==========================================================
             if reverse == 21:
                 axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
+                axs[idx].plot([0, 21], [.75, .75], color='green')
+                axs[idx].plot([21, 42], [.25, .25], color='green')
+                axs[idx].plot([21, 21], [.75, .25], color='green')
 
             else:  # 14 + 28 reversals
                 axs[idx].axvline(14, color='c', linestyle='--', alpha=.7)
                 axs[idx].axvline(28, color='c', linestyle='--', alpha=.7)
+                axs[idx].plot([0, 14], [.75, .75], color='green')
+                axs[idx].plot([14, 14], [.75, .25], color='green')
+                axs[idx].plot([14, 28], [.25, .25], color='green')
+                axs[idx].plot([28, 28], [.75, .25], color='green')
+                axs[idx].plot([28, 42], [.75, .75], color='green')
 
             # Axis configs
             axs[idx].set_ylim(0, 1)
@@ -168,15 +334,15 @@ def plotIrrelevantOptionTrial(
 
             idx += 1
 
+    # ===========================================
     # Global labels
+    # ===========================================
     fig.supxlabel("Trial")
-    #fig.supylabel("Choice Proportion")
+    fig.supylabel("Choice Proportion")
 
     fig.tight_layout()
     # Save figure
-    plt.savefig(f'{save_path}/irrelevantHighRewardOptionTrial.pdf')
- 
-    return behAll
+    plt.savefig(f'{save_path}/ChoicePropTrial.pdf')
 
 
 def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
@@ -371,9 +537,10 @@ def plotChoiceResponse(data, subName, reverse, saveFile):
  
     # Save plot of chosen and correct response 
     fig.savefig(saveFile, dpi=500)
-    plt.close()     
+    plt.close()
 
-
+     
+     
 def plotFeatureBias(
     readBehFile=config.PROJECT_NoNAN_BEH_ALL_FILE,
     saveFigPath=config.FIGURES_DIR):
@@ -420,19 +587,19 @@ def plotFeatureBias(
     custom_palette = {'HC': config.COLORS['HC'], 'PD-ON': config.COLORS['PD-ON'], 'PD-OFF': config.COLORS['PD-OFF']}
     
     # ------------------- Left responses -------------------
-    sns.barplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], errorbar='se',
-                palette=custom_palette)
+    sns.boxplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
+                palette=custom_palette, showfliers=False)
     sns.stripplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
                   dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
     axs[0].set_ylabel('Left response', fontsize=12)
     axs[0].set_xlabel('', fontsize=12)
     axs[0].axhline(.5, color='black', linestyle='--')
     axs[0].set_ylim(0,1)
-    axs[0].legend(fontsize=10, loc='upper left')
+    axs[0].legend(fontsize=8, loc='upper left')
     
     # ------------------- High amount responses -------------------
-    sns.barplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], errorbar='se',
-                palette=custom_palette, legend=False)
+    sns.boxplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
+                palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
                   dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
     axs[1].set_ylabel('Higher amount', fontsize=12)
@@ -441,8 +608,8 @@ def plotFeatureBias(
     axs[1].set_ylim(0,1)
     
     # ------------------- Push responses -------------------
-    sns.barplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], errorbar='se',
-                palette=custom_palette, legend=False)
+    sns.boxplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
+                palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
                   dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
     axs[2].set_ylabel('Push response', fontsize=12)
@@ -451,8 +618,8 @@ def plotFeatureBias(
     axs[2].set_ylim(0,1)
     
     # ------------------- Yellow responses -------------------
-    sns.barplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], errorbar='se',
-                palette=custom_palette, legend=False)
+    sns.boxplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
+                palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
                   dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
     axs[3].set_ylabel('Yellow response', fontsize=12)
@@ -463,77 +630,8 @@ def plotFeatureBias(
     fig.tight_layout()
     
     # ------------------- 8. Save figure -------------------
-    plt.savefig(f'{saveFigPath}/featureBias.pdf', bbox_inches='tight')
+    plt.savefig(f'{saveFigPath}/featureBias.pdf')
     plt.show()
-
-
-def plotProportionRelIrrelevantHighRewardOption(
-    readBehFile=config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE,
-    saveFigPath=config.FIGURES_DIR):
-    """
-    Plot the relevant and irrelevant high reward options and
-    their differnce for each participant and group
-
-    Parameters
-    ----------
-    readBehFile : str
-        Path to the CSV file containing behavioral data.
-    saveFigPath : str
-        Path where the generated figure will be saved.
-    """
-    
-    #Load data 
-    behAll = pd.read_csv(readBehFile)
-    
-    # Standardize group and condition labels
-    behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
-    behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
-
-    # Plot setting 
-    mm = 1/2.54  # convert cm to inches for figure size
-    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
-    axs = axs.flatten()
-    
-    # Custom color palette
-    custom_palette = {'HC': config.COLORS['HC'], 'PD-ON': config.COLORS['PD-ON'], 'PD-OFF': config.COLORS['PD-OFF']}
-    
-    # relevant high Reward Option 
-    sns.barplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0], errorbar='se',
-                palette=custom_palette)
-    sns.stripplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
-    axs[0].set_ylabel('Relevant High reward option', fontsize=12)
-    axs[0].set_xlabel('', fontsize=12)
-    axs[0].axhline(.5, color='black', linestyle='--')
-    axs[0].set_ylim(0,1)
-    axs[0].legend(fontsize=10, loc="lower left")
-     
-    # irrelevant high Reward Option 
-    sns.barplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1], errorbar='se',
-                palette=custom_palette, legend=False)
-    sns.stripplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
-    axs[1].set_ylabel('Irrelevant high reward option', fontsize=12)
-    axs[1].set_xlabel('', fontsize=12)
-    axs[1].axhline(.5, color='black', linestyle='--')
-    axs[1].set_ylim(0,1)
-      
-    # differnce between relevant and irrelevant high Reward Option 
-    behAll['relevantVrIrrelevantHighRewardOption'] = behAll['relevantHighRewardOption'] - behAll['irrelevantHighRewardOption']
-    sns.boxplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
-                palette=custom_palette, legend=False)
-    sns.stripplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
-    axs[2].set_ylabel('Relevant versus Irrelevant option', fontsize=12)
-    axs[2].set_xlabel('', fontsize=12)
-   
-    
-    fig.tight_layout()
-    
-    # Save figure 
-    plt.savefig(f'{saveFigPath}/proportionRelIrrelevantHighRewardOption.pdf', bbox_inches='tight')
-    plt.show()
-
 
 
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
@@ -554,7 +652,6 @@ def bci(x, alpha=0.05):
     interval = np.nanpercentile(x, [(alpha/2)*100, (1-alpha/2)*100])
 
     return interval
-
 
 def calc_min_interval(x, alpha):
     """Internal method to determine the minimum interval of a given width.
@@ -609,7 +706,6 @@ def hdi(x, alpha=0.05):
     interval = np.array(calc_min_interval(sx, alpha))
 
     return interval
-
 
 def plot_posterior(x,
                    ax=None,

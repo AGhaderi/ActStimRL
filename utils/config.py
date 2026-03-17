@@ -10,7 +10,6 @@ PROJECT_REDCAP_DIR='/mnt/projects/7TPD/Documents/redcap'
 PROJECT_CLIN_EVAL_DIR = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Clinical_evaluation'
 PROJECT_HIER_MODEL_DIR = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Hier-RL-Model'
 STAN_DIR = '/mrhome/amingk/Documents/7TPD/ActStimRL/stan_models'
-
 ####################### write in scratch folder
 SCRATCH_BEH_ALL_DATA_DIR = "/mnt/scratch/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData"
 SCRATCH_CLIN_EVAL_DIR = '/mnt/scratch/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/Clinical_evaluation'
@@ -28,8 +27,10 @@ PROJECT_NoNAN_BEH_ALL_FILE = f"{PROJECT_BEH_ALL_DATA_DIR}/NoNanBehAll.csv"
 PROJECT_CLIN_EVAL_FILE = f'{PROJECT_CLIN_EVAL_DIR}/clinical_eval.csv'
 # clinical evalueion file
 PROJECT_MAP_CLIN_EVAL_FILE = f'{PROJECT_CLIN_EVAL_DIR}/map_clinical_eval.csv'
-
-
+# behavioral data for both read and write, inclduing relevant and irrelevant high reward options
+PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE = f"{PROJECT_BEH_ALL_DATA_DIR}/NoNanBehAll_RelIrrelHighReward.csv"
+# behavioral data for both read and write, inclduing relevant and irrelevant high reward options, avegrage across phases
+PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE = f"{PROJECT_BEH_ALL_DATA_DIR}/NoNanBehAll_RelIrrelHighReward_Groupby.csv"
 
 ########### model fit setting
 # Number of chains in MCMC procedure
