@@ -48,3 +48,16 @@ summary(model_param_CE_PD)
 model_param_CE <- brm(map_mean_weighting ~ age + sex + group + MoCA +BDI+LARS, data = param_CE, family = gaussian())
 summary(model_param_CE)
 
+
+
+########### high reward option
+library(lmerTest)
+library(brms)
+
+behAll = read.csv('/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/NoNanBehAll_RelIrrelHighReward_Groupby.csv')
+
+model_bayes_wonamount <- brm(relevantVrIrrelevantHighRewardOption ~ patient + medication  + block  + patient*block + (1 | sub_ID), data = behAll, family = gaussian())
+
+summary(model_bayes_wonamount)
+
+

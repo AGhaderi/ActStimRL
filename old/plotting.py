@@ -32,9 +32,8 @@ def plotChoicePropTrial(
     - Automatically processes Stim/Act * 1-reversal/2-reversal conditions.
     """
 
-    # ===========================================
+    
     # Load full dataset across all participants
-    # ===========================================
     behAll = pd.read_csv(f"{readBehFile}")
 
     # Fix trial numbering (replace 44-85 -> 2-43)
@@ -44,10 +43,6 @@ def plotChoicePropTrial(
     # participatns
     sub_ID = behAll["sub_ID"].unique()
   
-    # ===========================================
-    # Loop through conditions
-    # ===========================================
-
     # Compute "highRewardOption" relevant option
     behAll['highRewardOption'] = np.nan
     for sub in sub_ID:
@@ -127,23 +122,19 @@ def plotChoicePropTrial(
                                     behAll.loc[mask_phase3, 'highRewardOption'] = (behAllCond[behAllCond['phase']=='phase3']['yellowChosen']==0).astype(int)   
 
  
-    # ===========================================
-    # Set up figure
-    # ===========================================
     
+    # Set up figure
     mm = 1 / 2.54
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
     axs = axs.flatten()
     idx = 0
-    # ===========================================
+    
     for block in ["Act", "Stim"]:
         for reverse in [14, 21]:
             behAllCond = behAll.loc[(behAll["block"] == block) &(behAll["reverse"] == reverse)].copy()
 
-            # ==========================================================
+            
             # Compute average across subjects for each group × trial
-            # ==========================================================
-
             beh_group = behAllCond.groupby( ["group", "trialNumber"], as_index=False)["highRewardOption"].mean()
 
             # Rolling averages for each participant group
@@ -163,9 +154,8 @@ def plotChoicePropTrial(
 
             axs[idx].axhline(0.5, linestyle="--", color="black")
 
-            # ==========================================================
+            
             # Add reversal markers
-            # ==========================================================
             if reverse == 21:
                 axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
                 axs[idx].plot([0, 21], [.75, .75], color='green')
@@ -187,13 +177,12 @@ def plotChoicePropTrial(
             axs[idx].set_xticks([1, 10, 20, 30, 42])
 
             if idx == 0:
-                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=8)
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
 
             idx += 1
 
-    # ===========================================
+    
     # Global labels
-    # ===========================================
     fig.supxlabel("Trial")
     fig.supylabel("Choice Proportion")
 
@@ -226,9 +215,8 @@ def plotChoicePropTria_lOld(
     - Automatically processes Stim/Act * 1-reversal/2-reversal conditions.
     """
 
-    # ===========================================
+    
     # Load full dataset across all participants
-    # ===========================================
     behAll = pd.read_csv(f"{readBehFile}")
 
     # Fix trial numbering (replace 44–85 → 2–43)
@@ -236,17 +224,15 @@ def plotChoicePropTria_lOld(
                                     list(range(44, 86)),
                                     list(range(2, 44)))
 
-    # ===========================================
+    
     # Set up figure
-    # ===========================================
     mm = 1 / 2.54
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
     axs = axs.flatten()
     idx = 0
 
-    # ===========================================
+    
     # Loop through conditions
-    # ===========================================
     for block in ["Act", "Stim"]:
         for reverse in [14, 21]:
 
@@ -255,9 +241,8 @@ def plotChoicePropTria_lOld(
                 (behAll["reverse"] == reverse)
             ].copy()
 
-            # ==========================================================
+            
             # Compute "highRewardOption" depending on block/reversal
-            # ==========================================================
             chosenOption = np.zeros(behAllCond.shape[0])
 
             if block == "Stim" and reverse == 21:
@@ -282,9 +267,8 @@ def plotChoicePropTria_lOld(
 
             behAllCond["highRewardOption"] = chosenOption
 
-            # ==========================================================
+            
             # Compute average across subjects for each group × trial
-            # ==========================================================
             beh_group = behAllCond.groupby(
                 ["group", "trialNumber"],
                 as_index=False
@@ -306,9 +290,8 @@ def plotChoicePropTria_lOld(
 
             axs[idx].axhline(0.5, linestyle="--", color="black")
 
-            # ==========================================================
+            
             # Add reversal markers
-            # ==========================================================
             if reverse == 21:
                 axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
                 axs[idx].plot([0, 21], [.75, .75], color='green')
@@ -330,13 +313,12 @@ def plotChoicePropTria_lOld(
             axs[idx].set_xticks([1, 10, 20, 30, 42])
 
             if idx == 0:
-                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=8)
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
 
             idx += 1
 
-    # ===========================================
+    
     # Global labels
-    # ===========================================
     fig.supxlabel("Trial")
     fig.supylabel("Choice Proportion")
 
@@ -370,18 +352,16 @@ def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
         # Process the two 7T sessions
         for sess in ['ses-02achieva7t', 'ses-03achieva7t']:
 
-            # ---------------------------------------------------------
-            # 1. Find all .txt behavioral files for this subject/session
-            # ---------------------------------------------------------
+            
+            # Find all .txt behavioral files for this subject/session
             txt_files = glob.glob(f'{readBehDir}/{subName}/{sess}/beh/*.txt')
 
             if len(txt_files) == 0:
                 # No behavioral files found for this session → skip session
                 continue
 
-            # ---------------------------------------------------------
-            # 2. Load and concatenate all .txt behavioral files
-            # ---------------------------------------------------------
+            
+            # Load and concatenate all .txt behavioral files
             data = pd.DataFrame([])
 
             for file_path in txt_files:
@@ -394,9 +374,8 @@ def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
                 # Append to the full dataframe
                 data = pd.concat([data, df], ignore_index=True)
 
-            # ---------------------------------------------------------
-            # 3. Load trial structure (.mat) file
-            # ---------------------------------------------------------
+            
+            # Load trial structure (.mat) file
             mat_files = glob.glob(f'{readBehDir}/{subName}/{sess}/beh/*_beh.mat')
 
             if len(mat_files) == 0:
@@ -417,9 +396,8 @@ def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
                 blockList2_1, blockList2_2
             ])
 
-            # ---------------------------------------------------------
-            # 4. Prepare output directory and filename
-            # ---------------------------------------------------------
+            
+            # Prepare output directory and filename
             analysis_dir = f'{readBehDir}/{subName}/{sess}/beh/analysis/'
 
             if not os.path.isdir(analysis_dir):
@@ -427,9 +405,8 @@ def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
 
             saveFile = f'{analysis_dir}/{subName}_{sess}_task-DA_beh.png'
 
-            # ---------------------------------------------------------
-            # 5. Generate plot (custom module)
-            # ---------------------------------------------------------
+            
+            # Generate plot (custom module)
             plotChoiceResponse(
                 data=data,
                 subName=subName,
@@ -556,29 +533,29 @@ def plotFeatureBias(
         Path where the generated figure will be saved.
     """
     
-    # ------------------- Load data -------------------
+    # Load data
     behAll = pd.read_csv(readBehFile)
     
-    # ------------------- Rearrange trial numbers -------------------
+    # Rearrange trial numbers
     behAll['trialNumber'] = behAll['trialNumber'].replace(
         list(range(44, 86)),  # old trial numbers
         list(range(2, 44)))   # new trial numbers
     
-    # ------------------- Compute chosen amounts and high amount selection -------------------
+    # Compute chosen amounts and high amount selection
     chosenAmount = behAll['leftChosen']*behAll['winAmtLeft'] + (1-behAll['leftChosen'])*behAll['winAmtRight'] 
     behAll['chosenHighWinAmt'] = chosenAmount >= 50
     
-    # ------------------- Standardize group and condition labels -------------------
+    # Standardize group and condition labels
     behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
     behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
     
-    # ------------------- Aggregate response tendencies by participant -------------------
+    # Aggregate response tendencies by participant
     left_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['leftChosen'].mean()
     amt_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['chosenHighWinAmt'].mean()
     pushed_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['pushed'].mean()
     yellow_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['yellowChosen'].mean()
     
-    # -------------------Plot responses -------------------
+    #Plot responses
     mm = 1/2.54  # convert cm to inches for figure size
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
     axs = axs.flatten()
@@ -586,7 +563,7 @@ def plotFeatureBias(
     # Custom color palette
     custom_palette = {'HC': config.COLORS['HC'], 'PD-ON': config.COLORS['PD-ON'], 'PD-OFF': config.COLORS['PD-OFF']}
     
-    # ------------------- Left responses -------------------
+    # Left responses
     sns.boxplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
                 palette=custom_palette, showfliers=False)
     sns.stripplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
@@ -597,7 +574,7 @@ def plotFeatureBias(
     axs[0].set_ylim(0,1)
     axs[0].legend(fontsize=8, loc='upper left')
     
-    # ------------------- High amount responses -------------------
+    # High amount responses
     sns.boxplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
                 palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
@@ -607,7 +584,7 @@ def plotFeatureBias(
     axs[1].axhline(.5, color='black', linestyle='--')
     axs[1].set_ylim(0,1)
     
-    # ------------------- Push responses -------------------
+    # Push responses
     sns.boxplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
                 palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
@@ -617,7 +594,7 @@ def plotFeatureBias(
     axs[2].axhline(.5, color='black', linestyle='--')
     axs[2].set_ylim(0,1)
     
-    # ------------------- Yellow responses -------------------
+    # Yellow responses
     sns.boxplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
                 palette=custom_palette, showfliers=False,legend=False)
     sns.stripplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
@@ -629,7 +606,7 @@ def plotFeatureBias(
     
     fig.tight_layout()
     
-    # ------------------- 8. Save figure -------------------
+    # 8. Save figure
     plt.savefig(f'{saveFigPath}/featureBias.pdf')
     plt.show()
 

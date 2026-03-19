@@ -30,23 +30,19 @@ def compute_and_save_clinical_parameters(
         Table containing clinical + model-derived parameters.
     """
 
-    # -------------------------------------------------------
+    
     # Helper function: KDE mode
-    # -------------------------------------------------------
     def get_mode_density(values):
         """Return the mode of a posterior distribution using KDE."""
         kde = gaussian_kde(values)
         x_grid = np.linspace(min(values), max(values), 1000)
         return x_grid[np.argmax(kde(x_grid))]
 
-    # -------------------------------------------------------
+    
     # Load clinical evaluation
-    # -------------------------------------------------------
     clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
 
-    # =======================================================
-    # --------------  LOAD PD MODEL RESULTS  -----------------
-    # =======================================================
+    # LOAD PD MODEL RESULTS  
     pkl_PD = f'{readModel}/Hier-RL-Model/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
     fit_PD = load_pickle(load_path=pkl_PD)['fit']
 
@@ -112,9 +108,8 @@ def compute_and_save_clinical_parameters(
         map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]
     ], axis=0)
 
-    # =======================================================
-    # --------------  LOAD HC MODEL RESULTS  -----------------
-    # =======================================================
+    
+    # LOAD HC MODEL RESULTS
     pkl_HC = f'{readModel}/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
     fit_HC = load_pickle(load_path=pkl_HC)['fit']
 
@@ -161,9 +156,8 @@ def compute_and_save_clinical_parameters(
         map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]
     ], axis=0)
 
-    # =======================================================
-    # -------- MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
-    # =======================================================
+    
+    #MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
     parameter_clinical_evaluation = clinical_evaluation.copy()
 
     mask_HC = parameter_clinical_evaluation['group'] == 'HC'
@@ -200,9 +194,9 @@ def compute_and_save_clinical_parameters(
     parameter_clinical_evaluation.loc[mask_PD, 'med_UPDRS'] = \
         parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
 
-    # -------------------------------------------------------
+    
     # Save CSV
-    # -------------------------------------------------------
+    
  
     # Check out if it does not exist
     if not os.path.isdir(f'{outDir}'):
@@ -213,8 +207,7 @@ def compute_and_save_clinical_parameters(
     print(f"Saved clinical parameter table to:\n{outDir}")
 
 
-def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
-                    lr_pos_size=(2,2), lr_neg_size=(2,2), lr_sens_size=(2,2)):
+def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
     """
     Prepare and standardize behavioral data for Action and Color conditions.
     Converts categorical labels to numeric indices and organizes data into a dictionary
@@ -229,32 +222,31 @@ def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD
     Returns
     -------
     dataStan : dict
-        Dictionary containing standardized data arrays and metadata.
+        Dictionary containing standardized data arrays 
     """
     # Load full dataset across all participants
     behAll = pd.read_csv(f"{readBehFile}")
 
-    # ------------------- Select only participants from the specified group -------------------
+    # Select only participants from the specified group 
     data = behAll[(behAll['patient'] == group)].copy().reset_index(drop=False)
 
-    # ------------------- Count number of participants -------------------
+    # Count number of participants 
     nParts = len(np.unique(data['sub_ID']))
 
-    # ------------------- Convert participant IDs to consecutive integer indices -------------------
-    # Example: if sub_IDs are [101, 203, 405], they will become [1, 2, 3]
+    # Convert participant IDs to consecutive integer indices 
     data['sub_ID'] = data['sub_ID'].replace(np.unique(data.sub_ID), np.arange(1, nParts + 1)).astype(int)
 
-    # ------------------- Number of conditions -------------------
+    # Number of conditions 
     nConds = 2  # 1 = Action (Act), 2 = Color (Stim)
 
-    # ------------------- Convert condition labels to integers -------------------
+    # Convert condition labels to integers 
     # 'Act' -> 1, 'Stim' -> 2
     data['block'] = data['block'].replace(['Act', 'Stim'], [1, 2]).astype(int)
 
-    # ------------------- Number of sessions / medication conditions -------------------
+    # Number of sessions / medication conditions 
     nMeds_nSes = 2
 
-    # ------------------- Set session or medication variable based on group -------------------
+    # Set session or medication variable based on group 
     if group == 'HC':
         # For healthy controls, use session column directly
         medication_session = np.array(data['session']).astype(int)
@@ -263,7 +255,7 @@ def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD
         data['medication'] = data['group'].replace([1, 3], [1, 2]).astype(int)
         medication_session = np.array(data['medication']).astype(int)
 
-    # ------------------- Organize data into a dictionary -------------------
+    # Organize data into a dictionary 
     # Each key will be used for modeling or analysis (e.g., in Stan or other frameworks)
     dataStan = {
         'N': data.shape[0],  # Total number of trials
@@ -281,24 +273,50 @@ def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD
         'condition': np.array(data['block']).astype(int),         # Condition per trial (1=Act, 2=Clr)
         'nMeds_nSes': nMeds_nSes,                                # Number of sessions or medication conditions
         'medication_session': medication_session                  # Session or medication index
-    }
+    } 
 
+    return dataStan
+
+def initialStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
+                    alpha_pos_size=(2,2), alpha_neg_size=(2,2), sens_size=(2,2)):
+    """
+    Prepare initial samples for Stan for Action and Color conditions.
+ 
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Behavioral data  
+        Group to select: 'HC' for healthy controls or 'PD' for Parkinson's patients.
+
+    Returns
+    -------
+    dataStan : dict
+        Dictionary containing metadata.
+    """
+    # Load full dataset across all participants
+    behAll = pd.read_csv(f"{readBehFile}")
+ 
+    # Select only participants from the specified group 
+    data = behAll[(behAll['patient'] == group)].copy().reset_index(drop=False)
+
+    # Count number of participants 
+    nParts = len(np.unique(data['sub_ID']))
+ 
     initials = []
     for _ in range(config.N_CHAIN):
         chaininit = {
-            'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts, *lr_pos_size)),
-            'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts, *lr_neg_size)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, *lr_sens_size)),
+            'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts, *alpha_pos_size)),
+            'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts, *alpha_neg_size)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, *sens_size)),
             'hier_alpha_sd': np.random.uniform(0.01, 0.1),
             'hier_sensitivity_sd': np.random.uniform(0.01, 0.02),
-            'transfer_sensitivity': np.random.uniform(0.03, 0.07, size=(nParts, lr_sens_size))
+            'transfer_sensitivity': np.random.uniform(0.03, 0.07, size=(nParts, sens_size))
         }
         initials.append(chaininit)
 
 
-    return dataStan, initials
-
-
+    return initials
+  
 def to_pickle(stan_fit, save_path):
     """Save pickle the fitted model's results with .pkl format.
     """
@@ -319,9 +337,7 @@ def load_pickle(load_path):
             return results_load
     except:
         print("An exception occurred")
-    
-
-
+     
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
 def waic(log_likelihood):
     """Calculates the Watanabe-Akaike information criteria.

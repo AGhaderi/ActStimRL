@@ -9,7 +9,7 @@ import os
 from scipy.io import loadmat
 from . import config 
 
-def plotHighRewardOptionTrial(
+def plotRelevantOptionTrial(
         readBehFile= config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
         save_path = config.FIGURES_DIR,
         window_size: int = 4
@@ -79,12 +79,16 @@ def plotHighRewardOptionTrial(
                 axs[idx].plot([28, 42], [.75, .75], color='green')
 
             # Axis configs
+            if block=='Act':
+                axs[idx].set_title("Action value")
+            else:
+                axs[idx].set_title("Color value")
             axs[idx].set_ylim(0, 1)
             axs[idx].set_xlim(1, 42)
             axs[idx].set_xticks([1, 10, 20, 30, 42])
 
             if idx == 0:
-                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=8)
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
 
             idx += 1
 
@@ -159,12 +163,16 @@ def plotIrrelevantOptionTrial(
                 axs[idx].axvline(28, color='c', linestyle='--', alpha=.7)
 
             # Axis configs
+            if block=='Act':
+                axs[idx].set_title("Action value")
+            else:
+                axs[idx].set_title("Color value")
             axs[idx].set_ylim(0, 1)
             axs[idx].set_xlim(1, 42)
             axs[idx].set_xticks([1, 10, 20, 30, 42])
 
             if idx == 0:
-                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=8)
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
 
             idx += 1
 
@@ -404,7 +412,8 @@ def plotFeatureBias(
     # ------------------- Standardize group and condition labels -------------------
     behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
     behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
-    
+    group_order = ['HC', 'PD-OFF', 'PD-ON']
+
     # ------------------- Aggregate response tendencies by participant -------------------
     left_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['leftChosen'].mean()
     amt_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['chosenHighWinAmt'].mean()
@@ -421,9 +430,9 @@ def plotFeatureBias(
     
     # ------------------- Left responses -------------------
     sns.barplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], errorbar='se',
-                palette=custom_palette)
+                palette=custom_palette, hue_order=group_order)
     sns.stripplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[0].set_ylabel('Left response', fontsize=12)
     axs[0].set_xlabel('', fontsize=12)
     axs[0].axhline(.5, color='black', linestyle='--')
@@ -432,9 +441,9 @@ def plotFeatureBias(
     
     # ------------------- High amount responses -------------------
     sns.barplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], errorbar='se',
-                palette=custom_palette, legend=False)
+                palette=custom_palette, legend=False, hue_order=group_order)
     sns.stripplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[1].set_ylabel('Higher amount', fontsize=12)
     axs[1].set_xlabel('', fontsize=12)
     axs[1].axhline(.5, color='black', linestyle='--')
@@ -442,9 +451,9 @@ def plotFeatureBias(
     
     # ------------------- Push responses -------------------
     sns.barplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], errorbar='se',
-                palette=custom_palette, legend=False)
+                palette=custom_palette, legend=False, hue_order=group_order)
     sns.stripplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[2].set_ylabel('Push response', fontsize=12)
     axs[2].set_xlabel('Condition', fontsize=12)
     axs[2].axhline(.5, color='black', linestyle='--')
@@ -452,9 +461,9 @@ def plotFeatureBias(
     
     # ------------------- Yellow responses -------------------
     sns.barplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], errorbar='se',
-                palette=custom_palette, legend=False)
+                palette=custom_palette, legend=False, hue_order=group_order)
     sns.stripplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[3].set_ylabel('Yellow response', fontsize=12)
     axs[3].set_xlabel('Condition', fontsize=12)
     axs[3].axhline(.5, color='black', linestyle='--')
@@ -488,7 +497,7 @@ def plotProportionRelIrrelevantHighRewardOption(
     # Standardize group and condition labels
     behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
     behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
-
+    group_order = ['HC', 'PD-OFF', 'PD-ON']
     # Plot setting 
     mm = 1/2.54  # convert cm to inches for figure size
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
@@ -499,9 +508,9 @@ def plotProportionRelIrrelevantHighRewardOption(
     
     # relevant high Reward Option 
     sns.barplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0], errorbar='se',
-                palette=custom_palette)
+                palette=custom_palette, hue_order=group_order)
     sns.stripplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[0].set_ylabel('Relevant High reward option', fontsize=12)
     axs[0].set_xlabel('', fontsize=12)
     axs[0].axhline(.5, color='black', linestyle='--')
@@ -510,20 +519,19 @@ def plotProportionRelIrrelevantHighRewardOption(
      
     # irrelevant high Reward Option 
     sns.barplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1], errorbar='se',
-                palette=custom_palette, legend=False)
+                palette=custom_palette, legend=False, hue_order=group_order)
     sns.stripplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[1].set_ylabel('Irrelevant high reward option', fontsize=12)
     axs[1].set_xlabel('', fontsize=12)
     axs[1].axhline(.5, color='black', linestyle='--')
     axs[1].set_ylim(0,1)
       
     # differnce between relevant and irrelevant high Reward Option 
-    behAll['relevantVrIrrelevantHighRewardOption'] = behAll['relevantHighRewardOption'] - behAll['irrelevantHighRewardOption']
     sns.boxplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
-                palette=custom_palette, legend=False)
+                palette=custom_palette, legend=False, hue_order=group_order)
     sns.stripplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
-                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black')
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[2].set_ylabel('Relevant versus Irrelevant option', fontsize=12)
     axs[2].set_xlabel('', fontsize=12)
    

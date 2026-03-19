@@ -37,17 +37,15 @@ def build_behavior_dataframe(
         Cleaned dataset after NaN removal and participant exclusions.
     """
 
-    # ---------------------------------------------------------------
+    
     # Read subjects and group labels
-    # ---------------------------------------------------------------
     fileSubjects = glob.glob(f'{data_dir}/sub-*')
     randomGroupLabel = pd.read_csv(f'{beh_all_data_dir}/randomGroupLabel.csv')
 
     dataAll = pd.DataFrame([])
 
-    # ---------------------------------------------------------------
+    
     # Loop over participants
-    # ---------------------------------------------------------------
     for filesubject in fileSubjects:
         subName = filesubject.split('/')[-1]
         labelSes1 = int(randomGroupLabel.loc[randomGroupLabel["sub-ID"] == subName, "ses-02"].iloc[0])
@@ -58,9 +56,8 @@ def build_behavior_dataframe(
             files = glob.glob(f"{data_dir}/{subName}/{sess}/beh/*.txt")
 
             if len(files) != 0:
-                # ---------------------------------------------------
+                
                 # Load .txt behavioral data
-                # ---------------------------------------------------
                 data = pd.DataFrame([])
                 for txtfile in files:
                     df = pd.read_csv(txtfile, sep=r"[\t,]", engine="python")
@@ -76,9 +73,8 @@ def build_behavior_dataframe(
                 # Medication decoding
                 data["medication"] = data["group"].replace(["1", "2", "3"], ["OFF", "OFF", "ON"])
 
-                # ---------------------------------------------------
+                
                 # Load reversal points from .mat files
-                # ---------------------------------------------------
                 matfiles = glob.glob(f"{data_dir}/{subName}/{sess}/beh/*_beh.mat")
                 data_mat = loadmat(matfiles[0])
 
@@ -102,9 +98,9 @@ def build_behavior_dataframe(
                 else:
                     blocks = np.array([blocks[0][0], blocks[0][1]])
 
-                # ---------------------------------------------------
+                
                 # Assign reversal points and phase labels
-                # ---------------------------------------------------
+                
                 data["reverse"] = ""
                 data["phase"] = ""
                 idx = 0
@@ -134,20 +130,14 @@ def build_behavior_dataframe(
                 # Append participant data
                 dataAll = pd.concat([dataAll, data])
 
-    # ---------------------------------------------------------------
     # Save raw dataset
-    # ---------------------------------------------------------------
     dataAll.to_csv(raw_outfile, index=False)
 
-    # ---------------------------------------------------------------
     # Clean data: remove no-response trials
-    # ---------------------------------------------------------------
     temp = dataAll["pushed"].fillna(-1).astype(int).to_numpy()
     NoNanBehAll = dataAll[temp >= 0].copy().reset_index(drop=True)
 
-    # ---------------------------------------------------------------
     # Add indicator columns
-    # ---------------------------------------------------------------
     for filesubject in fileSubjects:
         subName = filesubject.split("/")[-1]
         for session in [1, 2]:
@@ -166,10 +156,8 @@ def build_behavior_dataframe(
                         (NoNanBehAll["run"] == run),
                         "indicator"
                     ] = np.arange(1, behAll_indicator.shape[0] + 1)
-
-    # ---------------------------------------------------------------
+    
     # Hard-coded participant exclusions
-    # ---------------------------------------------------------------
     NoNanBehAll = NoNanBehAll[
         (NoNanBehAll["sub_ID"] != "sub-010") |
         (NoNanBehAll["session"] != 2) |
@@ -190,12 +178,9 @@ def build_behavior_dataframe(
     ]
 
     withdraw_subs = ["sub-057", "sub-076", "sub-083", "sub-091", "sub-106"]
-    for w in withdraw_subs:
-        NoNanBehAll = NoNanBehAll[NoNanBehAll["sub_ID"] != w]
-
-    # ---------------------------------------------------------------
+    NoNanBehAll = NoNanBehAll[~NoNanBehAll["sub_ID"].isin(withdraw_subs)]
+    
     # Save cleaned dataset
-    # ---------------------------------------------------------------
     NoNanBehAll.to_csv(cleaned_outfile, index=False)
 
     print('Both raw and cleaned data are created!')
@@ -219,22 +204,19 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
 
     """
 
-    # ===========================================
     # Load full dataset across all participants
-    # ===========================================
     behAll = pd.read_csv(f"{readBehFile}")
     # Fix trial numbering  
     behAll["trialNumber_new"] = behAll["trialNumber"].copy()
-    # map 44-85 -> 2-3
-    mask = behAll["trialNumber"] >= 44
-    behAll.loc[mask, "trialNumber_new"] = behAll.loc[mask, "trialNumber"] - 42
+    # map 44-85 -> 2-43
+    mask_trialN = behAll["trialNumber"] >= 44
+    behAll.loc[mask_trialN, "trialNumber_new"] = behAll.loc[mask_trialN, "trialNumber"] - 42
     # shift everything down by 1 -> 1-42
     behAll["trialNumber_new"] = behAll["trialNumber_new"] - 1 
     
     # participatns list
     sub_ID = behAll["sub_ID"].unique()
-  
-    # ===========================================
+    
     # Compute "relevantHighRewardOption" relevant option
     behAll['relevantHighRewardOptionPattern'] = np.nan
     for sub in sub_ID:
@@ -257,52 +239,50 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
                         mask_phase3 = mask & (behAll["phase"] == 'phase3')
                             
                         if block == 'Act':
-
                             # test if the higher probability reward is push, pull, push or pull, push, pull
                             mean_phase1 = behAllCond[behAllCond['phase']=='phase1']['pushCorrect'].mean()
                             
-                            if mean_phase1>.5: # push, pull,push
-                                if len(phases)==2:
+                            if mean_phase1>.5:
+                                if len(phases)==2: # push, pull 
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase1']['pushed']
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase2']['pushed']                        
-                                elif len(phases)==3:
+                                elif len(phases)==3: # push, pull,push
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase1']['pushed']
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase2']['pushed']
                                     behAll.loc[mask_phase3, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase3']['pushed']
 
-                            else: # pull, push,pull, should be reversed
-                                if len(phases)==2:
+                            else:
+                                if len(phases)==2: # pull, push, should be reversed
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase1']['pushed']==0).astype(int)
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase2']['pushed']==0).astype(int)                       
-                                elif len(phases)==3:
+                                elif len(phases)==3:# pull, push, pull should be reversed
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase1']['pushed']==0).astype(int)   
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase2']['pushed']==0).astype(int)   
                                     behAll.loc[mask_phase3, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase3']['pushed']==0).astype(int)   
 
                         elif block == 'Stim':
-
                             # test if the higher probability reward is push, pull, push or pull,push,pull
                             mean_phase1 = behAllCond[behAllCond['phase']=='phase1']['yellowCorrect'].mean()
                             
-                            if mean_phase1>.5: # push, pull,push
-                                if len(phases)==2:
+                            if mean_phase1>.5: 
+                                if len(phases)==2:# yellow, blue
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase1']['yellowChosen']
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase2']['yellowChosen']                        
-                                elif len(phases)==3:
+                                elif len(phases)==3:# yellow, blue,yellow
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase1']['yellowChosen']
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase2']['yellowChosen']
                                     behAll.loc[mask_phase3, 'relevantHighRewardOptionPattern'] = behAllCond[behAllCond['phase']=='phase3']['yellowChosen']
 
-                            else: # pull, push,pull, reverse
-                                if len(phases)==2:
+                            else: 
+                                if len(phases)==2:# blue, yellow, should be reversed
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase1']['yellowChosen']==0).astype(int)
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase2']['yellowChosen']==0).astype(int)                       
-                                elif len(phases)==3:
+                                elif len(phases)==3:# blue, yellow, blue, should be reversed
                                     behAll.loc[mask_phase1, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase1']['yellowChosen']==0).astype(int)   
                                     behAll.loc[mask_phase2, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase2']['yellowChosen']==0).astype(int)   
                                     behAll.loc[mask_phase3, 'relevantHighRewardOptionPattern'] = (behAllCond[behAllCond['phase']=='phase3']['yellowChosen']==0).astype(int)   
 
-    # ===========================================
+    
     # Compute "irrelevantHighRewardOption" relevant option
     behAll['irrelevantHighRewardOption'] = np.nan
     for sub in sub_ID:
@@ -327,9 +307,11 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
                                 # check if the higher probability reward is yellow or blue (at random)
                                 mean_phase = behAllCond[behAllCond['phase']==phase]['yellowCorrect'].mean()
                                 
-                                if mean_phase>.5: # push, pull,push
+                                if mean_phase>.5: 
+                                    # higher reward option is yellow
                                     behAll.loc[mask_phase, 'irrelevantHighRewardOption'] = behAllCond[behAllCond['phase']==phase]['yellowChosen']
                                 else:
+                                    # higher reward option is blue
                                     behAll.loc[mask_phase, 'irrelevantHighRewardOption'] = (behAllCond[behAllCond['phase']==phase]['yellowChosen']==0).astype(int)                       
                             
                             # color value condition, irrelevant is action
@@ -337,15 +319,16 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
                                 # check if the higher probability reward is yellow or blue (at random)
                                 mean_phase = behAllCond[behAllCond['phase']==phase]['pushCorrect'].mean()
 
-                                if mean_phase>.5: # push, pull,push
+                                if mean_phase>.5:  
+                                    # higher reward option is push
                                     behAll.loc[mask_phase, 'irrelevantHighRewardOption'] = behAllCond[behAllCond['phase']==phase]['pushed']
                                 else:
+                                     # higher reward option is pull
                                     behAll.loc[mask_phase, 'irrelevantHighRewardOption'] = (behAllCond[behAllCond['phase']==phase]['pushed']==0).astype(int)                       
 
 
     # Save behAll with relevant and irrelevant high reward options in csv 
     behAll.to_csv(save_file_all, index=False)
-
 
     # calculate the choice proportion for each participant
     behAll["adjusted_phase"] = None
@@ -377,9 +360,7 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
                         # proportion of highRewardOption
                         behAll.loc[mask & behAll["trialNumber_new"].between(4, 24), "relevantHighRewardOption"] =  behAll.loc[mask & behAll["trialNumber_new"].between(4, 24), "relevantHighRewardOptionPattern"]
                         behAll.loc[mask & behAll["trialNumber_new"].between(25, 42), "relevantHighRewardOption"] = 1- behAll.loc[mask & behAll["trialNumber_new"].between(25, 42), "relevantHighRewardOptionPattern"]
-                        
-
-
+                    
                     # three phases
                     elif nphases==3:
                         # adjust phases
@@ -394,8 +375,9 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
 
     # group average 
     behAll_new = behAll[behAll['adjusted_phase'].notna()].reset_index(drop=True)
-    behAll_new_tempt = behAll_new.groupby( ["group", "sub_ID", 'block', 'adjusted_phase'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
-    behAll_new_groypby = behAll_new_tempt.groupby( ["group", "sub_ID", 'block'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
-    
+    behAll_new_tempt = behAll_new.groupby( ["group", "patient", "medication", "sub_ID", 'block', 'adjusted_phase'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
+    behAll_new_groypby = behAll_new_tempt.groupby( ["group", "patient", "medication", "sub_ID", 'block'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
+    # differnce between relevant and irrelevant high Reward Option 
+    behAll_new_groypby['relevantVrIrrelevantHighRewardOption'] = behAll_new_groypby['relevantHighRewardOption'] - behAll_new_groypby['irrelevantHighRewardOption']
     # Save groupby behAll with relevant and irrelevant high reward options in csv file
     behAll_new_groypby.to_csv(save_file_groupby, index=False)
