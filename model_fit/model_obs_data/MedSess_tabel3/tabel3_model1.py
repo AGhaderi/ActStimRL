@@ -44,7 +44,7 @@ elif partcipant_group=='PD':
     medication_session = np.array(behAll.medication).astype(int)
 
 # If you want to model fit or just recall ex model fit
-modelFit = True
+modelFit = False
   
 # The adrees name of pickle file
 pickelDir = f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/{model_name}_{partcipant_group}.pkl'

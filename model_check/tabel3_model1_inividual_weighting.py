@@ -28,6 +28,8 @@ behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)
 
 # select group 
 behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
+participants_PD = np.unique(behAll_PD['sub_ID'])
+nParts = len(np.unique(behAll_PD['sub_ID']))
 
 # name of model
 model_name = 'tabel3_model1'
@@ -128,7 +130,7 @@ for i in range(weight_PD.shape[0]):
     #Outlier
     map_apex, dens_apex = MAP(weight_PD[i,0,0])
     if map_apex<.7:
-        sub = behAll_PD['sub_ID'].unique()[i]
+        sub = participants_PD[i]
         axs[0].text(map_apex, dens_apex/20,  sub, transform=axs[0].transAxes, fontsize=8)
 
     # Act-Session 2
@@ -138,7 +140,7 @@ for i in range(weight_PD.shape[0]):
     #Outlier
     map_apex, dens_apex = MAP(weight_PD[i,0,1])
     if map_apex<.7:
-        sub = behAll_PD['sub_ID'].unique()[i]
+        sub = participants_PD[i]
         axs[1].text(map_apex, dens_apex/50,  sub, transform=axs[1].transAxes, fontsize=8)
 
 

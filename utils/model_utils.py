@@ -9,7 +9,8 @@ from utils import config
 def compute_and_save_clinical_parameters(
     readClicalEvalFile=config.PROJECT_CLIN_EVAL_FILE,
     readModel=config.SCRATCH_HIER_MODEL_DIR,
-    outDir=config.SCRATCH_CLIN_EVAL_DIR
+    outDir=config.SCRATCH_CLIN_EVAL_DIR,
+    outFile=config.SCARTCH_CLIN_EVAL_FILE
 ):
     """
     Computes MAP estimates (via KDE mode) of hierarchical RL parameters for PD & HC,
@@ -38,12 +39,20 @@ def compute_and_save_clinical_parameters(
         x_grid = np.linspace(min(values), max(values), 1000)
         return x_grid[np.argmax(kde(x_grid))]
 
-    
+    # read collected data across all participants
+    behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)
+    # select group 
+    behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
+    behAll_HC = behAll[(behAll['patient']=='HC')].copy().reset_index(drop=False)
+    #  participant
+    particiapnts_PD = np.unique(behAll_PD.sub_ID)
+    particiapnts_HC = np.unique(behAll_HC.sub_ID)
+
     # Load clinical evaluation
     clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
 
     # LOAD PD MODEL RESULTS  
-    pkl_PD = f'{readModel}/Hier-RL-Model/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
+    pkl_PD = f'{readModel}/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
     fit_PD = load_pickle(load_path=pkl_PD)['fit']
 
     # Extract posterior samples
@@ -160,49 +169,56 @@ def compute_and_save_clinical_parameters(
     #MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
     parameter_clinical_evaluation = clinical_evaluation.copy()
 
-    mask_HC = parameter_clinical_evaluation['group'] == 'HC'
-    mask_PD = parameter_clinical_evaluation['group'] == 'PD'
+    # Assign parameters in PD
+    for sub, subject in enumerate(particiapnts_PD):
 
-    # Assign parameters
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_alpha_pos'] = map_mean_alpha_pos_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_PD[sub]
 
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_alpha_neg'] = map_mean_alpha_neg_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_alpha_neg'] = map_mean_alpha_neg_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_PD[sub]
 
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_sensitivity'] = map_mean_sensitivity_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_sensitivity'] = map_mean_sensitivity_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_PD[sub]
 
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_weighting_act'] = map_mean_weighting_act_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting_act'] = map_mean_weighting_act_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_PD[sub]
 
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_weighting_clr'] = map_mean_weighting_clr_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting_clr'] = map_mean_weighting_clr_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_PD[sub]
 
-    parameter_clinical_evaluation.loc[mask_HC, 'map_mean_weighting'] = map_mean_weighting_HC
-    parameter_clinical_evaluation.loc[mask_PD, 'map_mean_weighting'] = map_mean_weighting_PD
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_PD[sub]
 
-    # PD-specific medication effects
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_alpha_pos'] = map_med_alpha_pos_PD
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_alpha_neg'] = map_med_alpha_neg_PD
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_sensitivity'] = map_med_sensitivity_PD
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting_act'] = map_med_weighting_act_PD
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting_clr'] = map_med_weighting_clr_PD
-    parameter_clinical_evaluation.loc[mask_PD, 'map_med_weighting'] = map_med_weighting_PD
+        # PD-specific medication effects
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_pos'] = map_med_alpha_pos_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_neg'] = map_med_alpha_neg_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_sensitivity'] = map_med_sensitivity_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_act'] = map_med_weighting_act_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_clr'] = map_med_weighting_clr_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting'] = map_med_weighting_PD[sub]
 
-    # UPDRS difference
-    parameter_clinical_evaluation.loc[mask_PD, 'med_UPDRS'] = \
-        parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
+        # UPDRS difference
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'med_UPDRS'] = \
+            parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
 
+
+    for sub, subject in enumerate(particiapnts_HC):
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_HC[sub]
     
     # Save CSV
-    
- 
+
     # Check out if it does not exist
     if not os.path.isdir(f'{outDir}'):
             os.makedirs(f'{outDir}') 
 
-    parameter_clinical_evaluation.to_csv(outDir, index=False)
+    parameter_clinical_evaluation.to_csv(outFile, index=False)
 
     print(f"Saved clinical parameter table to:\n{outDir}")
 
@@ -310,7 +326,7 @@ def initialStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str=
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, *sens_size)),
             'hier_alpha_sd': np.random.uniform(0.01, 0.1),
             'hier_sensitivity_sd': np.random.uniform(0.01, 0.02),
-            'transfer_sensitivity': np.random.uniform(0.03, 0.07, size=(nParts, sens_size))
+            'transfer_sensitivity': np.random.uniform(0.03, 0.07, size=(nParts, *sens_size))
         }
         initials.append(chaininit)
 

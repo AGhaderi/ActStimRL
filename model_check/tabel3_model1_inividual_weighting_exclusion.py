@@ -27,12 +27,14 @@ def MAP(posterior_samples):
 behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)
 
 # select group 
-behAll_PD = behAll[(behAll['patient']=='PD')&(behAll["sub_ID"] != "sub-086") & (behAll["sub_ID"] != "sub-040") & (behAll["sub_ID"] != "sub-029")].copy().reset_index(drop=False)
-  
+exclude_subs = ["sub-010", "sub-029", "sub-086"]
+behAll = behAll[~behAll["sub_ID"].isin(exclude_subs)]
+participants = np.unique(behAll['sub_ID'])
+
 # name of model
-model_name = 'tabel3_model1'
+model_name = 'tabel3_model1_exclusion'
 # pickle file in the scratch folder in PD
-pickelDir_PD = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/PD/{model_name}_PD_exclusion_86_40_29.pkl'
+pickelDir_PD = f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/PD/{model_name}_PD_10_29_86.pkl'
 """Loading the pickle file of model fit from the subject directory"""
 loadPkl_PD = model_utils.load_pickle(load_path=pickelDir_PD)
 fit_PD = loadPkl_PD['fit']
@@ -65,7 +67,7 @@ for i in range(weight_PD.shape[0]):
     #Outlier
     map_apex, dens_apex = MAP(weight_PD[i,0,0])
     if map_apex<.7:
-        sub = behAll_PD['sub_ID'].unique()[i]
+        sub = participants[i]
         axs[0].text(map_apex, dens_apex/20,  sub, transform=axs[0].transAxes, fontsize=8)
 
     # Act-Session 2
@@ -75,7 +77,7 @@ for i in range(weight_PD.shape[0]):
     #Outlier
     map_apex, dens_apex = MAP(weight_PD[i,0,1])
     if map_apex<.7:
-        sub = behAll_PD['sub_ID'].unique()[i]
+        sub = participants[i]
         axs[1].text(map_apex, dens_apex/50,  sub, transform=axs[1].transAxes, fontsize=8)
 
 
@@ -101,7 +103,7 @@ fig.subplots_adjust(wspace=.3, hspace=.3)
 if not os.path.isdir(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/'):
         os.makedirs(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/') 
  
-fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{model_name}_PD_individual_weighting_exclusion_86_40_29.pdf')
+fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{model_name}_PD_individual_weighting_10_29_86.pdf')
 plt.close() 
 
 

@@ -11,8 +11,10 @@ import os
 from utils import model_utils
 from utils import config
 
-# Set hardcode filename
-model_name = 'tabel3_model1'
+# Get the filename of the currently running script
+filename = os.path.basename(__file__)
+# Remove the .py extension from the filename
+model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
 partcipant_group = 'PD' 
@@ -23,8 +25,8 @@ behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)
 # select group 
 behAll = behAll[(behAll['patient']==partcipant_group)].copy().reset_index(drop=False)
 
-# exclude two participatn sub-086 and sub-040 based on hierarchical weighting parameter
-exclude_subs = ["sub-086"]
+# exclude two participatn sub-025 and sub-052 based on hierarchical weighting parameter
+exclude_subs = ["sub-010", "sub-029", "sub-086"]
 behAll = behAll[~behAll["sub_ID"].isin(exclude_subs)]
 
 # number of participant
@@ -49,7 +51,7 @@ elif partcipant_group=='PD':
 modelFit = True
   
 # The adrees name of pickle file
-pickelDir = f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/{model_name}_{partcipant_group}_exclusion_86.pkl'
+pickelDir = f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/{model_name}_{partcipant_group}_10_29_86.pkl'
 # Check out if it does not exist
 if not os.path.isdir(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/'):
         os.makedirs(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/') 
@@ -163,5 +165,5 @@ elif partcipant_group=='PD':
 
 # Adjust layout and save
 fig.tight_layout()
-fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/{model_name}_{partcipant_group}_exclusion_86.png', dpi=500)
+fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{partcipant_group}/{model_name}_{partcipant_group}_10_29_86.png', dpi=500)
 plt.show()

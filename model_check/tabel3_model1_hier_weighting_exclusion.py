@@ -13,11 +13,11 @@ import os
 rng = np.random.default_rng(321)
 
 # name of model
-model_name = 'tabel3_model1'
+model_name = 'tabel3_model1_exclusion'
 # The adrees name of pickle file
-pickelDir_HC = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/HC/{model_name}_HC.pkl'
+pickelDir_HC = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/HC/tabel3_model1_HC.pkl'
 # pickle file in the scratch folder in PD
-pickelDir_PD = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/PD/{model_name}_PD_exclusion_86_40.pkl'
+pickelDir_PD = f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/PD/{model_name}_PD_10_29_86.pkl'
 """Loading the pickle file of model fit from the subject directory"""
 loadPkl_HC = model_utils.load_pickle(load_path=pickelDir_HC)
 loadPkl_PD = model_utils.load_pickle(load_path=pickelDir_PD)
@@ -165,5 +165,5 @@ if not os.path.isdir(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/'):
         os.makedirs(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/') 
 
 
-fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{model_name}_HC_PD_weighting_exclusion_86_40.pdf')
+fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{model_name}_HC_PD_weighting_10_29_86.pdf')
 plt.close()

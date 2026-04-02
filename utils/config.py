@@ -26,6 +26,8 @@ PROJECT_NoNAN_BEH_ALL_FILE = f"{PROJECT_BEH_ALL_DATA_DIR}/NoNanBehAll.csv"
 # clinical evalueion file
 PROJECT_CLIN_EVAL_FILE = f'{PROJECT_CLIN_EVAL_DIR}/clinical_eval.csv'
 # clinical evalueion file
+SCARTCH_CLIN_EVAL_FILE = f'{SCRATCH_CLIN_EVAL_DIR}/clinical_eval.csv'
+# clinical evalueion file
 PROJECT_MAP_CLIN_EVAL_FILE = f'{PROJECT_CLIN_EVAL_DIR}/map_clinical_eval.csv'
 # behavioral data for both read and write, inclduing relevant and irrelevant high reward options
 PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE = f"{PROJECT_BEH_ALL_DATA_DIR}/NoNanBehAll_RelIrrelHighReward.csv"
