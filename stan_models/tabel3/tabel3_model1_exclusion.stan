@@ -46,7 +46,7 @@ transformed parameters {
     real EV_push_blue;      // Weighting two strategies between push action and blue color values learning
     real EV_pull_yell;      // Weighting two strategies between pull action and yellow color values learning
     real EV_pull_blue;      // Weighting two strategies between pull action and blue color values learning
-    vector[N] soft_max_EV=rep_vector(0.5,N);  //  The soft-max function for each trial, trial-by-trial probability
+    vector[N] EV_all;  // Expected value for each trial
    
     /* Transfer individual parameters */
     array[nParts, nMeds_nSes] real<lower=0, upper=1> transfer_alpha_pos;   // Poistive Learning rate  
@@ -106,11 +106,11 @@ transformed parameters {
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
         // pushed/yellow coded and pulled/blue coded 1
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_yell - EV_pull_blue));
+            EV_all[i] = transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_yell - EV_pull_blue);
 
         //  pushed/blue coded 1 and pulled/yellow coded 0
         else if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = inv_logit(transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_blue - EV_pull_yell));
+            EV_all[i] = transfer_sensitivity[participant[i], condition[i], medication_session[i]] * (EV_push_blue - EV_pull_yell);
 
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
@@ -194,13 +194,13 @@ model {
 
     /* RL likelihood */
     for (i in 1:N) { 
-        pushed[i] ~ bernoulli(soft_max_EV[i]);
+        pushed[i] ~ bernoulli_logit(EV_all[i]);
         }
 }
 generated quantities { 
    vector[N] log_lik;  
     /*  RL Log density likelihood */
     for (i in 1:N) {
-        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
+        log_lik[i] = bernoulli_logit_lpmf(pushed[i] | EV_all[i]);
     }
 }

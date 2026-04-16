@@ -15,19 +15,21 @@ data {
 }
 parameters {
     /* Hierarchical mu parameter*/                               
-    real hier_alpha_mu;    // Mean Hierarchical Learning rate for action/color Learning Value and medication_session effect
-    array[nConds] real hier_weight_mu;   // Mean Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
-    real hier_sensitivity_mu;    // Mean Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
-
+    real hier_alpha_pos_mu;    // Mean Hierarchical Positive Learning rate
+    real hier_alpha_neg_mu;    // Mean Hierarchical Negative Learning rate 
+    array[nConds] real hier_weight_mu;       // Mean Hierarchical Weighting 
+    real hier_sensitivity_mu;  // Mean Hierarchical snesitivity
+    
     /* Hierarchical sd parameter*/                               
-    real<lower=0> hier_alpha_sd;       // Between-participant variability Learning rate for Learning Value
-    real<lower=0> hier_weight_sd;      // Between-participant variability Wieghtening of Action Learning Value against to Color Learnig Value
-    real<lower=0> hier_sensitivity_sd; // Between-participant variability sensitivity
+    real<lower=0> hier_alpha_sd;      // Between-participant variability Learning rate
+    real<lower=0> hier_weight_sd;     // Between-participant variability Wieghtening
+    real<lower=0> hier_sensitivity_sd;   // Between-participant variability sensitivity
 
     /* participant-level main paameter*/
-    array[nParts] real z_alpha;       // Learning rate for Action/Color Learning Value
-    array[nParts, nConds] real z_weight;      // Wieghtening of Action Learning Value against to Learnig Value
-    array[nParts] real z_sensitivity; // With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nParts] real z_alpha_pos;   // Positive Learning rate
+    array[nParts] real z_alpha_neg;   // Negative Learning rate
+    array[nParts, nConds] real z_weight;  // Wieghtening
+    array[nParts] real z_sensitivity;         // Sensitivity  
 
 }
 transformed parameters {
@@ -42,19 +44,22 @@ transformed parameters {
     real EV_push_blue;      // Weighting two strategies between push action and blue color values learning
     real EV_pull_yell;      // Weighting two strategies between pull action and yellow color values learning
     real EV_pull_blue;      // Weighting two strategies between pull action and blue color values learning
-    vector[N] soft_max_EV;  //  The soft-max function for each trial, trial-by-trial probability
+    vector[N] EV_all;       // Expected value for each trial
    
     /* Transfer individual parameters */
-    array[nParts] real<lower=0, upper=1> transfer_alpha;   // Learning rate for Action/Color Learning Value
-    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening of Action Learning Value against to Color Learnig Value
-    array[nParts] real<lower=0> transfer_sensitivity;         // With a higher sensitivity value θ, choices are more sensitive to value differences
+    array[nParts] real<lower=0, upper=1> transfer_alpha_pos;   // Poistive Learning rate  
+    array[nParts] real<lower=0, upper=1> transfer_alpha_neg;   // Negative Learning rate  
+    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;  // Wieghtening  
+    array[nParts] real<lower=0> transfer_sensitivity;         // Sensitivity 
     
     /* Transfer Hierarchical parameters just for output*/
-    real<lower=0, upper=1> transfer_hier_alpha_mu;   // Hierarchical Learning rate for Action/Color Learning Value
-    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening of Action Learning Value against to Color Learnig Value
-    real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity, With a higher sensitivity value θ, choices are more sensitive to value differences
+    real<lower=0, upper=1> transfer_hier_alpha_pos_mu;   // Hierarchical Positive Learning rate
+    real<lower=0, upper=1> transfer_hier_alpha_neg_mu;   // Hierarchical Negative Learning rate
+    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghtening
+    real<lower=0> transfer_hier_sensitivity_mu;         // Hierarchical snesitivity
 
-	transfer_hier_alpha_mu = inv_logit(hier_alpha_mu);				// for the output
+	transfer_hier_alpha_pos_mu = inv_logit(hier_alpha_pos_mu);				// for the output
+	transfer_hier_alpha_neg_mu = inv_logit(hier_alpha_neg_mu);				 
     transfer_hier_weight_mu = inv_logit(hier_weight_mu);
 	transfer_hier_sensitivity_mu = log(1 + exp(hier_sensitivity_mu));
 
@@ -62,14 +67,14 @@ transformed parameters {
         for (c in 1:nConds){
             transfer_weight[p,c] = inv_logit(hier_weight_mu[c] + z_weight[p,c]*hier_weight_sd);
         }
-        transfer_alpha[p] = inv_logit(hier_alpha_mu + z_alpha[p]*hier_alpha_sd);
+        transfer_alpha_pos[p] = inv_logit(hier_alpha_pos_mu + z_alpha_pos[p]*hier_alpha_sd);
+        transfer_alpha_neg[p] = inv_logit(hier_alpha_neg_mu + z_alpha_neg[p]*hier_alpha_sd);
         transfer_sensitivity[p] = log(1 + exp(hier_sensitivity_mu + z_sensitivity[p]*hier_sensitivity_sd));
     }
 
     // Calculating the probability of reward
    for (i in 1:N) {
         // Restart probability of variable for each environemnt and condition
-        // Initial value of reward probability for each feature
         if (indicator[i]==1){
             p_push = .5;
             p_yell = .5;
@@ -80,70 +85,100 @@ transformed parameters {
         EV_yell = p_yell*winAmtYellow[i];
         EV_blue = (1-p_yell)*winAmtBlue[i];
        
-        // Relative contribution of Action Value Learning verus Color Value Learning
+        // Relative contribution of ion Value Learning verus Color Value Learning
         EV_push_yell = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
         EV_push_blue = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
         EV_pull_yell = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
         EV_pull_blue = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
        
         /* Calculating the soft-max function over weightening Action and Color conditions*/ 
-        // pushed and yellow vs pulled and blue
+        // pushed/yellow coded and pulled/blue coded 1
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i]]*EV_push_yell)/(exp(transfer_sensitivity[participant[i]]*EV_push_yell) + exp(transfer_sensitivity[participant[i]]*EV_pull_blue));
-
-        // pushed and blue vs pulled and yellow
+            EV_all[i] =  transfer_sensitivity[participant[i]] * (EV_push_yell - EV_pull_blue);
+            
+        //  pushed/blue coded 1 and pulled/yellow coded 0
         if ((pushed[i] == 1 && yellowChosen[i] == 0) || (pushed[i] == 0 && yellowChosen[i] == 1))
-            soft_max_EV[i] = exp(transfer_sensitivity[participant[i]]*EV_push_blue)/(exp(transfer_sensitivity[participant[i]]*EV_push_blue) + exp(transfer_sensitivity[participant[i]]*EV_pull_yell));  
-          
+            EV_all[i] = transfer_sensitivity[participant[i]] * (EV_push_blue - EV_pull_yell);
+                      
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
         if (pushed[i] == 1){
-            p_push = p_push + transfer_alpha[participant[i]]*(rewarded[i] - p_push); 
+            // positive RPE
+            if((rewarded[i] - p_push)>=0 ){ 
+                p_push = p_push + transfer_alpha_pos[participant[i]]*(rewarded[i] - p_push);
+            } 
+            // negative RPE
+            else{
+                p_push = p_push + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_push); 
+            }
         }
         else{
-            p_push = p_push - transfer_alpha[participant[i]]*(rewarded[i] + p_push - 1);
+            // positive RPE
+            if((rewarded[i] + p_push - 1)>=0){ 
+                p_push = p_push - transfer_alpha_pos[participant[i]]*(rewarded[i] + p_push - 1);
+            } 
+            // negative RPE
+            else{
+                p_push = p_push - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_push - 1);
+            }
         }   
 
         /*Color value learning*/
         if (yellowChosen[i] == 1){
-           p_yell = p_yell + transfer_alpha[participant[i]]*(rewarded[i] - p_yell);
+            // positive RPE
+            if((rewarded[i] - p_yell)>=0){ 
+                p_yell = p_yell + transfer_alpha_pos[participant[i]]*(rewarded[i] - p_yell);
+            } 
+            // negative RPE
+            else{
+                p_yell = p_yell + transfer_alpha_neg[participant[i]]*(rewarded[i] - p_yell);
+            }
         }    
         else{
-           p_yell = p_yell - transfer_alpha[participant[i]]*(rewarded[i] + p_yell - 1);
+            // positive RPE
+            if((rewarded[i] + p_yell - 1)>=0){ 
+                p_yell = p_yell - transfer_alpha_pos[participant[i]]*(rewarded[i] + p_yell - 1);
+            } 
+            // negative RPE
+            else{
+                p_yell = p_yell - transfer_alpha_neg[participant[i]]*(rewarded[i] + p_yell - 1);
+            }
         }
     }   
 }
 model { 
-    /* Hierarchical mu parameter*/   
+    /* Hierarchical mu parameter*/
     for (c in 1:nConds){
         hier_weight_mu[c] ~ normal(0,2);
     }
-    hier_alpha_mu ~ normal(0,2);
+    hier_alpha_pos_mu ~ normal(0,2);
+    hier_alpha_neg_mu ~ normal(0,2);
     hier_sensitivity_mu ~ normal(0,3); 
 
     /* Hierarchical sd parameter*/
-    hier_alpha_sd ~ normal(0,.5);  
-    hier_weight_sd ~ normal(0,.5); 
-    hier_sensitivity_sd ~ normal(0,.5);
+    hier_alpha_sd ~ normal(0,1);  
+    hier_weight_sd ~ normal(0,1); 
+    hier_sensitivity_sd ~ normal(0,1);
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
         for (c in 1:nConds){
             z_weight[p,c] ~ normal(0,1);
         }
-        z_alpha[p] ~ normal(0,1);
+        z_alpha_pos[p] ~ normal(0,1);
+        z_alpha_neg[p] ~ normal(0,1);
         z_sensitivity[p] ~ normal(0,1); 
     }
 
     /* RL likelihood */
     for (i in 1:N) { 
-        pushed[i] ~ bernoulli(soft_max_EV[i]);
+        pushed[i] ~ bernoulli_logit(EV_all[i]);
         }
 }
 generated quantities { 
    vector[N] log_lik;  
     /*  RL Log density likelihood */
     for (i in 1:N) {
-        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_EV[i]);
-        }
+        log_lik[i] = bernoulli_logit_lpmf(pushed[i] | EV_all[i]);
+    }
 }

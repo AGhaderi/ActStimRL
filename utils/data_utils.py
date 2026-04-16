@@ -158,12 +158,12 @@ def build_behavior_dataframe(
                     ] = np.arange(1, behAll_indicator.shape[0] + 1)
     
     # Hard-coded participant exclusions
-    NoNanBehAll = NoNanBehAll[
-        (NoNanBehAll["sub_ID"] != "sub-010") |
-        (NoNanBehAll["session"] != 2) |
-        (NoNanBehAll["run"] != 2) |
-        (NoNanBehAll["block"] != "Act")
-    ]
+    #NoNanBehAll = NoNanBehAll[
+    #    (NoNanBehAll["sub_ID"] != "sub-010") |
+    #    (NoNanBehAll["session"] != 2) |
+    #    (NoNanBehAll["run"] != 2) |
+    #    (NoNanBehAll["block"] != "Act")
+    #]
 
     NoNanBehAll = NoNanBehAll[
         (NoNanBehAll["sub_ID"] != "sub-030") |

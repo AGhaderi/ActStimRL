@@ -33,8 +33,8 @@ transformed parameters {
     real EV_pull;  // Standard Expected Value of pull action
     real EV_yell;  // Standard Expected Value of yellow action
     real EV_blue;  // Standard Expected Value of blue action
-    vector[N] soft_max_Act;  //  The soft-max function for each trial for Action value learing
-    vector[N] soft_max_Clr;  //  The soft-max function for each trial for Color value learning
+    vector[N] EV_all_Act;   // Expected value for each trial
+    vector[N] EV_all_Clr;   // Expected value for each trial
    
     /* Transfer individual parameters */
     array[nParts] real<lower=0, upper=1> transfer_alpha;    // Learning rate for Action and Color Learning Value
@@ -67,11 +67,11 @@ transformed parameters {
        
         /* Calculating the soft-max function*/ 
         // pushed  vs pulled
-        soft_max_Act[i] = exp(transfer_sensitivity[participant[i]]*EV_push)/(exp(transfer_sensitivity[participant[i]]*EV_push) + exp(transfer_sensitivity[participant[i]]*EV_pull));
-        
+        EV_all_Act[i] = transfer_sensitivity[participant[i]] * (EV_push - EV_pull);
+                
         // yellow vs blue 
-        soft_max_Clr[i] = exp(transfer_sensitivity[participant[i]]*EV_yell)/(exp(transfer_sensitivity[participant[i]]*EV_yell) + exp(transfer_sensitivity[participant[i]]*EV_blue));  
-          
+        EV_all_Clr[i] = transfer_sensitivity[participant[i]] * (EV_yell - EV_blue);
+                  
         // RL rule update for computing prediction error and internal value expectation for the next trial based on the current reward output and interal value expectation
         /*Action value learning*/
         if (pushed[i] == 1){
@@ -107,14 +107,14 @@ model {
 
     /* RL likelihood */
     for (i in 1:N) { 
-        pushed[i] ~ bernoulli(soft_max_Act[i]);
-        yellowChosen[i] ~ bernoulli(soft_max_Clr[i]);
+        pushed[i] ~ bernoulli_logit(EV_all_Act[i]);
+        yellowChosen[i] ~ bernoulli_logit(EV_all_Clr[i]);
         }
 }
 generated quantities { 
    vector[N] log_lik;  
     /*  RL Log density likelihood */
     for (i in 1:N) {
-        log_lik[i] = bernoulli_lpmf(pushed[i] | soft_max_Act[i]) + bernoulli_lpmf(yellowChosen[i] | soft_max_Clr[i]);
+        log_lik[i] = bernoulli_logit_lpmf(pushed[i] | EV_all_Act[i]) + bernoulli_logit_lpmf(yellowChosen[i] | EV_all_Clr[i]);
         }
 }

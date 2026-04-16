@@ -4,13 +4,13 @@ import os
 import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde
-from utils import config
+from utils import *
 
 def compute_and_save_clinical_parameters(
-    readClicalEvalFile=config.PROJECT_CLIN_EVAL_FILE,
-    readModel=config.SCRATCH_HIER_MODEL_DIR,
-    outDir=config.SCRATCH_CLIN_EVAL_DIR,
-    outFile=config.SCARTCH_CLIN_EVAL_FILE
+    readClicalEvalFile=PROJECT_CLIN_EVAL_FILE,
+    readModel=SCRATCH_HIER_MODEL_DIR,
+    outDir=SCRATCH_CLIN_EVAL_DIR,
+    outFile=SCARTCH_CLIN_EVAL_FILE
 ):
     """
     Computes MAP estimates (via KDE mode) of hierarchical RL parameters for PD & HC,
@@ -40,13 +40,13 @@ def compute_and_save_clinical_parameters(
         return x_grid[np.argmax(kde(x_grid))]
 
     # read collected data across all participants
-    behAll = pd.read_csv(config.PROJECT_NoNAN_BEH_ALL_FILE)
+    behAll = pd.read_csv(PROJECT_NoNAN_BEH_ALL_FILE)
     # select group 
     behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
     behAll_HC = behAll[(behAll['patient']=='HC')].copy().reset_index(drop=False)
     #  participant
-    particiapnts_PD = np.unique(behAll_PD.sub_ID)
-    particiapnts_HC = np.unique(behAll_HC.sub_ID)
+    particiapnts_PD = behAll_PD['sub_ID'].unique()
+    particiapnts_HC = behAll_HC['sub_ID'].unique()
 
     # Load clinical evaluation
     clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
@@ -223,7 +223,7 @@ def compute_and_save_clinical_parameters(
     print(f"Saved clinical parameter table to:\n{outDir}")
 
 
-def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
+def dataStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
     """
     Prepare and standardize behavioral data for Action and Color conditions.
     Converts categorical labels to numeric indices and organizes data into a dictionary
@@ -247,17 +247,18 @@ def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD
     data = behAll[(behAll['patient'] == group)].copy().reset_index(drop=False)
 
     # Count number of participants 
-    nParts = len(np.unique(data['sub_ID']))
+    nParts = len(data['sub_ID'].unique())
 
     # Convert participant IDs to consecutive integer indices 
-    data['sub_ID'] = data['sub_ID'].replace(np.unique(data.sub_ID), np.arange(1, nParts + 1)).astype(int)
+    id_map = dict(zip(data['sub_ID'].unique(), np.arange(1, nParts + 1)))
+    data['sub_ID'] = data['sub_ID'].map(id_map).astype(int)
 
     # Number of conditions 
     nConds = 2  # 1 = Action (Act), 2 = Color (Stim)
 
     # Convert condition labels to integers 
     # 'Act' -> 1, 'Stim' -> 2
-    data['block'] = data['block'].replace(['Act', 'Stim'], [1, 2]).astype(int)
+    data['block'] = data['block'].map({'Act': 1, 'Stim': 2}).astype(int)
 
     # Number of sessions / medication conditions 
     nMeds_nSes = 2
@@ -276,24 +277,27 @@ def dataStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD
     dataStan = {
         'N': data.shape[0],  # Total number of trials
         'nParts': nParts,    # Number of participants
-        'pushed': np.array(data['pushed']).astype(int),           # Action choice (push=1, pull=0)
+        'pushed': np.array(data['pushed']).astype(int),              # Action choice (push=1, pull=0)
         'yellowChosen': np.array(data['yellowChosen']).astype(int),  # Color choice (yellow=1, blue=0)
-        'winAmtPushable': np.array(data['winAmtPushable']),       # Reward if pushed
-        'winAmtPullable': np.array(data['winAmtPullable']),       # Reward if pulled
-        'winAmtYellow': np.array(data['winAmtYellow']),           # Reward if yellow chosen
-        'winAmtBlue': np.array(data['winAmtBlue']),               # Reward if blue chosen
-        'rewarded': np.array(data['correctChoice']).astype(int),  # Whether choice was correct
-        'participant': np.array(data['sub_ID']).astype(int),      # Participant index
-        'indicator': np.array(data['indicator']).astype(int),     # Trial indicator variable
-        'nConds': nConds,                                        # Number of conditions
-        'condition': np.array(data['block']).astype(int),         # Condition per trial (1=Act, 2=Clr)
-        'nMeds_nSes': nMeds_nSes,                                # Number of sessions or medication conditions
-        'medication_session': medication_session                  # Session or medication index
+        'leftChosen': np.array(data['leftChosen']).astype(int),      # Side choice (left=1, right=0)
+        'winAmtPushable': np.array(data['winAmtPushable']),          # Reward if pushed
+        'winAmtPullable': np.array(data['winAmtPullable']),          # Reward if pulled
+        'winAmtYellow': np.array(data['winAmtYellow']),              # Reward if yellow is chosen
+        'winAmtBlue': np.array(data['winAmtBlue']),                  # Reward if blue is chosen
+        'winAmtLeft': np.array(data['winAmtLeft']),                  # Reward if left is chosen
+        'winAmtRight': np.array(data['winAmtRight']),                # Reward if right is chosen
+        'rewarded': np.array(data['correctChoice']).astype(int),     # Whether choice is correct
+        'participant': np.array(data['sub_ID']).astype(int),         # Participant index
+        'indicator': np.array(data['indicator']).astype(int),        # Trial indicator variable
+        'nConds': nConds,                                            # Number of conditions
+        'condition': np.array(data['block']).astype(int),            # Condition per trial (1=Act, 2=Clr)
+        'nMeds_nSes': nMeds_nSes,                                    # Number of sessions or medication conditions
+        'medication_session': medication_session                     # Session or medication index
     } 
 
     return dataStan
 
-def initialStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
+def initialStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
                     alpha_pos_size=(2,2), alpha_neg_size=(2,2), sens_size=(2,2)):
     """
     Prepare initial samples for Stan for Action and Color conditions.
@@ -319,8 +323,9 @@ def initialStanActClr(readBehFile= config.PROJECT_NoNAN_BEH_ALL_FILE, group:str=
     nParts = len(np.unique(data['sub_ID']))
  
     initials = []
-    for _ in range(config.N_CHAIN):
+    for _ in range(N_CHAIN):
         chaininit = {
+            'hier_alpha_pos_mu'
             'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts, *alpha_pos_size)),
             'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts, *alpha_neg_size)),
             'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, *sens_size)),
@@ -355,7 +360,7 @@ def load_pickle(load_path):
         print("An exception occurred")
      
 # Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
-def waic(log_likelihood):
+def waic_fun(log_likelihood):
     """Calculates the Watanabe-Akaike information criteria.
     Calculates pWAIC1 and pWAIC2
     according to http://www.stat.columbia.edu/~gelman/research/published/waic_understand3.pdf
@@ -392,3 +397,30 @@ def waic(log_likelihood):
            'waic':waic,
            'waic_se':waic_se}
     return out
+
+def waic_models(model_calss:str, list_model:list[str]):
+    # calcualte waic for all models in each group 
+    for group in ['HC', 'PD']:     
+        # declare waice variable
+        waic_values = np.zeros(len(list_model))
+        # loop over list of participants
+        for i, model_name in enumerate(list_model):
+            print(model_name)
+            # The adrees name of pickle file
+            pickelDir = f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{group}/{model_name}_{group}.pkl'
+            #Loading the pickle file of model fit from the subject directory
+            loadPkl = load_pickle(load_path=pickelDir)
+            fit = loadPkl['fit'] 
+            # get the linkelihood and comarision assessment       
+            log_lik = fit['log_lik']
+            criteria = waic_fun(log_likelihood=log_lik)
+            waic_values[i] = criteria['waic']
+
+        ## waic
+        print(f'WAIC in {group} for: ',model_calss, ' : ', waic_values)
+        #dwaic
+        dWAIC = waic_values - np.min(waic_values)
+        print(f'dWAIC in {group}  for: ',model_calss, ' : ',dWAIC)
+        # realtive weight
+        weight = [np.exp(-.5*dWAIC[i])/np.sum(np.exp(-.5*dWAIC)) for i in range(len(dWAIC))]
+        print(f'weight in {group}  for: ',model_calss, ' : ', weight)

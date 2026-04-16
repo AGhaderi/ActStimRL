@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
 sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
-from Madule import utils
+from utils import model_utils, config
 import nest_asyncio
 import os
 
@@ -17,25 +17,25 @@ filename = os.path.basename(__file__)
 model_name = os.path.splitext(filename)[0]
 
 # session effect over Parkinsdon's disease
-partcipant_group = 'PD'
-  
+participant_group = 'PD' 
+
 # Main directory of the subject
 readMainDirec = '/mnt/projects/7TPD/bids/derivatives/fMRI_DA/AllBehData/'
 # read collected data across all participants
 behAll = pd.read_csv(f'{readMainDirec}/NoNanBehAll.csv')
 
 
-# select group
-behAll = behAll[(behAll['patient']==partcipant_group)]
-# number of condition
-nConds = 2
-# Condition label 1: Act, label 2: Stim
-behAll.block = behAll.block.replace(['Act', 'Stim'], [1, 2])
+# select group 
+behAll = behAll[(behAll['patient']==participant_group)]
 
 # number of participant
 nParts = len(np.unique(behAll['sub_ID']))
 # Convert participant ID to indeces
 behAll['sub_ID'] = behAll['sub_ID'].replace(np.unique(behAll.sub_ID), np.arange(1, nParts +1))
+# number of condition
+nConds = 2
+# Condition label 1: Act, label 2: Stim
+behAll.block = behAll.block.replace(['Act', 'Stim'], [1, 2])
 
 # If you want to model fit or just recall ex model fit
 modelFit = True
@@ -48,10 +48,11 @@ n_warmup = 1000
 # main directory of saving
 writeMainScarch = '/mnt/scratch/projects/7TPD/amin'
 # The adrees name of pickle file
-pickelDir = f'{writeMainScarch}/Behavioral/Tabel1/{partcipant_group}/{model_name}_{partcipant_group}.pkl'
+pickelDir = f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/{model_name}_{participant_group}.pkl'
 # Check out if it does not exist
-if not os.path.isdir(f'{writeMainScarch}/Behavioral/Tabel1/{partcipant_group}/'):
-        os.makedirs(f'{writeMainScarch}/Behavioral/Tabel1/{partcipant_group}/') 
+if not os.path.isdir(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/'):
+        os.makedirs(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/') 
+
  
 if modelFit == True: 
     """Fitting data to model and then save as pickle file in the subject directory if modelFit = True"""
@@ -73,18 +74,17 @@ if modelFit == True:
     initials = [] 
     for c in range(0, n_chains):
         chaininit = {
-            'z_alpha': np.random.uniform(-1, 1, size=nParts),
-            'z_weight': np.random.uniform(-1, 1, size=(nParts, nConds)),
-            'z_sensitivity': np.random.uniform(-1, 1, size=nParts),
+            'z_alpha_pos': np.random.uniform(-1, 1, size=(nParts, nConds)),
+            'z_alpha_neg': np.random.uniform(-1, 1, size=(nParts,nConds)),
+            'z_sensitivity': np.random.uniform(-1, 1, size=(nParts, nConds)),
             'hier_alpha_sd': np.random.uniform(.01, .1),        
             'hier_sensitivity_sd': np.random.uniform(.01, .1),
-            'transfer_weight': np.random.uniform(.3, .7, size=nParts),
             'transfer_sensitivity': np.random.uniform(.3, .7, size=nParts)
         }
         initials.append(chaininit)   
 
     # Loading the RL Stan Model
-    file_name = f'/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/Stan_Structure_Task_tabel1/{model_name}.stan' 
+    file_name = f'/mrhome/amingk/Documents/7TPD/ActStimRL/Model/stan_models/Stan_Act_Clr_Conditoin_tabel2/{model_name}.stan' 
     file_read = open(file_name, 'r')
     stan_model = file_read.read()
     # Use nest-asyncio.This package is needed because Jupter Notebook blocks the use of certain asyncio functions
@@ -94,55 +94,68 @@ if modelFit == True:
     # Start for taking samples from parameters in the Stan Model
     fit = posterior.sample(num_chains=n_chains, num_samples=n_samples, init=initials, num_warmup=n_warmup)
     # Save Model Fit
-    utils.to_pickle(stan_fit=fit, save_path = pickelDir)
+    model_utils.to_pickle(stan_fit=fit, save_path = pickelDir)
 else:
     """Loading the pickle file of model fit from the subject directory if modelFit = False"""
-    loadPkl = utils.load_pickle(load_path=pickelDir)
+    loadPkl = model_utils.load_pickle(load_path=pickelDir)
     fit = loadPkl['fit']
 
-
-
+ 
 # Extracting posterior distributions for each of four main unkhown parameters
 hier_weight_mu = fit["transfer_hier_weight_mu"] 
-hier_alpha_mu = fit["transfer_hier_alpha_mu"].flatten()
-hier_sensitivity_mu = fit["transfer_hier_sensitivity_mu"].flatten() 
+hier_alpha_pos_mu = fit["transfer_hier_alpha_pos_mu"]
+hier_alpha_neg_mu = fit["transfer_hier_alpha_neg_mu"] 
+hier_sensitivity_mu = fit["transfer_hier_sensitivity_mu"] 
 
 # Figure of model fit results in two column and two rows
 fig = plt.figure(figsize=(20, 8), tight_layout=True)
-rows = 1
-columns = 3
+rows = 2
+columns = 2
 
-
-# Action Learning Rate
+# Weghtening
 fig.add_subplot(rows, columns, 1)
 sns.histplot(hier_weight_mu[0], kde=True, stat='density', bins=100)
 sns.histplot(hier_weight_mu[1], kde=True, stat='density', bins=100)
-plt.title('Hierarchical Weighting Parameter',  fontsize=18)
+plt.title('Hierarchical Weighting',  fontsize=18)
 plt.legend(['Act', 'Clr'])
 plt.ylabel('Density',  fontsize=18)
-plt.xlabel('$w$',  fontsize=18)
+plt.xlabel(r'$ w $',  fontsize=18)
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
 plt.xlim(0, 1)
 
-
-# Weghtening
+# Positive Learnign Rate
 fig.add_subplot(rows, columns, 2)
-sns.histplot(hier_alpha_mu, kde=True, stat='density', bins=100)
-plt.title('Hierarchical Learnign Rate',  fontsize=18)
+sns.histplot(hier_alpha_pos_mu[0], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_pos_mu[1], kde=True, stat='density', bins=100)
+plt.title('Hierarchical Positive Learnign Rate',  fontsize=18)
+plt.legend(['Act', 'Clr'])
 plt.ylabel('Density',  fontsize=18)
-plt.xlabel(r'$ \alpha $',  fontsize=18)
+plt.xlabel(r'$ +\alpha $',  fontsize=18)
 plt.yticks(fontsize=20)
 plt.xticks(fontsize=20)
-
 plt.xlim(0, 1)
-# Sensitivity
+
+# Positive Learnign Rate
 fig.add_subplot(rows, columns, 3)
-sns.histplot(hier_sensitivity_mu, kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_neg_mu[0], kde=True, stat='density', bins=100)
+sns.histplot(hier_alpha_neg_mu[1], kde=True, stat='density', bins=100)
+plt.title('Hierarchical Negative Learnign Rate',  fontsize=18)
+plt.legend(['Act', 'Clr'])
+plt.ylabel('Density',  fontsize=18)
+plt.xlabel(r'$ -\alpha $',  fontsize=18)
+plt.yticks(fontsize=20)
+plt.xticks(fontsize=20)
+plt.xlim(0, 1)
+
+# Sensitivity
+fig.add_subplot(rows, columns, 4)
+sns.histplot(hier_sensitivity_mu[0], kde=True, stat='density', bins=100)
+sns.histplot(hier_sensitivity_mu[1], kde=True, stat='density', bins=100)
 plt.title('Hierarchical Sensitivity',  fontsize=18)
 plt.ylabel('Density',  fontsize=18)
 plt.xlabel(r'$\beta$',  fontsize=18)
  
 # Save figure of parameter distribution 
-fig.savefig(f'{writeMainScarch}/Behavioral/Tabel1/{partcipant_group}/{model_name}_{partcipant_group}.png', dpi=500)
+fig.savefig(f'{writeMainScarch}/Behavioral/Tabel2/{participant_group}/{model_name}_{participant_group}.png', dpi=500)
 

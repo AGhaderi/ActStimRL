@@ -7,11 +7,11 @@ import matplotlib.lines as mlines
 import glob
 import os
 from scipy.io import loadmat
-from . import config 
+from utils import *
 
 def plotRelevantOptionTrial(
-        readBehFile= config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
-        save_path = config.FIGURES_DIR,
+        readBehFile= PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+        save_path = FIGURES_DIR,
         window_size: int = 4
     ):
     """
@@ -47,9 +47,9 @@ def plotRelevantOptionTrial(
 
             # Rolling averages for each participant group
             groups = {
-                1: ("PD-OFF", config.COLORS['PD-OFF']),
-                2: ("HC", config.COLORS['HC']),
-                3: ("PD-ON", config.COLORS['PD-ON']),
+                1: ("PD-OFF", COLORS['PD-OFF']),
+                2: ("HC", COLORS['HC']),
+                3: ("PD-ON", COLORS['PD-ON']),
             }
         
         
@@ -102,8 +102,8 @@ def plotRelevantOptionTrial(
     
 
 def plotIrrelevantOptionTrial(
-        readBehFile= config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
-        save_path = config.FIGURES_DIR,
+        readBehFile= PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+        save_path = FIGURES_DIR,
         window_size: int = 4
     ):
     """
@@ -139,9 +139,9 @@ def plotIrrelevantOptionTrial(
 
             # Rolling averages for each participant group
             groups = {
-                1: ("PD-OFF", config.COLORS['PD-OFF']),
-                2: ("HC", config.COLORS['HC']),
-                3: ("PD-ON", config.COLORS['PD-ON']),
+                1: ("PD-OFF", COLORS['PD-OFF']),
+                2: ("HC", COLORS['HC']),
+                3: ("PD-ON", COLORS['PD-ON']),
             }
         
         
@@ -187,7 +187,7 @@ def plotIrrelevantOptionTrial(
     return behAll
 
 
-def plotChoiceResponseSubjects(readBehDir=config.PROJECT_DATA_DIR):
+def plotChoiceResponseSubjects(readBehDir=PROJECT_DATA_DIR):
     """
     Reads raw behavioral .txt files and .mat files for each subject and session,
     concatenates them, extracts block order information, and generates behavior plots.
@@ -383,8 +383,8 @@ def plotChoiceResponse(data, subName, reverse, saveFile):
 
 
 def plotFeatureBias(
-    readBehFile=config.PROJECT_NoNAN_BEH_ALL_FILE,
-    saveFigPath=config.FIGURES_DIR):
+    readBehFile=PROJECT_NoNAN_BEH_ALL_FILE,
+    saveFigPath=FIGURES_DIR):
     """
     Load behavioral data, compute response tendencies for different features, 
     and plot probability of choosing each feature across groups and conditions.
@@ -426,7 +426,7 @@ def plotFeatureBias(
     axs = axs.flatten()
     
     # Custom color palette
-    custom_palette = {'HC': config.COLORS['HC'], 'PD-ON': config.COLORS['PD-ON'], 'PD-OFF': config.COLORS['PD-OFF']}
+    custom_palette = {'HC': COLORS['HC'], 'PD-ON': COLORS['PD-ON'], 'PD-OFF': COLORS['PD-OFF']}
     
     # ------------------- Left responses -------------------
     sns.barplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], errorbar='se',
@@ -477,8 +477,8 @@ def plotFeatureBias(
 
 
 def plotProportionRelIrrelevantHighRewardOption(
-    readBehFile=config.PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE,
-    saveFigPath=config.FIGURES_DIR):
+    readBehFile=PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE,
+    saveFigPath=FIGURES_DIR):
     """
     Plot the relevant and irrelevant high reward options and
     their differnce for each participant and group
@@ -504,7 +504,7 @@ def plotProportionRelIrrelevantHighRewardOption(
     axs = axs.flatten()
     
     # Custom color palette
-    custom_palette = {'HC': config.COLORS['HC'], 'PD-ON': config.COLORS['PD-ON'], 'PD-OFF': config.COLORS['PD-OFF']}
+    custom_palette = {'HC': COLORS['HC'], 'PD-ON': COLORS['PD-ON'], 'PD-OFF': COLORS['PD-OFF']}
     
     # relevant high Reward Option 
     sns.barplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0], errorbar='se',
@@ -733,4 +733,80 @@ def plot_posterior(x,
     return ax    
 
 
+def plot_hier_kde_posterior(fit: dict[str, np.ndarray], config:list[dict], group:str, model_name:str, model_calss:str):
+    """
+    Plot posterior distributions for hierarchical model parameters.
+    Dimention of posterior paramters in (nConds, nMeds_nSes,nSamples)
 
+    Parameters
+    ----------
+    config : list of dict
+        A list where each element is a dictionary describing one parameter.
+        Each dictionary must contain:
+            - "param" : str
+                Name of the parameter in the fitted model (e.g., fit[param])
+            - "label" : str
+                Label for the x-axis of the subplot
+            - "legend" : list of str or None (optional)
+                Labels for each dimension of the parameter (e.g., ["Act", "Clr"]).
+                If None, no legend will be displayed.
+
+    -----
+    - Assumes `fit`, `writeMainScarch`, `partcipant_group`, and `model_name`
+      are defined in the global scope.
+    - Assumes parameters are bounded between 0 and 1 (due to set_xlim(0,1)).
+    """
+
+
+    # check if config is a list
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+        
+    # Convert hierarchical parameter plots to axs structure
+    mm = 1/2.54  # convert cm to inches
+    nrows = 2
+    ncols = 2
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(21*mm, 7*nrows*mm))
+    axs = axs.flatten()  # flatten to 1D array for easy indexing
+
+    for p, cfg in enumerate(config):
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+        param = cfg["param"]
+        label = cfg["label"]
+        legend = cfg.get("legend", None)
+        xlim = cfg.get("range", None)
+
+        # get parameter posterior
+        param_post = fit[param] 
+        print('param_post.shape:', param_post.shape)
+        # number of dimetion
+        ndim = param_post.ndim
+        # convert to (nConds, nMeds_nSes,n_Sample)
+        if ndim==2:
+            param_post = param_post[np.newaxis,:,:]
+            
+        # size of each dimention
+        size1=param_post.shape[0]
+        size2=param_post.shape[1]
+        # loop over the dimention of paramters
+        for i in range(size1):
+            for j in range(size2):
+                # get the samples
+                sample_param = param_post[i,j]
+                sns.kdeplot(sample_param, ax=axs[p],fill=True, linewidth=1)
+                if xlim is not None:
+                    axs[p].set_xlim(xlim)
+                
+        # Only add legend if it exists
+        if legend is not None:
+            axs[p].legend(legend, fontsize=10)
+        if label is not None:
+            axs[p].set_xlabel(label, fontsize=10)
+        axs[p].set_ylabel('Density', fontsize=10)
+
+    # Adjust layout and save
+    fig.tight_layout()
+    fig.savefig(f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{group}/{model_name}_{group}_hier.png', dpi=500)
+    plt.close()
