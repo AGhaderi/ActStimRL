@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde
 from utils import *
+from scipy.stats import kurtosis
 
 def compute_and_save_clinical_parameters(
     readClicalEvalFile=PROJECT_CLIN_EVAL_FILE,
@@ -424,3 +425,152 @@ def waic_models(model_calss:str, list_model:list[str]):
         # realtive weight
         weight = [np.exp(-.5*dWAIC[i])/np.sum(np.exp(-.5*dWAIC)) for i in range(len(dWAIC))]
         print(f'weight in {group}  for: ',model_calss, ' : ', weight)
+
+
+def MAP_last_axis(posterior_samples:np.ndarray):
+
+    # Shape without the last dimension
+    out_shape = posterior_samples.shape[:-1]
+    map_estimates = np.zeros(out_shape)
+    max_densities = np.zeros(out_shape)
+
+    # Iterate over all indices except last axis
+    for idx in np.ndindex(out_shape):
+        samples_1d = posterior_samples[idx]  # shape: (last_dim,)
+
+        # Evaluate KDE on a grid
+        kde = gaussian_kde(samples_1d)
+        x = np.linspace(samples_1d.min(), samples_1d.max(), 1000)
+        density = kde(x)
+        # MAP estimate = location of the maximum density
+        max_idx = np.argmax(density)
+        map_estimates[idx] = x[max_idx]
+        max_densities[idx] = density[max_idx]
+
+    return map_estimates, max_densities
+
+
+def participant_list(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
+    """
+    return participant list for each gorup
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Behavioral data  
+        Group to select: 'HC' for healthy controls or 'PD' for Parkinson's patients.
+
+    Returns
+    -------
+    dataStan : dict
+        Dictionary containing standardized data arrays 
+    """
+    # Load full dataset across all participants
+    behAll = pd.read_csv(f"{readBehFile}")
+
+    # Select only participants from the specified group 
+    data = behAll[(behAll['patient'] == group)].copy().reset_index(drop=False)
+
+    # participant list
+    participants = data['sub_ID'].unique()
+
+    return participants
+
+def save_indv_mean_posterior(fit: dict[str, np.ndarray],main_dir: str,param: str,group: str,model: str):
+    """
+    Save mean posterior for individual parameters:
+    Expected shape: (nParts, nConds, nSess, nSamples)
+    """
+
+    param_post = fit[param]
+    print('param_post.shape:', param_post.shape)
+
+    # Ensure 4D shape
+    if param_post.ndim == 4:
+        pass
+    elif param_post.ndim == 3:
+        param_post = param_post[:, :, np.newaxis, :]
+    elif param_post.ndim == 2:
+        param_post = param_post[:, np.newaxis, np.newaxis, :]
+    else:
+        raise ValueError("Unsupported parameter shape")
+
+    nParts, nConds, nSess, nSamples = param_post.shape
+
+    # Get participant names
+    participants_names = participant_list(readBehFile=PROJECT_NoNAN_BEH_ALL_FILE,group=group)
+
+    # Safety check (this can silently break otherwise)
+    if len(participants_names) != nParts:
+        raise ValueError(
+            f"Mismatch: {len(participants_names)=} vs {nParts=}"
+        )
+    # Mean over samples
+    if group=='PD':
+        # map and mean of posterior
+        param_post_map, _ = MAP_last_axis(param_post)
+        param_post_mean = param_post.mean(axis=-1)
+        # Collect rows
+        rows = []
+        for p_idx in range(nParts):
+            participant = participants_names[p_idx]
+
+            for c_idx, condition in enumerate(['Act','Stim']):
+                for s_idx, medciation in enumerate(['OFF','ON']):
+                    rows.append({
+                        'patient':group,
+                        'medication': medciation,
+                        'sub_ID': participant,
+                        'block': condition,
+                        'weight_parameter_mean': param_post_mean[p_idx, c_idx, s_idx],
+                        'weight_parameter_map': param_post_map[p_idx, c_idx, s_idx]
+                    })
+    if group=='HC': 
+        #map and mean of posterior, average accross sessions
+        param_post_mean = param_post.mean(axis=-1).mean(axis=-1)
+        param_post_map,_ = MAP_last_axis(param_post)
+        param_post_map = param_post_map.mean(axis=-1)
+        
+        # Collect rows
+        rows = []
+        for p_idx in range(nParts):
+            participant = participants_names[p_idx]
+
+            for c_idx, condition in enumerate(['Act','Stim']):
+                rows.append({
+                    'patient':group,
+                    'medication': 'OFF',
+                    'sub_ID': participant,
+                    'block': condition,
+                    'weight_parameter_mean': param_post_mean[p_idx, c_idx],
+                    'weight_parameter_map': param_post_map[p_idx, c_idx]
+                })
+
+    # Create DataFrame once
+    df = pd.DataFrame(rows)
+
+    # Save
+    df.to_csv(f'{main_dir}/{model}_{group}_{param}.csv', index=False)
+
+   
+def combine_parameter_highRewardChoice(main_indv_model_dir: str, param: str, model: str):
+
+    # Load parameter data
+    df_parameter_PD = pd.read_csv(f'{main_indv_model_dir}/PD/{model}_PD_{param}.csv')
+    df_parameter_HC = pd.read_csv(f'{main_indv_model_dir}/HC/{model}_HC_{param}.csv')
+ 
+    # Combine
+    df_parameter = pd.concat([df_parameter_PD, df_parameter_HC], ignore_index=True)
+
+    # Load behavioral data
+    behALL_high_reward_groupby = pd.read_csv(PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE)
+
+    # Merge
+    df_merged = pd.merge(
+        behALL_high_reward_groupby,
+        df_parameter,
+        on=['patient', 'medication', 'sub_ID', 'block'],
+        how='inner'
+    )
+    # save behavioral data fwith relevant and irrelevant high reward options and summary of model parameter weights
+    df_merged.to_csv(f"{PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE_MODEL_PARAMETER}",index=False)

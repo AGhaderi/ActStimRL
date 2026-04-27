@@ -7,7 +7,10 @@ import matplotlib.lines as mlines
 import glob
 import os
 from scipy.io import loadmat
+import sys
+sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
 from utils import *
+from utils.model_utils import participant_list, MAP_last_axis
 
 def plotRelevantOptionTrial(
         readBehFile= PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
@@ -810,3 +813,143 @@ def plot_hier_kde_posterior(fit: dict[str, np.ndarray], config:list[dict], group
     fig.tight_layout()
     fig.savefig(f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{group}/{model_name}_{group}_hier.png', dpi=500)
     plt.close()
+
+
+def plot_indv_kde_posterior(fit: dict[str, np.ndarray], dir:str, config:list[dict], group:str, model:str):
+    """
+    Plot posterior KDE for individual parameters from individual RL model with shape:
+    (nParts, nConds, nSess, nSamples)
+    """ 
+
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+    for p, cfg in enumerate(config):
+
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+
+        param = cfg["param"]
+        label = cfg["label"]
+        xlim = cfg.get("range", None)
+
+        param_post = fit[param]
+        print('param_post.shape:', param_post.shape)
+
+        # Ensure 4D shape
+        if param_post.ndim == 4:
+            pass
+        elif param_post.ndim == 3:
+            param_post = param_post[:, :, np.newaxis, :]
+        elif param_post.ndim == 2:
+            param_post = param_post[:, np.newaxis, np.newaxis, :]
+        else:
+            raise ValueError("Unsupported parameter shape")
+
+        nParts, nConds, nSess, nSamples = param_post.shape
+
+        # plotting 
+        mm = 1 / 2.54
+        nrows=nConds*nSess
+        fig, axs = plt.subplots(nrows=nrows, ncols=1,
+                                figsize=(21 * mm, 5 * nrows * mm))
+        # make axs subscriptable
+        if nrows == 1:
+            axs = [axs]
+        
+        idx=0
+        # plotting loop
+        for c in range(nConds):
+            for s in range(nSess):
+                # plot each participant
+                for p_idx in range(nParts):
+                    samples = param_post[p_idx, c, s, :]
+                    sns.kdeplot(samples, ax=axs[idx])
+
+                # labels
+                axs[idx].set_xlabel(label[idx], fontsize=10)
+                axs[idx].set_ylabel("Density", fontsize=10)
+                if xlim is not None:
+                    axs[idx].set_xlim(xlim)
+                idx+=1
+
+        fig.tight_layout()
+        # save
+        fig.savefig(f'{dir}/{model}_{group}_{param}_indv.png', dpi=300)
+        plt.close()
+
+
+
+
+def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], dir:str, config:list[dict], group:str, model:str):
+    """
+    Plot posterior KDE for individual parameters from individual RL model in seperate plots for each participant with shape:
+    (nParts, nConds, nSess, nSamples)
+    """ 
+
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+    for p, cfg in enumerate(config):
+
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+
+        param = cfg["param"]
+        label = cfg["label"]
+        xlim = cfg.get("range", None)
+
+        param_post = fit[param]
+        print('param_post.shape:', param_post.shape)
+
+        # Ensure 4D shape
+        if param_post.ndim == 4:
+            pass
+        elif param_post.ndim == 3:
+            param_post = param_post[:, :, np.newaxis, :]
+        elif param_post.ndim == 2:
+            param_post = param_post[:, np.newaxis, np.newaxis, :]
+        else:
+            raise ValueError("Unsupported parameter shape")
+
+        nParts, nConds, nSess, nSamples = param_post.shape
+        
+        # get the name of participants 
+        participants_names = participant_list(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group=group)
+
+        # plotting loop
+        for p_idx in range(nParts):
+            # plotting 
+            mm = 1 / 2.54
+            nrows=nConds*nSess
+            fig, axs = plt.subplots(nrows=nrows, ncols=1,
+                                    figsize=(21 * mm, 5 * nrows * mm))
+            # make axs subscriptable
+            if nrows == 1:
+                axs = [axs]
+
+            # participant id
+            participant= participants_names[p_idx]
+
+            idx=0
+            for c in range(nConds):
+                for s in range(nSess):
+                    # plot each participant
+                    samples = param_post[p_idx, c, s, :]
+                    sns.kdeplot(samples, ax=axs[idx])
+                    # mean
+                    samples_map,_ = MAP_last_axis(samples)
+                    axs[idx].axvline(x=samples_map, linestyle='--', color='black')
+                    # labels
+                    axs[idx].set_title(participant, fontsize=10)
+                    axs[idx].set_xlabel(label[idx], fontsize=10)
+                    axs[idx].set_ylabel("Density", fontsize=10)
+                    if xlim is not None:
+                        axs[idx].set_xlim(xlim)
+                    idx+=1
+
+            fig.tight_layout()
+            # save
+            fig.savefig(f'{dir}/{model}_{group}_{param}_{participant}.png', dpi=300)
+            plt.close()
+ 

@@ -13,7 +13,7 @@ import os
 # name of the model
 model = 'model1'
 # group, PD, HC
-partcipant_group = 'HC' 
+partcipant_group = 'PD' 
 # class of model
 model_calss ='tabel2'
 # full model name
@@ -46,35 +46,82 @@ else:
  
 # configuration, list of dictionary
 if model=='model1':
+    #hierarchical
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+
 if model=='model2':
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate"], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+
 if model=='model3':
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": None, "range":(0,.1)}]
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity"], "range":(0,.3)}]
+
 if model=='model4':
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act"], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
 if model=='model5':
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
 if model=='model6':
     config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": None, "range":(0,.1)}]
         
+    #individual
+    config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                   {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                   {"param": "transfer_alpha_neg", "label": ["Negative learning rate",], "range":(0,1)},
+                   {"param": "transfer_sensitivity", "label": ["Sensitivity"], "range":(0,.3)}]
+
+
+
 # plot the hierarchical posterior parameters
 plot_hier_kde_posterior(fit=fit, config=config_hier, group=partcipant_group, model_name=model_full_name, model_calss=model_calss)
+
+
+# plot the individual posterior parameters
+plot_indv_kde_posterior(fit=fit, config=config_indv, group=partcipant_group, model_name=model_full_name, model_calss=model_calss)
