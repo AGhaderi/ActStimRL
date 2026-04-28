@@ -879,8 +879,6 @@ def plot_indv_kde_posterior(fit: dict[str, np.ndarray], dir:str, config:list[dic
         plt.close()
 
 
-
-
 def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], dir:str, config:list[dict], group:str, model:str):
     """
     Plot posterior KDE for individual parameters from individual RL model in seperate plots for each participant with shape:
@@ -937,9 +935,12 @@ def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], dir:str, config
                     # plot each participant
                     samples = param_post[p_idx, c, s, :]
                     sns.kdeplot(samples, ax=axs[idx])
-                    # mean
+                    # map of posterior
                     samples_map,_ = MAP_last_axis(samples)
-                    axs[idx].axvline(x=samples_map, linestyle='--', color='black')
+                    # mean of posterior
+                    param_post_mean = samples.mean(axis=-1)
+                    axs[idx].axvline(x=samples_map, linestyle='--', color='red')
+                    axs[idx].axvline(x=param_post_mean, linestyle='--', color='green')
                     # labels
                     axs[idx].set_title(participant, fontsize=10)
                     axs[idx].set_xlabel(label[idx], fontsize=10)
