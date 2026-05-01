@@ -79,4 +79,3 @@ plot_indv_kde_posterior_seperate(fit=fit, dir=maindir, config=config_indv, group
 
 # save weihgintg paramters
 save_indv_mean_posterior(fit=fit, main_dir=maindir, param='weight', group=partcipant_group, model=model_full_name)
-#save_indv_mean_posterior(fit=fit, main_dir=maindir, param='transfer_weight', group=partcipant_group, model=model_full_name)

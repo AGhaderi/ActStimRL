@@ -736,7 +736,7 @@ def plot_posterior(x,
     return ax    
 
 
-def plot_hier_kde_posterior(fit: dict[str, np.ndarray], config:list[dict], group:str, model_name:str, model_calss:str):
+def plot_hier_kde_posterior(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
     """
     Plot posterior distributions for hierarchical model parameters.
     Dimention of posterior paramters in (nConds, nMeds_nSes,nSamples)
@@ -811,11 +811,11 @@ def plot_hier_kde_posterior(fit: dict[str, np.ndarray], config:list[dict], group
 
     # Adjust layout and save
     fig.tight_layout()
-    fig.savefig(f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{group}/{model_name}_{group}_hier.png', dpi=500)
+    fig.savefig(f'{model_dir}/{model_name}_{group}_hier.png', dpi=500)
     plt.close()
 
 
-def plot_indv_kde_posterior(fit: dict[str, np.ndarray], dir:str, config:list[dict], group:str, model:str):
+def plot_indv_kde_posterior(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
     """
     Plot posterior KDE for individual parameters from individual RL model with shape:
     (nParts, nConds, nSess, nSamples)
@@ -875,11 +875,12 @@ def plot_indv_kde_posterior(fit: dict[str, np.ndarray], dir:str, config:list[dic
 
         fig.tight_layout()
         # save
-        fig.savefig(f'{dir}/{model}_{group}_{param}_indv.png', dpi=300)
+        fig.savefig(f'{model_dir}/{model_name}_{group}_{param}_indv.png', dpi=300)
+
         plt.close()
 
 
-def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], dir:str, config:list[dict], group:str, model:str):
+def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
     """
     Plot posterior KDE for individual parameters from individual RL model in seperate plots for each participant with shape:
     (nParts, nConds, nSess, nSamples)
@@ -951,6 +952,7 @@ def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], dir:str, config
 
             fig.tight_layout()
             # save
-            fig.savefig(f'{dir}/{model}_{group}_{param}_{participant}.png', dpi=300)
+            fig.savefig(f'{model_dir}/{model_name}_{group}_{param}_{participant}.png', dpi=300)
+
             plt.close()
  

@@ -7,224 +7,225 @@ from scipy.stats import gaussian_kde
 from utils import *
 from scipy.stats import kurtosis
 
-#def compute_and_save_clinical_parameters(
-#    readClicalEvalFile=PROJECT_CLIN_EVAL_FILE,
-#    readModel=SCRATCH_HIER_MODEL_DIR,
-#    outDir=SCRATCH_CLIN_EVAL_DIR,
-#    outFile=SCARTCH_CLIN_EVAL_FILE
-#):
-#    """
-#    Computes MAP estimates (via KDE mode) of hierarchical RL parameters for PD & HC,
-#    merges them with clinical evaluation data, computes medication effects,
-#    and saves the combined table to CSV.
-#
-#    Parameters
-#    ----------
-#    readClicalEvalDIR : str
-#        Directory containing behavioral and model data (pickle files, clinical_evaluation.csv).
-#
-#    outDir : str
-#        Directory where the final output CSV will be written.
-#
-#    Returns
-#    -------
-#    parameter_clinical_evaluation : pd.DataFrame
-#        Table containing clinical + model-derived parameters.
-#    """
-#
-#    
-#    # Helper function: KDE mode
-#    def get_mode_density(values):
-#        """Return the mode of a posterior distribution using KDE."""
-#        kde = gaussian_kde(values)
-#        x_grid = np.linspace(min(values), max(values), 1000)
-#        return x_grid[np.argmax(kde(x_grid))]
-#
-#    # read collected data across all participants
-#    behAll = pd.read_csv(PROJECT_NoNAN_BEH_ALL_FILE)
-#    # select group 
-#    behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
-#    behAll_HC = behAll[(behAll['patient']=='HC')].copy().reset_index(drop=False)
-#    #  participant
-#    particiapnts_PD = behAll_PD['sub_ID'].unique()
-#    particiapnts_HC = behAll_HC['sub_ID'].unique()
-#
-#    # Load clinical evaluation
-#    clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
-#
-#    # LOAD PD MODEL RESULTS  
-#    pkl_PD = f'{readModel}/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
-#    fit_PD = load_pickle(load_path=pkl_PD)['fit']
-#
-#    # Extract posterior samples
-#    transfer_alpha_pos_PD = fit_PD["transfer_alpha_pos"]
-#    transfer_alpha_neg_PD = fit_PD["transfer_alpha_neg"]
-#    transfer_sensitivity_PD = fit_PD["transfer_sensitivity"]
-#    transfer_weight_PD = fit_PD["transfer_weight"]
-#
-#    nParts = transfer_alpha_pos_PD.shape[0]
-#    nMeds = transfer_alpha_pos_PD.shape[1]
-#    nConds = 2
-#
-#    # Initialize MAP arrays
-#    map_alpha_pos_PD = np.zeros((nParts, nMeds))
-#    map_alpha_neg_PD = np.zeros((nParts, nConds, nMeds))
-#    map_sensitivity_PD = np.zeros((nParts, nConds, nMeds))
-#    map_weighting_PD = np.zeros((nParts, nConds, nMeds))
-#
-#    # Positive LR
-#    for i in range(nParts):
-#        for j in range(nMeds):
-#            map_alpha_pos_PD[i, j] = get_mode_density(transfer_alpha_pos_PD[i, j])
-#
-#    # Negative LR, sensitivity, weighting
-#    for i in range(nParts):
-#        for j in range(nConds):
-#            for k in range(nMeds):
-#                map_alpha_neg_PD[i, j, k] = get_mode_density(transfer_alpha_neg_PD[i, j, k])
-#                map_weighting_PD[i, j, k] = get_mode_density(transfer_weight_PD[i, j, k])
-#                map_sensitivity_PD[i, j, k] = get_mode_density(transfer_sensitivity_PD[i, j, k])
-#
-#    # Medication effects (PD ON - PD OFF)
-#    map_med_alpha_pos_PD = map_alpha_pos_PD[:, 1] - map_alpha_pos_PD[:, 0]
-#    map_mean_alpha_pos_PD = np.mean([map_alpha_pos_PD[:, 1], map_alpha_pos_PD[:, 0]], axis=0)
-#
-#    map_med_alpha_neg_PD = np.mean([map_alpha_neg_PD[:, 0, 1], map_alpha_neg_PD[:, 1, 1]], axis=0) - \
-#                           np.mean([map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 1, 0]], axis=0)
-#
-#    map_mean_alpha_neg_PD = np.mean([
-#        map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 0, 1],
-#        map_alpha_neg_PD[:, 1, 0], map_alpha_neg_PD[:, 1, 1]
-#    ], axis=0)
-#
-#    map_med_sensitivity_PD = np.mean([map_sensitivity_PD[:, 0, 1], map_sensitivity_PD[:, 1, 1]], axis=0) - \
-#                             np.mean([map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 1, 0]], axis=0)
-#
-#    map_mean_sensitivity_PD = np.mean([
-#        map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 0, 1],
-#        map_sensitivity_PD[:, 1, 0], map_sensitivity_PD[:, 1, 1]
-#    ], axis=0)
-#
-#    # Weighting parameter
-#    map_med_weighting_act_PD = map_weighting_PD[:, 0, 1] - map_weighting_PD[:, 0, 0]
-#    map_mean_weighting_act_PD = np.mean([map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0]], axis=0)
-#
-#    map_med_weighting_clr_PD = map_weighting_PD[:, 1, 1] - map_weighting_PD[:, 1, 0]
-#    map_mean_weighting_clr_PD = np.mean([map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]], axis=0)
-#
-#    map_med_weighting_PD = map_med_weighting_act_PD + map_med_weighting_clr_PD
-#    map_mean_weighting_PD = np.mean([
-#        map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0],
-#        map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]
-#    ], axis=0)
-#
-#    
-#    # LOAD HC MODEL RESULTS
-#    pkl_HC = f'{readModel}/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
-#    fit_HC = load_pickle(load_path=pkl_HC)['fit']
-#
-#    transfer_alpha_pos_HC = fit_HC["transfer_alpha_pos"]
-#    transfer_alpha_neg_HC = fit_HC["transfer_alpha_neg"]
-#    transfer_sensitivity_HC = fit_HC["transfer_sensitivity"]
-#    transfer_weight_HC = fit_HC["transfer_weight"]
-#
-#    nParts = transfer_alpha_pos_HC.shape[0]
-#
-#    map_alpha_pos_HC = np.zeros((nParts, 2))
-#    map_alpha_neg_HC = np.zeros((nParts, 2, 2))
-#    map_sensitivity_HC = np.zeros((nParts, 2, 2))
-#    map_weighting_HC = np.zeros((nParts, 2, 2))
-#
-#    for i in range(nParts):
-#        for j in range(2):
-#            map_alpha_pos_HC[i, j] = get_mode_density(transfer_alpha_pos_HC[i, j])
-#
-#    for i in range(nParts):
-#        for j in range(2):
-#            for k in range(2):
-#                map_alpha_neg_HC[i, j, k] = get_mode_density(transfer_alpha_neg_HC[i, j, k])
-#                map_weighting_HC[i, j, k] = get_mode_density(transfer_weight_HC[i, j, k])
-#                map_sensitivity_HC[i, j, k] = get_mode_density(transfer_sensitivity_HC[i, j, k])
-#
-#    map_mean_alpha_pos_HC = np.mean([map_alpha_pos_HC[:, 1], map_alpha_pos_HC[:, 0]], axis=0)
-#
-#    map_mean_alpha_neg_HC = np.mean([
-#        map_alpha_neg_HC[:, 0, 0], map_alpha_neg_HC[:, 0, 1],
-#        map_alpha_neg_HC[:, 1, 0], map_alpha_neg_HC[:, 1, 1]
-#    ], axis=0)
-#
-#    map_mean_sensitivity_HC = np.mean([
-#        map_sensitivity_HC[:, 0, 0], map_sensitivity_HC[:, 0, 1],
-#        map_sensitivity_HC[:, 1, 0], map_sensitivity_HC[:, 1, 1]
-#    ], axis=0)
-#
-#    map_mean_weighting_act_HC = np.mean([map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0]], axis=0)
-#    map_mean_weighting_clr_HC = np.mean([map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]], axis=0)
-#
-#    map_mean_weighting_HC = np.mean([
-#        map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0],
-#        map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]
-#    ], axis=0)
-#
-#    
-#    #MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
-#    parameter_clinical_evaluation = clinical_evaluation.copy()
-#
-#    # Assign parameters in PD
-#    for sub, subject in enumerate(particiapnts_PD):
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_PD[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_PD[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_PD[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_PD[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_PD[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_PD[sub]
-#
-#        # PD-specific medication effects
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_pos'] = map_med_alpha_pos_PD[sub]
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_neg'] = map_med_alpha_neg_PD[sub]
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_sensitivity'] = map_med_sensitivity_PD[sub]
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_act'] = map_med_weighting_act_PD[sub]
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_clr'] = map_med_weighting_clr_PD[sub]
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting'] = map_med_weighting_PD[sub]
-#
-#        # UPDRS difference
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'med_UPDRS'] = \
-#            parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
-#
-#
-#    for sub, subject in enumerate(particiapnts_HC):
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_HC[sub]
-#
-#        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_HC[sub]
-#    
-#    # Save CSV
-#
-#    # Check out if it does not exist
-#    if not os.path.isdir(f'{outDir}'):
-#            os.makedirs(f'{outDir}') 
-#
-#    parameter_clinical_evaluation.to_csv(outFile, index=False)
-#
-#    print(f"Saved clinical parameter table to:\n{outDir}")
-#
-#
-def dataStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
+def compute_and_save_clinical_parameters(
+    readClicalEvalFile=PROJECT_CLIN_EVAL_FILE,
+    readModel=SCRATCH_HIER_MODEL_DIR,
+    outDir=SCRATCH_CLIN_EVAL_DIR,
+    outFile=SCARTCH_CLIN_EVAL_FILE
+):
+    """
+    Computes MAP estimates (via KDE mode) of hierarchical RL parameters for PD & HC,
+    merges them with clinical evaluation data, computes medication effects,
+    and saves the combined table to CSV.
+
+    Parameters
+    ----------
+    readClicalEvalDIR : str
+        Directory containing behavioral and model data (pickle files, clinical_evaluation.csv).
+
+    outDir : str
+        Directory where the final output CSV will be written.
+
+    Returns
+    -------
+    parameter_clinical_evaluation : pd.DataFrame
+        Table containing clinical + model-derived parameters.
+    """
+
+    
+    # Helper function: KDE mode
+    def get_mode_density(values):
+        """Return the mode of a posterior distribution using KDE."""
+        kde = gaussian_kde(values)
+        x_grid = np.linspace(min(values), max(values), 1000)
+        return x_grid[np.argmax(kde(x_grid))]
+
+    # read collected data across all participants
+    behAll = pd.read_csv(PROJECT_NoNAN_BEH_ALL_FILE)
+    # select group 
+    behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
+    behAll_HC = behAll[(behAll['patient']=='HC')].copy().reset_index(drop=False)
+    #  participant
+    particiapnts_PD = behAll_PD['sub_ID'].unique()
+    particiapnts_HC = behAll_HC['sub_ID'].unique()
+
+    # Load clinical evaluation
+    clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
+
+    # LOAD PD MODEL RESULTS  
+    pkl_PD = f'{readModel}/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
+    fit_PD = load_pickle(load_path=pkl_PD)['fit']
+
+    # Extract posterior samples
+    transfer_alpha_pos_PD = fit_PD["transfer_alpha_pos"]
+    transfer_alpha_neg_PD = fit_PD["transfer_alpha_neg"]
+    transfer_sensitivity_PD = fit_PD["transfer_sensitivity"]
+    transfer_weight_PD = fit_PD["transfer_weight"]
+
+    nParts = transfer_alpha_pos_PD.shape[0]
+    nMeds = transfer_alpha_pos_PD.shape[1]
+    nConds = 2
+
+    # Initialize MAP arrays
+    map_alpha_pos_PD = np.zeros((nParts, nMeds))
+    map_alpha_neg_PD = np.zeros((nParts, nConds, nMeds))
+    map_sensitivity_PD = np.zeros((nParts, nConds, nMeds))
+    map_weighting_PD = np.zeros((nParts, nConds, nMeds))
+
+    # Positive LR
+    for i in range(nParts):
+        for j in range(nMeds):
+            map_alpha_pos_PD[i, j] = get_mode_density(transfer_alpha_pos_PD[i, j])
+
+    # Negative LR, sensitivity, weighting
+    for i in range(nParts):
+        for j in range(nConds):
+            for k in range(nMeds):
+                map_alpha_neg_PD[i, j, k] = get_mode_density(transfer_alpha_neg_PD[i, j, k])
+                map_weighting_PD[i, j, k] = get_mode_density(transfer_weight_PD[i, j, k])
+                map_sensitivity_PD[i, j, k] = get_mode_density(transfer_sensitivity_PD[i, j, k])
+
+    # Medication effects (PD ON - PD OFF)
+    map_med_alpha_pos_PD = map_alpha_pos_PD[:, 1] - map_alpha_pos_PD[:, 0]
+    map_mean_alpha_pos_PD = np.mean([map_alpha_pos_PD[:, 1], map_alpha_pos_PD[:, 0]], axis=0)
+
+    map_med_alpha_neg_PD = np.mean([map_alpha_neg_PD[:, 0, 1], map_alpha_neg_PD[:, 1, 1]], axis=0) - \
+                           np.mean([map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 1, 0]], axis=0)
+
+    map_mean_alpha_neg_PD = np.mean([
+        map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 0, 1],
+        map_alpha_neg_PD[:, 1, 0], map_alpha_neg_PD[:, 1, 1]
+    ], axis=0)
+
+    map_med_sensitivity_PD = np.mean([map_sensitivity_PD[:, 0, 1], map_sensitivity_PD[:, 1, 1]], axis=0) - \
+                             np.mean([map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 1, 0]], axis=0)
+
+    map_mean_sensitivity_PD = np.mean([
+        map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 0, 1],
+        map_sensitivity_PD[:, 1, 0], map_sensitivity_PD[:, 1, 1]
+    ], axis=0)
+
+    # Weighting parameter
+    map_med_weighting_act_PD = map_weighting_PD[:, 0, 1] - map_weighting_PD[:, 0, 0]
+    map_mean_weighting_act_PD = np.mean([map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0]], axis=0)
+
+    map_med_weighting_clr_PD = map_weighting_PD[:, 1, 1] - map_weighting_PD[:, 1, 0]
+    map_mean_weighting_clr_PD = np.mean([map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]], axis=0)
+
+    map_med_weighting_PD = map_med_weighting_act_PD + map_med_weighting_clr_PD
+    map_mean_weighting_PD = np.mean([
+        map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0],
+        map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]
+    ], axis=0)
+
+    
+    # LOAD HC MODEL RESULTS
+    pkl_HC = f'{readModel}/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
+    fit_HC = load_pickle(load_path=pkl_HC)['fit']
+
+    transfer_alpha_pos_HC = fit_HC["transfer_alpha_pos"]
+    transfer_alpha_neg_HC = fit_HC["transfer_alpha_neg"]
+    transfer_sensitivity_HC = fit_HC["transfer_sensitivity"]
+    transfer_weight_HC = fit_HC["transfer_weight"]
+
+    nParts = transfer_alpha_pos_HC.shape[0]
+
+    map_alpha_pos_HC = np.zeros((nParts, 2))
+    map_alpha_neg_HC = np.zeros((nParts, 2, 2))
+    map_sensitivity_HC = np.zeros((nParts, 2, 2))
+    map_weighting_HC = np.zeros((nParts, 2, 2))
+
+    for i in range(nParts):
+        for j in range(2):
+            map_alpha_pos_HC[i, j] = get_mode_density(transfer_alpha_pos_HC[i, j])
+
+    for i in range(nParts):
+        for j in range(2):
+            for k in range(2):
+                map_alpha_neg_HC[i, j, k] = get_mode_density(transfer_alpha_neg_HC[i, j, k])
+                map_weighting_HC[i, j, k] = get_mode_density(transfer_weight_HC[i, j, k])
+                map_sensitivity_HC[i, j, k] = get_mode_density(transfer_sensitivity_HC[i, j, k])
+
+    map_mean_alpha_pos_HC = np.mean([map_alpha_pos_HC[:, 1], map_alpha_pos_HC[:, 0]], axis=0)
+
+    map_mean_alpha_neg_HC = np.mean([
+        map_alpha_neg_HC[:, 0, 0], map_alpha_neg_HC[:, 0, 1],
+        map_alpha_neg_HC[:, 1, 0], map_alpha_neg_HC[:, 1, 1]
+    ], axis=0)
+
+    map_mean_sensitivity_HC = np.mean([
+        map_sensitivity_HC[:, 0, 0], map_sensitivity_HC[:, 0, 1],
+        map_sensitivity_HC[:, 1, 0], map_sensitivity_HC[:, 1, 1]
+    ], axis=0)
+
+    map_mean_weighting_act_HC = np.mean([map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0]], axis=0)
+    map_mean_weighting_clr_HC = np.mean([map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]], axis=0)
+
+    map_mean_weighting_HC = np.mean([
+        map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0],
+        map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]
+    ], axis=0)
+
+    
+    #MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
+    parameter_clinical_evaluation = clinical_evaluation.copy()
+
+    # Assign parameters in PD
+    for sub, subject in enumerate(particiapnts_PD):
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_PD[sub]
+
+        # PD-specific medication effects
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_pos'] = map_med_alpha_pos_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_neg'] = map_med_alpha_neg_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_sensitivity'] = map_med_sensitivity_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_act'] = map_med_weighting_act_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_clr'] = map_med_weighting_clr_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting'] = map_med_weighting_PD[sub]
+
+        # UPDRS difference
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'med_UPDRS'] = \
+            parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
+
+
+    for sub, subject in enumerate(particiapnts_HC):
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_HC[sub]
+    
+    # Save CSV
+
+    # Check out if it does not exist
+    if not os.path.isdir(f'{outDir}'):
+            os.makedirs(f'{outDir}') 
+
+    parameter_clinical_evaluation.to_csv(outFile, index=False)
+
+    print(f"Saved clinical parameter table to:\n{outDir}")
+
+
+def dataStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
+                   table:str='table3', model:str='model1'):
     """
     Prepare and standardize behavioral data for Action and Color conditions.
     Converts categorical labels to numeric indices and organizes data into a dictionary
@@ -290,13 +291,672 @@ def dataStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
         'rewarded': np.array(data['correctChoice']).astype(int),     # Whether choice is correct
         'participant': np.array(data['sub_ID']).astype(int),         # Participant index
         'indicator': np.array(data['indicator']).astype(int),        # Trial indicator variable
-        'nConds': nConds,                                            # Number of conditions
-        'condition': np.array(data['block']).astype(int),            # Condition per trial (1=Act, 2=Clr)
-        'nMeds_nSes': nMeds_nSes,                                    # Number of sessions or medication conditions
-        'medication_session': medication_session                     # Session or medication index
+        'cond': np.array(data['block']).astype(int),                 # Condition per trial (1=Act, 2=Clr)
+        'medSess': medication_session                                # Session or medication index
     } 
 
+    # adjust the dataStan for each model
+    #################### Tabel2
+    if model=='model1' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=2;    # Number of conditions for positive learning rate
+        dataStan['n_medSess_alpha_pos']=1;  # Number of session/medication for positive learning rate
+        dataStan['n_conds_alpha_neg']=2;    # Number of conditions for negative learning rate
+        dataStan['n_medSess_alpha_neg']=1;  # Number of session/medication for negative learning rate
+        dataStan['n_conds_weight']=2;       # Number of conditions for weighing
+        dataStan['n_medSess_weight']=1;     # Number of session/medication for weighting 
+        dataStan['n_conds_sensitivity']=2;  # Number of conditions for sensitivity
+        dataStan['n_medSess_sensitivity']=1;# Number of session/medication for sensitivity
+    
+    elif model=='model2' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+
+    elif model=='model3' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=1;  
+        dataStan['n_medSess_sensitivity']=1;
+    
+    if model=='model4' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=2;     
+        dataStan['n_medSess_alpha_pos']=1;   
+        dataStan['n_conds_alpha_neg']=1;     
+        dataStan['n_medSess_alpha_neg']=1;   
+        dataStan['n_conds_weight']=2;        
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;   
+        dataStan['n_medSess_sensitivity']=1; 
+    
+    if model=='model5' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=1;     
+        dataStan['n_medSess_alpha_pos']=1;   
+        dataStan['n_conds_alpha_neg']=2;     
+        dataStan['n_medSess_alpha_neg']=1;   
+        dataStan['n_conds_weight']=2;        
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;   
+        dataStan['n_medSess_sensitivity']=1; 
+    
+    if model=='model6' and table=='tabel2':
+        dataStan['n_conds_alpha_pos']=1;     
+        dataStan['n_medSess_alpha_pos']=1;   
+        dataStan['n_conds_alpha_neg']=1;     
+        dataStan['n_medSess_alpha_neg']=1;   
+        dataStan['n_conds_weight']=2;        
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=1;   
+        dataStan['n_medSess_sensitivity']=1; 
+
+    #################### Tabel3
+    elif model=='model1' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model2' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model3' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model4' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+    elif model=='model5' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+    elif model=='model6' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model7' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model8' and table=='tabel3' and group=='HC':
+        dataStan['n_conds_alpha_pos']=2;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=2;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+
+
+    elif model=='model1' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model2' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model3' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model4' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+    elif model=='model5' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+    elif model=='model6' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=2;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model7' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=2;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=2;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=2;
+    elif model=='model8' and table=='tabel3' and group=='PD':
+        dataStan['n_conds_alpha_pos']=1;    
+        dataStan['n_medSess_alpha_pos']=1;  
+        dataStan['n_conds_alpha_neg']=1;    
+        dataStan['n_medSess_alpha_neg']=1;  
+        dataStan['n_conds_weight']=2;       
+        dataStan['n_medSess_weight']=1;     
+        dataStan['n_conds_sensitivity']=2;  
+        dataStan['n_medSess_sensitivity']=1;
+    
     return dataStan
+
+
+def config_plot_model(model_calss:str, model_name:str, group:str):
+    # configuration for both hierachical and individual plotting
+
+    config_hier = {} 
+    config_indv ={}
+    #################### Tabel2
+    if model_calss=='tabel2' and model_name=='model1':
+        #hierarchical
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                       {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+    elif model_calss=='tabel2' and model_name=='model2':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                       {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ["Negative learning rate"], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+
+    elif model_calss=='tabel2' and model_name=='model3':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": None, "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                    {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                    {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                    {"param": "transfer_sensitivity", "label": ["Sensitivity"], "range":(0,.3)}]
+
+    elif model_calss=='tabel2' and model_name=='model4':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
+                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                    {"param": "transfer_alpha_pos", "label": ["Positive learning rate in Act", "Positive learning rate in Clr"], "range":(0,1)},
+                    {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act"], "range":(0,1)},
+                    {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+    elif model_calss=='tabel2' and model_name=='model5':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
+                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": ["Act", "Clr"], "range":(0,.1)}]
+
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                       {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ["Negative learning rate in Act", "Negative learning rate in Clr"], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ["Sensitivity in Act", "Sensitivity in Clr"], "range":(0,.3)}]
+
+    elif model_calss=='tabel2' and model_name=='model6':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", "legend": ["Act", "Clr"], "range":(0,1)},
+                    {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", "legend": None, "range":(0,1)},
+                    {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", "legend": None, "range":(0,1)},
+                    {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity", "legend": None, "range":(0,.1)}]
+            
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":(0,1)},
+                       {"param": "weight", "label": ["Weighting in Act", "Weighting in Clr"], "range":None},
+                    {"param": "transfer_alpha_pos", "label": ["Positive learning rate"], "range":(0,1)},
+                    {"param": "transfer_alpha_neg", "label": ["Negative learning rate",], "range":(0,1)},
+                    {"param": "transfer_sensitivity", "label": ["Sensitivity"], "range":(0,.3)}]
+
+    #################### Tabel3
+    if model_calss=='tabel3' and model_name=='model1' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act-Sess1', 
+                                                                 'Positive learning rate in Act-Sess2', 
+                                                                 'Positive learning rate in Clr-Sess1', 
+                                                                 'Positive learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act-Sess1', 
+                                                                 'Negative learning rate in Act-Sess2', 
+                                                                 'Negative learning rate in Clr-Sess1', 
+                                                                 'Negative learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-Sess1', 
+                                                                   'Sensitivity in Act-Sess2', 
+                                                                   'Sensitivity in Clr-Sess1', 
+                                                                   'Sensitivity in Clr-Sess2'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model2' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act-Sess1', 
+                                                                 'Positive learning rate in Act-Sess2', 
+                                                                 'Positive learning rate in Clr-Sess1', 
+                                                                 'Positive learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act-Sess1', 
+                                                                 'Negative learning rate in Act-Sess2', 
+                                                                 'Negative learning rate in Clr-Sess1', 
+                                                                 'Negative learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-Sess1', 
+                                                                   'Sensitivity in Act-Sess2', 
+                                                                   'Sensitivity in Clr-Sess1', 
+                                                                   'Sensitivity in Clr-Sess2'], "range":(0,.3)}]
+
+
+
+    elif model_calss=='tabel3' and model_name=='model3' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act', 
+                                                                 'Positive learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act', 
+                                                                 'Negative learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-Sess1', 
+                                                                   'Sensitivity in Act-Sess2', 
+                                                                   'Sensitivity in Clr-Sess1', 
+                                                                   'Sensitivity in Clr-Sess2'], "range":(0,.3)}]
+        
+    elif model_calss=='tabel3' and model_name=='model4' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act-Sess1', 
+                                                                 'Positive learning rate in Act-Sess2', 
+                                                                 'Positive learning rate in Clr-Sess1', 
+                                                                 'Positive learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act-Sess1', 
+                                                                 'Negative learning rate in Act-Sess2', 
+                                                                 'Negative learning rate in Clr-Sess1', 
+                                                                 'Negative learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act',  
+                                                                   'Sensitivity in Clr'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model5' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act', 
+                                                                 'Positive learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Positive learning rate in Act', 
+                                                                 'Positive learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivityin Act', 
+                                                                  'Sensitivity in Clr'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model6' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act-Sess1', 
+                                                                 'Positive learning rate in Act-Sess2', 
+                                                                 'Positive learning rate in Clr-Sess1', 
+                                                                 'Positive learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act', 
+                                                                 'Negative learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-Sess1', 
+                                                                   'Sensitivity in Act-Sess2', 
+                                                                   'Sensitivity in Clr-Sess1', 
+                                                                   'Sensitivity in Clr-Sess2'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model7' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-Sess1', 'Act-Sess2', 'Clr-Sess1', 'Clr-Sess2'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-Sess1', ' Weighting in Act-Sess2', 
+                                                     'Weighting in Clr-Sess1', 'Weighting in Clr-Sess2'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act',  
+                                                                 'Positive learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act-Sess1', 
+                                                                 'Negative learning rate in Act-Sess2', 
+                                                                 'Negative learning rate in Clr-Sess1', 
+                                                                 'Negative learning rate in Clr-Sess2'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-Sess1', 
+                                                                   'Sensitivity in Act-Sess2', 
+                                                                   'Sensitivity in Clr-Sess1', 
+                                                                   'Sensitivity in Clr-Sess2'], "range":(0,.3)}]
+
+
+    elif model_calss=='tabel3' and model_name=='model8' and group=='HC':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in Act',  
+                                                                 'Positive learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in Act',  
+                                                                 'Negative learning rate in Clr'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act', 
+                                                                   'Sensitivity in Clr'], "range":(0,.3)}]
+
+    ################################## Table 3 in PD
+
+    if model_calss=='tabel3' and model_name=='model1' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in OFF',  
+                                                                 'Positive learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in OFF', 
+                                                                 'Negative learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-OFF', 
+                                                                   'Sensitivity in Act-ON', 
+                                                                   'Sensitivity in Clr-OFF', 
+                                                                   'Sensitivity in Clr-ON'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model2' and group=='PD':æ
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in OFF', 
+                                                                 'Positive learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in OFF',
+                                                                 'Negative learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-OFF', 
+                                                                   'Sensitivity in Act-ON', 
+                                                                   'Sensitivity in Clr-OFF', 
+                                                                   'Sensitivity in Clr-ON'], "range":(0,.3)}]
+
+
+
+    elif model_calss=='tabel3' and model_name=='model3' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-OFF', 
+                                                                   'Sensitivity in Act-ON', 
+                                                                   'Sensitivity in Clr-OFF', 
+                                                                   'Sensitivity in Clr-ON'], "range":(0,.3)}]
+        
+    elif model_calss=='tabel3' and model_name=='model4' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in OFF', 
+                                                                 'Positive learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in OFF', 
+                                                                 'Negative learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act',  
+                                                                   'Sensitivity in Clr'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model5' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Positive learning rate'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivityin Act', 
+                                                                  'Sensitivity in Clr'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model6' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate in OFF', 
+                                                                 'Positive learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-OFF', 
+                                                                   'Sensitivity in Act-ON', 
+                                                                   'Sensitivity in Clr-OFF', 
+                                                                   'Sensitivity in Clr-ON'], "range":(0,.3)}]
+
+    elif model_calss=='tabel3' and model_name=='model7' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": ['OFF', 'ON'], "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act-OFF', 'Act-ON', 'Clr-OFF', 'Clr-ON'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act-OFF', ' Weighting in Act-ON', 
+                                                     'Weighting in Clr-OFF', 'Weighting in Clr-ON'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate in OFF', 
+                                                                 'Negative learning rate in ON'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act-OFF', 
+                                                                   'Sensitivity in Act-ON', 
+                                                                   'Sensitivity in Clr-OFF', 
+                                                                   'Sensitivity in Clr-ON'], "range":(0,.3)}]
+
+
+    elif model_calss=='tabel3' and model_name=='model8' and group=='PD':
+        config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
+                        "legend": ['Act', 'Clr'], "range":(0,1)},
+                       {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_alpha_neg_mu", "label": "Negative learning rate", 
+                        "legend": None, "range":(0,1)},
+                       {"param": "transfer_hier_sensitivity_mu", "label": "Sensitivity",
+                        "legend": ['Act', 'Clr'], "range":(0,.1)}]
+        #individual
+        config_indv = [{"param": "transfer_weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":(0,1)},
+                       {"param": "weight", "label": ['Weighting in Act', 'Weighting in Clr'], "range":None},                             
+                       {"param": "transfer_alpha_pos", "label": ['Positive learning rate'], "range":(0,1)},
+                       {"param": "transfer_alpha_neg", "label": ['Negative learning rate'], "range":(0,1)},
+                       {"param": "transfer_sensitivity", "label": ['Sensitivity in Act', 
+                                                                   'Sensitivity in Clr'], "range":(0,.3)}]
+
+    return config_hier, config_indv
+
 
 def initialStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
                     alpha_pos_size=(2,2), alpha_neg_size=(2,2), sens_size=(2,2)):
@@ -408,7 +1068,8 @@ def waic_models(model_calss:str, list_model:list[str]):
         for i, model_name in enumerate(list_model):
             print(model_name)
             # The adrees name of pickle file
-            pickelDir = f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{group}/{model_name}_{group}.pkl'
+            pickelDir = f'{SCRATCH_HIER_MODEL_DIR}/{model_calss}/{model_name}/{group}/{model_calss}_{model_name}_{group}.pkl'
+            print(pickelDir)
             #Loading the pickle file of model fit from the subject directory
             loadPkl = load_pickle(load_path=pickelDir)
             fit = loadPkl['fit'] 

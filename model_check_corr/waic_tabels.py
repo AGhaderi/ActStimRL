@@ -10,12 +10,7 @@ import arviz as az
 from scipy import stats
 from utils import *
 
-# model list in tabel1
-#table1_models = ['tabel1_model1', 'tabel1_model2', 'tabel1_model3', 
-#                 'tabel1_model4', 'tabel1_model5']
-#waic_models(model_calss='table1', list_model=table1_models)
-
 # model list in tabel2
-table2_models = ['tabel2_model1', 'tabel2_model2', 'tabel2_model3', 
-                 'tabel2_model4', 'tabel2_model5', 'tabel2_model6']
-waic_models(model_calss='tabel2', list_model=table2_models)
+table2_models = ['model1', 'model2', 'model3', 
+                 'model4', 'model5', 'model6', 'model6']
+waic_models(model_calss='tabel3', list_model=table2_models)
