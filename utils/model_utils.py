@@ -809,7 +809,7 @@ def config_plot_model(model_calss:str, model_name:str, group:str):
                                                                    'Sensitivity in Clr-OFF', 
                                                                    'Sensitivity in Clr-ON'], "range":(0,.3)}]
 
-    elif model_calss=='tabel3' and model_name=='model2' and group=='PD':æ
+    elif model_calss=='tabel3' and model_name=='model2' and group=='PD':
         config_hier = [{"param": "transfer_hier_weight_mu", "label": "Weighting", 
                         "legend": ['Act', 'Clr'], "range":(0,1)},
                        {"param": "transfer_hier_alpha_pos_mu", "label": "Positive learning rate", 
@@ -1137,7 +1137,7 @@ def participant_list(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
 
     return participants
 
-def save_indv_mean_posterior(fit: dict[str, np.ndarray],main_dir: str,param: str,group: str,model: str):
+def save_indv_summary_posterior(fit: dict[str, np.ndarray], model_dir: str,param: str,group: str,model: str):
     """
     Save mean posterior for individual parameters:
     Expected shape: (nParts, nConds, nSess, nSamples)
@@ -1211,7 +1211,7 @@ def save_indv_mean_posterior(fit: dict[str, np.ndarray],main_dir: str,param: str
     df = pd.DataFrame(rows)
 
     # Save
-    df.to_csv(f'{main_dir}/{model}_{group}_{param}.csv', index=False)
+    df.to_csv(f'{model_dir}/{model}_{group}_{param}.csv', index=False)
 
    
 def combine_parameter_highRewardChoice(main_indv_model_dir: str, param: str, model: str):

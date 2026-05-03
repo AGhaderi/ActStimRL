@@ -12,5 +12,5 @@ from utils import *
 
 # model list in tabel2
 table2_models = ['model1', 'model2', 'model3', 
-                 'model4', 'model5', 'model6', 'model6']
+                 'model4', 'model5', 'model6', 'model7', 'model8']
 waic_models(model_calss='tabel3', list_model=table2_models)

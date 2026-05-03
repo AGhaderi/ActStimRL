@@ -11,9 +11,9 @@ from utils import *
 import os
 
 # name of the model
-model = 'model2'
+model = 'model8'
 # group, PD, HC
-partcipant_group = 'PD' 
+partcipant_group = 'HC' 
 # class of model
 model_calss ='tabel3'
 # full model name
@@ -59,4 +59,4 @@ plot_hier_kde_posterior(fit=fit, model_dir=maindir, config=config_hier, group=pa
 plot_indv_kde_posterior_seperate(fit=fit, model_dir=maindir, config=config_indv, group=partcipant_group, model_name=model)
 
 # plot the individual posterior parameters
-plot_indv_kde_posterior(fit=fit, model_dir=maindir, config=config_indv, group=partcipant_group, model_name=model)
+save_indv_summary_posterior(fit=fit, model_dir=maindir, config=config_indv, group=partcipant_group, model_name=model)

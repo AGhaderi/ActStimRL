@@ -49,7 +49,7 @@ from .model_utils import (dataStanActClr,
                           waic_models,
                           MAP_last_axis,
                           participant_list,
-                          save_indv_mean_posterior,
+                          save_indv_summary_posterior,
                           combine_parameter_highRewardChoice)
 
 from .random import (simStrategyBehavior)
@@ -102,6 +102,6 @@ __all__ = ['PROJECT_DATA_DIR',
            'waic_models',
            'MAP_last_axis',
            'participant_list',
-           'save_indv_mean_posterior',
+           'save_indv_summary_posterior',
            'combine_parameter_highRewardChoice',
            'simStrategyBehavior',] 
