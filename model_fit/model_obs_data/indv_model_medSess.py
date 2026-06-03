@@ -11,18 +11,19 @@ from utils import *
 import os
 
 # group, PD, HC                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-partcipant_group = 'HC' 
+partcipant_group = 'PD' 
 # full model name
 model_name = 'model1'
 
 # if model will be fit or not
 modelFit = False
 # The adrees name of pickle file
-maindir =f'{SCRATCH_INDV_MODEL_DIR}/{model_name}/{partcipant_group}/'
-pickelDir = f'{maindir}/{model_name}_{partcipant_group}.pkl'
+maindir_scratch =f'{SCRATCH_INDV_MODEL_DIR}/{model_name}/{partcipant_group}/'
+maindir_project =f'{PROJECT_INDV_MODEL_DIR}/{model_name}/{partcipant_group}/'
+pickelDir = f'{maindir_project}/{model_name}_{partcipant_group}.pkl'
 # Check out if it does not exist
-if not os.path.isdir(f'{maindir}/'):
-        os.makedirs(f'{maindir}/') 
+if not os.path.isdir(f'{maindir_scratch}/'):
+        os.makedirs(f'{maindir_scratch}/') 
 
 #Fitting data to model and then save as pickle file in the subject directory
 if modelFit == True:     
@@ -47,12 +48,12 @@ config_hier, config_indv = config_plot_model(model_calss='tabel3', model_name=mo
                                              group=partcipant_group)
 
 # plot the individual posterior parameters, all particiapnts pool over
-plot_indv_kde_posterior(fit=fit, model_dir=maindir, config=config_indv, group=partcipant_group, model_name=model_name)
+plot_indv_kde_posterior(fit=fit, model_dir=maindir_scratch, config=config_indv, group=partcipant_group, model_name=model_name)
 
 # plot the individual posterior parameters, seperate for each particiapnts
-plot_indv_kde_posterior_seperate(fit=fit, model_dir=maindir, config=config_indv, group=partcipant_group, model_name=model_name)
+plot_indv_kde_posterior_seperate(fit=fit, model_dir=maindir_scratch, config=config_indv, group=partcipant_group, model_name=model_name)
 
 # save weihgintg paramters
-save_indv_summary_posterior(fit=fit, model_dir=maindir, param='weight', group=partcipant_group, model=model_name)
+save_indv_summary_posterior(fit=fit, model_dir=maindir_scratch, param='weight', group=partcipant_group, model_name=model_name)
 
 

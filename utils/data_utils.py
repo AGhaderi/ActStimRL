@@ -370,6 +370,6 @@ def calRelevantAndIrrelevantHighRewardOptionTrial(
     behAll_new_tempt = behAll_new.groupby( ["group", "patient", "medication", "sub_ID", 'block', 'adjusted_phase'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
     behAll_new_groypby = behAll_new_tempt.groupby( ["group", "patient", "medication", "sub_ID", 'block'], as_index=False)[["relevantHighRewardOption", "irrelevantHighRewardOption"]].mean()
     # differnce between relevant and irrelevant high Reward Option 
-    behAll_new_groypby['relevantVrIrrelevantHighRewardOption'] = behAll_new_groypby['relevantHighRewardOption'] - behAll_new_groypby['irrelevantHighRewardOption']
+    behAll_new_groypby['relevantVsIrrelevantHighRewardOption'] = behAll_new_groypby['relevantHighRewardOption'] - behAll_new_groypby['irrelevantHighRewardOption']
     # Save groupby behAll with relevant and irrelevant high reward options in csv file
     behAll_new_groypby.to_csv(save_file_groupby, index=False)

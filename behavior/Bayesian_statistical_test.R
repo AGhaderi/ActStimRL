@@ -59,44 +59,12 @@ data_HC_Act = data[data['patient']=='HC' & data['block']=='Act',]
 data_HC_Stim = data[data['patient']=='HC' & data['block']=='Stim',]
 
 # mixed model, since we have just one sample for each subject we just use linear model rather than mixed linear model
-model_PD_OFF_Act_beh_relevant<- brm(relevantHighRewardOption ~ age+sex+disease_duration + NMSS +total_UPDRS, data = data_PD_OFF_Act, family = gaussian())
-model_PD_OFF_Act_beh_irrelevant<- brm(irrelevantHighRewardOption ~ age+sex+disease_duration + NMSS + total_UPDRS, data = data_PD_OFF_Act, family = gaussian())
+model_PD_OFF_Act_beh_relevant<- brm(relevantVrIrrelevantHighRewardOption ~ LARS, data = data_PD_OFF_Act, family = gaussian())
+
+model_PD_OFF_Act_beh_parameter<- brm(weight_parameter_mean ~  disease_duration +total_UPDRS, data = data_PD_OFF_Act, family = gaussian())
 
 print(model_PD_OFF_Act_beh_relevant, digits = 6)
-print(model_PD_OFF_Act_beh_irrelevant, digits = 6)
-
-model_PD_OFF_Act_beh_relevant<- brm(relevantHighRewardOption ~ age+sex + MoCA + LARS+ BDI, data = data_PD_OFF_Act, family = gaussian())
-model_PD_OFF_Act_beh_irrelevant<- brm(irrelevantHighRewardOption ~ age+sex + MoCA + LARS + BDI, data = data_PD_OFF_Act, family = gaussian())
-
-
-
-
-
-
-
-
-
-
-
-bf1<- bf(relevantHighRewardOption ~ age+sex + MoCA + LARS+ BDI)
-bf2<- bf(irrelevantHighRewardOption ~ age+sex+ MoCA + LARS+ BDI)
-
-fit <- brm(
-  bf1 + bf2 + set_rescor(TRUE),
-  data = data_PD_OFF_Act
-)
-
-
-
-
-model_PD_OFF_Act_mean<- brm(weight_parameter_mean ~  time_symptomns+ MoCA +LARS + total_UPDRSOFF , data = data_PD_OFF_Act, family = gaussian())
-model_PD_ON_Act_mean<- brm(weight_parameter_mean ~  time_symptomns + MoCA +LARS + total_UPDRSON , data = data_PD_ON_Act, family = gaussian())
-
-
-model_PD_OFF_Act_map<- brm(weight_parameter_map ~  time_symptomns+ MoCA +LARS + total_UPDRSOFF , data = data_PD_OFF_Act, family = gaussian())
-model_PD_ON_Act_map<- brm(weight_parameter_map ~  time_symptomns + MoCA +LARS + total_UPDRSON , data = data_PD_ON_Act, family = gaussian())
-
-#print(model_PD_ON_Act_map, digits = 6)
+print(model_PD_OFF_Act_beh_parameter, digits = 6)
 
 
 

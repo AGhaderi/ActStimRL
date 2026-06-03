@@ -1137,7 +1137,7 @@ def participant_list(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD'):
 
     return participants
 
-def save_indv_summary_posterior(fit: dict[str, np.ndarray], model_dir: str,param: str,group: str,model: str):
+def save_indv_summary_posterior(fit: dict[str, np.ndarray], model_dir: str,param: str,group: str,model_name: str):
     """
     Save mean posterior for individual parameters:
     Expected shape: (nParts, nConds, nSess, nSamples)
@@ -1178,13 +1178,20 @@ def save_indv_summary_posterior(fit: dict[str, np.ndarray], model_dir: str,param
 
             for c_idx, condition in enumerate(['Act','Stim']):
                 for s_idx, medciation in enumerate(['OFF','ON']):
+                    # reverse the value for stimulus weighting parameter
+                    if condition == 'Stim':
+                        param_post_map_magnitude = -1*param_post_map[p_idx, c_idx, s_idx]
+                    else:
+                        param_post_map_magnitude = param_post_map[p_idx, c_idx, s_idx]
+                    
                     rows.append({
                         'patient':group,
                         'medication': medciation,
                         'sub_ID': participant,
                         'block': condition,
                         f'{param}_parameter_mean': param_post_mean[p_idx, c_idx, s_idx],
-                        f'{param}_parameter_map': param_post_map[p_idx, c_idx, s_idx]
+                        f'{param}_parameter_map': param_post_map[p_idx, c_idx, s_idx],
+                        f'{param}_parameter_map_magnitude': param_post_map_magnitude
                     })
     if group=='HC': 
         #map and mean of posterior, average accross sessions
@@ -1198,20 +1205,27 @@ def save_indv_summary_posterior(fit: dict[str, np.ndarray], model_dir: str,param
             participant = participants_names[p_idx]
 
             for c_idx, condition in enumerate(['Act','Stim']):
+                # reverse the value for stimulus weighting parameter
+                if condition == 'Stim':
+                    param_post_map_magnitude = -1*param_post_map[p_idx, c_idx]
+                else:
+                    param_post_map_magnitude = param_post_map[p_idx, c_idx]
+                    
                 rows.append({
                     'patient':group,
                     'medication': 'OFF',
                     'sub_ID': participant,
                     'block': condition,
                     f'{param}_parameter_mean': param_post_mean[p_idx, c_idx],
-                    f'{param}_parameter_map': param_post_map[p_idx, c_idx]
+                    f'{param}_parameter_map': param_post_map[p_idx, c_idx],
+                    f'{param}_parameter_map_magnitude': param_post_map_magnitude
                 })
 
     # Create DataFrame once
     df = pd.DataFrame(rows)
 
     # Save
-    df.to_csv(f'{model_dir}/{model}_{group}_{param}.csv', index=False)
+    df.to_csv(f'{model_dir}/{model_name}_{group}_{param}.csv', index=False)
 
    
 def combine_parameter_highRewardChoice(main_indv_model_dir: str, param: str, model: str):

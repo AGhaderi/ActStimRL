@@ -531,9 +531,9 @@ def plotProportionRelIrrelevantHighRewardOption(
     axs[1].set_ylim(0,1)
       
     # differnce between relevant and irrelevant high Reward Option 
-    sns.boxplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
+    sns.boxplot(data=behAll, x='Condition', y='relevantVsIrrelevantHighRewardOption', hue='group', ax=axs[2],
                 palette=custom_palette, legend=False, hue_order=group_order)
-    sns.stripplot(data=behAll, x='Condition', y='relevantVrIrrelevantHighRewardOption', hue='group', ax=axs[2],
+    sns.stripplot(data=behAll, x='Condition', y='relevantVsIrrelevantHighRewardOption', hue='group', ax=axs[2],
                   dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
     axs[2].set_ylabel('Relevant versus Irrelevant option', fontsize=12)
     axs[2].set_xlabel('', fontsize=12)

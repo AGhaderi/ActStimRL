@@ -24,7 +24,7 @@ fit_HC = loadPkl_HC['fit']
 fit_PD = loadPkl_PD['fit']
  
 # Extracting posterior distributions for each of four main unkhown parameters in HC
-weight_HC = fit_HC["weight"] 
+weight_HC = fit_HC["weight"]  #transfer_weight
 
 # Extracting posterior distributions for each of four main unkhown parameters in PD
 weight_PD = fit_PD["weight"] 
@@ -44,13 +44,17 @@ nParts_PD, nConds_PD, nSess_PD, nSamples_PD = weight_PD.shape
 # PD OFF in Act
 for p_PD in range(nParts_PD):
         label= 'PD-OFF' if p_PD == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,0,0], ax=axs[0], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,0,0], ax=axs[0], color="#d62728", fill=False, linewidth=1, alpha=.2,label=None)
+all_PD_OFF = weight_PD[:, 0, 0, :].flatten()
+sns.kdeplot(data=all_PD_OFF, ax=axs[0], color="#d62728", fill=False, linewidth=2, alpha=1,label='PD-OFF')
 
 # HC session and session2 in Act
 for p_HC in range(nParts_HC):
-        label= 'HC' if p_HC == 0 else None
-        weight_HC_action = np.mean([weight_HC[p_HC,0,0], weight_HC[p_HC,0,1]], axis=0)
-        sns.kdeplot(data=weight_HC_action, ax=axs[0], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        weight_HC_action = np.mean(weight_HC[p_HC,0,:,:], axis=0)
+        sns.kdeplot(data=weight_HC_action, ax=axs[0], color="#1f77b4", fill=False, linewidth=1, alpha=.2,label=None)
+all_weight_HC_action = all_weight_HC_action = np.mean(weight_HC[:, 0, :, :], axis=1).flatten()
+sns.kdeplot(data=all_weight_HC_action, ax=axs[0], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='HC')
+
 axs[0].legend(fontsize=6, loc='upper left')
 #axs[0].set_xlim(0,1)
 #axs[0].set_ylim(0,90)
@@ -64,14 +68,17 @@ axs[0].set_title('A) Disease related effect in AV condition', loc='left', fontsi
 
 # PD OFF in Clr
 for p_PD in range(nParts_PD):
-        label= 'PD-OFF' if p_PD == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,1,0], ax=axs[1], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,1,0], ax=axs[1], color="#d62728", fill=False, linewidth=1, alpha=.3,label=None)
+all_PD_OFF = weight_PD[:, 1, 0, :].flatten()
+sns.kdeplot(data=all_PD_OFF, ax=axs[1], color="#d62728", fill=False, linewidth=2, alpha=1,label='PD-OFF')
 
 # HC session1 and session2 in Clr
 for p_HC in range(nParts_HC):
-        label= 'HC' if p_HC == 0 else None
-        weight_HC_color = np.mean([weight_HC[p_HC,1,0], weight_HC[p_HC,1,1]], axis=0)
-        sns.kdeplot(data=weight_HC_color, ax=axs[1], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        weight_HC_color = np.mean(weight_HC[p_HC,1,:,:], axis=0)
+        sns.kdeplot(data=weight_HC_color, ax=axs[1], color="#1f77b4", fill=False, linewidth=1, alpha=.3,label=None)
+all_weight_HC_action =  np.mean(weight_HC[:, 1, :, :], axis=1).flatten()
+sns.kdeplot(data=all_weight_HC_action, ax=axs[1], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='HC')
+
 axs[1].legend(fontsize=6, loc='upper left')
 #axs[1].set_xlim(0,1)
 axs[1].tick_params(axis='both', labelsize=6)
@@ -84,13 +91,16 @@ axs[1].set_title('B) Disease related effect in CV condition', loc='left', fontsi
 ########################################################### Medication effect in Parkinson's disease durting Action value Learning
 # PD ON in Act
 for p_PD in range(nParts_PD):
-        label= 'PD-ON' if p_HC == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,0,1], ax=axs[2], color=COLORS['PD-ON'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,0,1], ax=axs[2], color="#d62728", fill=False, linewidth=1, alpha=.3,label=None)
+all_PD_ON = weight_PD[:, 0, 1, :].flatten()
+sns.kdeplot(data=all_PD_ON, ax=axs[2], color="#d62728", fill=False, linewidth=2, alpha=1,label='PD-ON')
 
 # PD OFF in Act
 for p_PD in range(nParts_PD):
-        label= 'PD-OFF' if p_HC == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,0,0], ax=axs[2], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,0,0], ax=axs[2], color="#1f77b4", fill=False, linewidth=1, alpha=.3,label=None)
+all_PD_OFF = weight_PD[:, 0, 0, :].flatten()
+sns.kdeplot(data=all_PD_OFF, ax=axs[2], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='PD-OFF')
+
 axs[2].legend(fontsize=6, loc='upper left')
 #axs[2].set_xlim(0,1)
 axs[2].tick_params(axis='both', labelsize=6)
@@ -102,13 +112,16 @@ axs[2].set_title('C) Medication effect in AV condition', loc='left', fontsize=7)
 ########################################################### Medication effect in Parkinson's disease durting Action value Learning
 # PD ON in Clr
 for p_PD in range(nParts_PD):
-        label= 'PD-ON' if p_PD == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,1,1], ax=axs[3], color=COLORS['PD-ON'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,1,1], ax=axs[3], color="#d62728", fill=False, linewidth=1, alpha=.3,label=None)
+all_PD_ON = weight_PD[:, 1, 1, :].flatten()
+sns.kdeplot(data=all_PD_ON, ax=axs[3], color="#d62728", fill=False, linewidth=2, alpha=1,label='PD-ON')
 
 # PD OFF in Clr
 for p_PD in range(nParts_PD):
-        label= 'PD-OFF' if p_PD == 0 else None
-        sns.kdeplot(data=weight_PD[p_PD,1,0], ax=axs[3], color=COLORS['PD-OFF'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_PD[p_PD,1,0], ax=axs[3], color="#1f77b4", fill=False, linewidth=1, alpha=.3,label=None)
+all_PD_OFF = weight_PD[:, 1, 0, :].flatten()
+sns.kdeplot(data=all_PD_OFF, ax=axs[3], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='PD-OFF')
+
 axs[3].legend(fontsize=6, loc='upper left')
 #axs[3].set_xlim(0,1)
 axs[3].tick_params(axis='both', labelsize=6)
@@ -120,12 +133,16 @@ axs[3].set_title('D) Medication effect in CV condition', loc='left', fontsize=7)
 ########################################################### Session effect in Healthy control during Action value learning 
 # HC session2 in Act
 for p_HC in range(nParts_HC):
-        label= 'HC-Sess2' if p_HC == 0 else None
-        sns.kdeplot(data=weight_HC[p_HC,0,1], ax=axs[4], color=COLORS['HC-Sess2'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_HC[p_HC,0,1], ax=axs[4], color="#d62728", fill=False, linewidth=1, alpha=.3,label=None)
+all_weight_HC_action =  weight_HC[:,0,1].flatten()
+sns.kdeplot(data=all_weight_HC_action, ax=axs[4], color="#d62728", fill=False, linewidth=2, alpha=1,label='HC-Sess2')
+
 # HC session1 in Act
 for p_HC in range(nParts_HC):
-        label= 'HC-Sess1' if p_HC == 0 else None
-        sns.kdeplot(data=weight_HC[p_HC,0,0], ax=axs[4], color=COLORS['HC-Sess1'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_HC[p_HC,0,0], ax=axs[4], color="#1f77b4", fill=False, linewidth=1, alpha=.3,label=None)
+all_weight_HC_action =  weight_HC[:,0,0].flatten()
+sns.kdeplot(data=all_weight_HC_action, ax=axs[4], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='HC-Sess1')
+
 axs[4].legend(fontsize=6, loc='upper left')
 #axs[4].set_xlim(0,1)
 #axs[4].set_ylim(0,90)
@@ -137,12 +154,16 @@ axs[4].set_title('E) Repetition effect in AV condition', loc='left', fontsize=7)
 ############################## Session effect in Healthy control during Color value learning 
  # HC session2 in Clr
 for p_HC in range(nParts_HC):
-        label= 'HC-Sess2' if p_HC == 0 else None
-        sns.kdeplot(data=weight_HC[p_HC,1,1], ax=axs[5], color=COLORS['HC-Sess2'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_HC[p_HC,1,1], ax=axs[5], color="#d62728", fill=False, linewidth=1, alpha=.3,label=None)
+all_weight_HC_color =  weight_HC[:,1,1].flatten()
+sns.kdeplot(data=all_weight_HC_color, ax=axs[5], color="#d62728", fill=False, linewidth=2, alpha=1,label='HC-Sess2')
+
 # HC session1 in Clr
 for p_HC in range(nParts_HC):
-        label= 'HC-Sess1' if p_HC == 0 else None
-        sns.kdeplot(data=weight_HC[p_HC,1,0], ax=axs[5], color=COLORS['HC-Sess1'], fill=False, linewidth=1, alpha=1,label=label)
+        sns.kdeplot(data=weight_HC[p_HC,1,0], ax=axs[5], color="#1f77b4", fill=False, linewidth=1, alpha=.3,label=None)
+all_weight_HC_color =  weight_HC[:,1,0].flatten()
+sns.kdeplot(data=all_weight_HC_color, ax=axs[5], color="#1f77b4", fill=False, linewidth=2, alpha=1,label='HC-Sess1')
+
 axs[5].legend(fontsize=6, loc='upper left')
 #axs[5].set_xlim(0,1)
 axs[5].tick_params(axis='both', labelsize=6)
@@ -154,7 +175,7 @@ axs[5].set_title('F) Repetition effect in CV condition', loc='left', fontsize=7)
 # Save image
 #plt.tight_layout()
 
-fig.savefig(f'{SCRATCH_INDV_MODEL_DIR}/{model_name}/{model_name}_HC_PD_weighting.pdf')
+fig.savefig(f'{SCRATCH_INDV_MODEL_DIR}/{model_name}/{model_name}_HC_PD_weight.pdf')
 plt.close()
 
 

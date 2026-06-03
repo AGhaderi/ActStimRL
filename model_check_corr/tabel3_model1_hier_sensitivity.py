@@ -6,20 +6,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys
 sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
-from utils import model_utils, config
+from utils import *
 import os
 
-# wirtten main directory  
-writewriteMainScarch = '/mnt/scratch/projects/7TPD/amin'
+# set the state of random generator
+rng = np.random.default_rng(321)
 # name of model
 model_name = 'tabel3_model1'
 # The adrees name of pickle file
-pickelDir_HC = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/HC/{model_name}_HC.pkl'
+pickelDir_HC = f'{SCRATCH_HIER_MODEL_DIR}/tabel3/model1/HC/{model_name}_HC.pkl'
 # pickle file in the scratch folder in PD
-pickelDir_PD = f'{config.PROJECT_HIER_MODEL_DIR}/Tabel3/PD/{model_name}_PD.pkl'
+pickelDir_PD = f'{SCRATCH_HIER_MODEL_DIR}/tabel3/model1/PD/{model_name}_PD.pkl'
 """Loading the pickle file of model fit from the subject directory"""
-loadPkl_HC = model_utils.load_pickle(load_path=pickelDir_HC)
-loadPkl_PD = model_utils.load_pickle(load_path=pickelDir_PD)
+loadPkl_HC = load_pickle(load_path=pickelDir_HC)
+loadPkl_PD = load_pickle(load_path=pickelDir_PD)
 fit_HC = loadPkl_HC['fit']
 fit_PD = loadPkl_PD['fit']
  
@@ -43,15 +43,15 @@ axs = axs.flatten()
 transfer_hier_sensitivity_mu_HC_sess1 = np.mean([transfer_hier_sensitivity_mu_HC[0,0], transfer_hier_sensitivity_mu_HC[1,0]], axis=0)
 transfer_hier_sensitivity_mu_HC_sess2 = np.mean([transfer_hier_sensitivity_mu_HC[0,1], transfer_hier_sensitivity_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess2, ax=axs[0], color=config.COLORS['HC-Sess2'], fill=True, linewidth=1, alpha=.6,  label='See2')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess1, ax=axs[0], color=config.COLORS['HC-Sess1'], fill=True, linewidth=1, alpha=.6,  label='See1')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess2, ax=axs[0], color=COLORS['HC-Sess2'], fill=True, linewidth=1, alpha=.6,  label='See2')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess1, ax=axs[0], color=COLORS['HC-Sess1'], fill=True, linewidth=1, alpha=.6,  label='See1')
 
 # condition
 transfer_hier_sensitivity_mu_HC_Act = np.mean([transfer_hier_sensitivity_mu_HC[0,0], transfer_hier_sensitivity_mu_HC[0,1]], axis=0)
 transfer_hier_sensitivity_mu_HC_Clr = np.mean([transfer_hier_sensitivity_mu_HC[1,0], transfer_hier_sensitivity_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Act, ax=axs[1], color=config.COLORS['HC-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Clr, ax=axs[1], color=config.COLORS['HC-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Act, ax=axs[1], color=COLORS['HC-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Clr, ax=axs[1], color=COLORS['HC-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
 
 axs[0].legend(fontsize=7, loc='upper left')
 axs[0].set_xlim(0.01,.08)
@@ -90,15 +90,15 @@ axs[1].text(.5, .9, f'BF(cond) = {round(bf_cond, 2)}', transform= axs[1].transAx
 transfer_hier_sensitivity_mu_PD_OFF = np.mean([transfer_hier_sensitivity_mu_PD[0,0], transfer_hier_sensitivity_mu_PD[1,0]], axis=0)
 transfer_hier_sensitivity_mu_PD_ON = np.mean([transfer_hier_sensitivity_mu_PD[0,1], transfer_hier_sensitivity_mu_PD[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_ON, ax=axs[2], color=config.COLORS['PD-ON'], fill=True, linewidth=1, alpha=.6,  label='ON')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_OFF, ax=axs[2], color=config.COLORS['PD-OFF'], fill=True, linewidth=1, alpha=.6,  label='OFF')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_ON, ax=axs[2], color=COLORS['PD-ON'], fill=True, linewidth=1, alpha=.6,  label='ON')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_OFF, ax=axs[2], color=COLORS['PD-OFF'], fill=True, linewidth=1, alpha=.6,  label='OFF')
 
 # Condition
 transfer_hier_sensitivity_mu_PD_Act = np.mean([transfer_hier_sensitivity_mu_PD[0,0], transfer_hier_sensitivity_mu_PD[0,1]], axis=0)
 transfer_hier_sensitivity_mu_PD_Clr = np.mean([transfer_hier_sensitivity_mu_PD[1,0], transfer_hier_sensitivity_mu_PD[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Clr, ax=axs[3], color=config.COLORS['PD-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Act, ax=axs[3], color=config.COLORS['PD-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Clr, ax=axs[3], color=COLORS['PD-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Act, ax=axs[3], color=COLORS['PD-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
 
 # Medication Effect BF
 i_sess = np.mean((transfer_hier_sensitivity_mu_PD_OFF - transfer_hier_sensitivity_mu_PD_ON)>0)
@@ -134,10 +134,10 @@ axs[3].set_title('D) Condition effect in sensitivity in PD', loc='left', fontsiz
 plt.tight_layout()
 
 # Check out if it does not exist
-if not os.path.isdir(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/'):
-        os.makedirs(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/') 
+if not os.path.isdir(f'{SCRATCH_HIER_MODEL_DIR}/Tabel3/'):
+        os.makedirs(f'{SCRATCH_HIER_MODEL_DIR}/Tabel3/') 
                        
-fig.savefig(f'{config.SCRATCH_HIER_MODEL_DIR}/Tabel3/{model_name}_HC_PD_sensitivity.pdf')
+fig.savefig(f'{SCRATCH_HIER_MODEL_DIR}/tabel3/{model_name}_HC_PD_sensitivity.pdf')
 plt.close()
 
 
