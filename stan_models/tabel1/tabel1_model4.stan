@@ -9,9 +9,9 @@ data {
     array[N] real<lower=0, upper=100> winAmtBlue;      // The amount of values feedback when blue chosen is correct response 
     array[N] int<lower=0, upper=1> rewarded;           // 1 for rewarding and 0 for no-reward
     array[N] int<lower=1> participant;                 // Participant index for each trial
-    array[N] int<lower=1> indicator;                   // Indicator of the first trial for each participant, run and conditions 
-    int<lower=1> nConds;                               // Number of condition, Action and Color value learning
-    array[N] int<lower=1, upper=2> condition;          // 1 indicates first condition (Action) and 2 indicates second condition (Color)
+    array[N] int<lower=1> indicator;                   // Indicator of the first trial for each participant, run and conds 
+    int<lower=1> n_conds_weight;                               // Number of cond, Action and Color value learning
+    array[N] int<lower=1, upper=2> cond;          // 1 indicates first cond (Action) and 2 indicates second cond (Color)
 }
 parameters {
     /* Hierarchical mu parameter*/                               
@@ -60,7 +60,7 @@ transformed parameters {
     }
 
     for (i in 1:N) {
-        // Restart probability of variable for each environemnt and condition
+        // Restart probability of variable for each environemnt and cond
         if (indicator[i]==1){
             p_push = .5;
             p_yell = .5;

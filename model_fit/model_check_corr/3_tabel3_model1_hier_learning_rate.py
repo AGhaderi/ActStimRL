@@ -46,8 +46,8 @@ transfer_hier_alpha_pos_mu_HC_cond_sess = np.mean([transfer_hier_alpha_pos_mu_HC
 transfer_hier_alpha_neg_mu_HC_cond_sess = np.mean([transfer_hier_alpha_neg_mu_HC[0,0], transfer_hier_alpha_neg_mu_HC[0,1],
                                               transfer_hier_alpha_neg_mu_HC[1,0], transfer_hier_alpha_neg_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess, ax=axs[3], color=COLORS['HC-NEG'], fill=True,linewidth=1, alpha=.6,  label=r'$- \alpha$')
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess, ax=axs[3], color=COLORS['HC-POS'], fill=True,linewidth=1, alpha=.6,  label=r'$+ \alpha$')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess, ax=axs[3], color=COLORS['HC-NEG'], fill=True,linewidth=1, alpha=.6,  label=r'PD-$\alpha^-$')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess, ax=axs[3], color=COLORS['HC-POS'], fill=True,linewidth=1, alpha=.6,  label=r'PD-$\alpha^+$')
 
 axs[3].legend(fontsize=6, loc='upper right')
 axs[3].set_xlim(0,1)
@@ -80,8 +80,8 @@ transfer_hier_alpha_pos_mu_PD_med = np.mean([transfer_hier_alpha_pos_mu_PD[0],tr
 # negative learning rate across medication in PD
 transfer_hier_alpha_neg_mu_PD_med = np.mean([transfer_hier_alpha_neg_mu_PD[0],transfer_hier_alpha_neg_mu_PD[1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD_med, ax=axs[0], color=COLORS['PD-NEG'], fill=True,linewidth=1, alpha=.6,  label=r'$- \alpha$')
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD_med, ax=axs[0], color=COLORS['PD-POS'], fill=True,linewidth=1, alpha=.6,  label=r'$+ \alpha$')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD_med, ax=axs[0], color=COLORS['PD-NEG'], fill=True,linewidth=1, alpha=.6,  label=r'PD-$\alpha^-$')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD_med, ax=axs[0], color=COLORS['PD-POS'], fill=True,linewidth=1, alpha=.6,  label=r'PD-$\alpha^+$')
 
 axs[0].legend(fontsize=6, loc='upper right')
 axs[0].set_xlim(0,1)
@@ -112,11 +112,11 @@ else:
 # HC session 2
 transfer_hier_alpha_pos_mu_HC_cond_sess2 = np.mean([transfer_hier_alpha_pos_mu_HC[0,1],transfer_hier_alpha_pos_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess2, ax=axs[4], color=COLORS['HC-Sess2'], fill=True,linewidth=1, alpha=.6,  label='HC-sess2')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess2, ax=axs[4], color=COLORS['HC-Sess2'], fill=True,linewidth=1, alpha=.6,  label='HC Session 2')
 # HC session1
 transfer_hier_alpha_pos_mu_HC_cond_sess1 = np.mean([transfer_hier_alpha_pos_mu_HC[0,0],transfer_hier_alpha_pos_mu_HC[1,0]], axis=0)
 
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess1, ax=axs[4], color=COLORS['HC-Sess1'], fill=True,linewidth=1, alpha=.6,  label='HC-sess1')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_HC_cond_sess1, ax=axs[4], color=COLORS['HC-Sess1'], fill=True,linewidth=1, alpha=.6,  label='HC Session 1')
 axs[4].legend(fontsize=6, loc='upper left')
 axs[4].set_xlim(0,1)
 axs[4].tick_params(axis='both', labelsize=6)
@@ -136,11 +136,11 @@ axs[4].text(.4, .9, f'BF = {round(bf, 2)}', transform= axs[4].transAxes, fontsiz
 ########################################################### Repetition effect of negative leraning rate in HC
 # HC session 2
 transfer_hier_alpha_neg_mu_HC_cond_sess2 = np.mean([transfer_hier_alpha_neg_mu_HC[0,1],transfer_hier_alpha_neg_mu_HC[1,1]], axis=0)
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess2, ax=axs[5], color=COLORS['HC-Sess2'], fill=True,linewidth=1, alpha=.6,  label='HC-sess2')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess2, ax=axs[5], color=COLORS['HC-Sess2'], fill=True,linewidth=1, alpha=.6,  label='HC Session 2')
 
 # HC session1
 transfer_hier_alpha_neg_mu_HC_cond_sess1 = np.mean([transfer_hier_alpha_neg_mu_HC[0,0],transfer_hier_alpha_neg_mu_HC[1,0]], axis=0)
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess1, ax=axs[5], color=COLORS['HC-Sess1'], fill=True,linewidth=1, alpha=.6,  label='HC-sess1')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_HC_cond_sess1, ax=axs[5], color=COLORS['HC-Sess1'], fill=True,linewidth=1, alpha=.6,  label='HC Session 1')
 
 
 axs[5].legend(fontsize=6, loc='upper left')
@@ -160,9 +160,9 @@ axs[5].text(.4, .9, f'BF = {round(bf, 2)}', transform= axs[5].transAxes, fontsiz
 
 ########################################################### Medication effect of positive leraning rate 
 # PD ON 
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD[1], ax=axs[1], color=COLORS['PD-ON'], fill=True,linewidth=1, alpha=.6,  label='PD-ON')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD[1], ax=axs[1], color=COLORS['PD-ON'], fill=True,linewidth=1, alpha=.6,  label='PD ON')
 # PD OFF
-sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD[0], ax=axs[1], color=COLORS['PD-OFF'], fill=True,linewidth=1, alpha=.6,  label='PD-OFF')
+sns.kdeplot(data=transfer_hier_alpha_pos_mu_PD[0], ax=axs[1], color=COLORS['PD-OFF'], fill=True,linewidth=1, alpha=.6,  label='PD OFF')
 axs[1].legend(fontsize=6, loc='upper left')
 axs[1].set_xlim(0,1)
 axs[1].set_ylim(0,20)
@@ -181,10 +181,10 @@ axs[1].text(.4, .9, f'BF = {round(bf, 2)}', transform= axs[1].transAxes, fontsiz
 ##############################  Medication effect of negative leraning rate  
 
 # PD ON 
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD[1], ax=axs[2], color=COLORS['PD-ON'], fill=True,linewidth=1, alpha=.6,  label='PD-ON')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD[1], ax=axs[2], color=COLORS['PD-ON'], fill=True,linewidth=1, alpha=.6,  label='PD ON')
 
 # PD OFF
-sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD[0], ax=axs[2], color=COLORS['PD-OFF'], fill=True,linewidth=1, alpha=.6,  label='PD-OFF')
+sns.kdeplot(data=transfer_hier_alpha_neg_mu_PD[0], ax=axs[2], color=COLORS['PD-OFF'], fill=True,linewidth=1, alpha=.6,  label='PD OFF')
 
 axs[2].legend(fontsize=6, loc='upper left')
 axs[2].set_xlim(0,1)

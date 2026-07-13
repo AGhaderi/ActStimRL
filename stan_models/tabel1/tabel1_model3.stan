@@ -9,15 +9,15 @@ data {
     array[N] real<lower=0, upper=100> winAmtBlue;      // The amount of values feedback when blue chosen is correct response 
     array[N] int<lower=0, upper=1> rewarded;           // 1 for rewarding and 0 for no-reward
     array[N] int<lower=1> participant;                 // Participant index for each trial
-    array[N] int<lower=1> indicator;                   // Indicator of the first trial for each participant, run and conditions 
-    int<lower=1> nConds;                               // Number of condition, Action and Color value learning
-    array[N] int<lower=1, upper=2> condition;          // 1 indicates first condition (Action) and 2 indicates second condition (Color)
+    array[N] int<lower=1> indicator;                   // Indicator of the first trial for each participant, run and conds 
+    int<lower=1> n_conds_weight;                               // Number of cond, Action and Color value learning
+    array[N] int<lower=1, upper=2> cond;          // 1 indicates first cond (Action) and 2 indicates second cond (Color)
 }
 parameters {
     /* Hierarchical mu parameter*/                               
     real hier_alpha_pos_mu;               // Mean Hierarchical positive learning rate (unconstrained)
     real hier_alpha_neg_mu;               // Mean Hierarchical negative learning rate (unconstrained)
-    array[nConds] real hier_weight_mu;    // Mean Hierarchical Wieghting (unconstrained)
+    array[n_conds_weight] real hier_weight_mu;    // Mean Hierarchical Wieghting (unconstrained)
     real hier_sensitivity_mu;             // Mean Hierarchical snesitivity (unconstrained)
     
     /* Hierarchical sd parameter*/                               
@@ -28,7 +28,7 @@ parameters {
     /* participant-level main paameter*/
     array[nParts] real z_alpha_pos;       // Individual positive learning rate (unconstrained)
     array[nParts] real z_alpha_neg;       // Individual negative learning rate (unconstrained)
-    array[nParts, nConds] real z_weight;  // Individual Wieghtening (unconstrained)
+    array[nParts, n_conds_weight] real z_weight;  // Individual Wieghtening (unconstrained)
     array[nParts] real z_sensitivity;     // Individual Sensitivity (unconstrained)  
 
 }
@@ -48,13 +48,13 @@ transformed parameters {
     /* Transfer individual parameters */
     array[nParts] real<lower=0, upper=1> transfer_alpha_pos;       // Individual Poistive Learning rate (constrained)
     array[nParts] real<lower=0, upper=1> transfer_alpha_neg;       // Individual Negative Learning rate (constrained)
-    array[nParts, nConds] real<lower=0, upper=1> transfer_weight;  // Individual Wieghting (constrained)  
+    array[nParts, n_conds_weight] real<lower=0, upper=1> transfer_weight;  // Individual Wieghting (constrained)  
     array[nParts] real<lower=0> transfer_sensitivity;              // Individual Sensitivity (constrained) 
     
     /* Transfer Hierarchical parameters just for output*/
     real<lower=0, upper=1> transfer_hier_alpha_pos_mu;             // Hierarchical Positive Learning rate (constrained)
     real<lower=0, upper=1> transfer_hier_alpha_neg_mu;             // Hierarchical Negative Learning rate (constrained)
-    array[nConds] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghing (constrained)
+    array[n_conds_weight] real<lower=0, upper=1> transfer_hier_weight_mu;  // Hierarchical Wieghing (constrained)
     real<lower=0> transfer_hier_sensitivity_mu;                    // Hierarchical snesitivity (constrained)
 
 	transfer_hier_alpha_pos_mu = inv_logit(hier_alpha_pos_mu);				// for the output
@@ -63,7 +63,7 @@ transformed parameters {
 	transfer_hier_sensitivity_mu = log1p_exp(hier_sensitivity_mu);
 
     for (p in 1:nParts) {
-        for (c in 1:nConds){
+        for (c in 1:n_conds_weight){
             transfer_weight[p,c] = inv_logit(hier_weight_mu[c] + z_weight[p,c]*hier_weight_sd);
         }
         transfer_alpha_pos[p] = inv_logit(hier_alpha_pos_mu + z_alpha_pos[p]*hier_alpha_sd);
@@ -72,7 +72,7 @@ transformed parameters {
     }
 
     for (i in 1:N) {
-        // Restart probability of variable for each environemnt and condition
+        // Restart probability of variable for each environemnt and cond
         if (indicator[i]==1){
             p_push = .5;
             p_yell = .5;
@@ -84,10 +84,10 @@ transformed parameters {
         EV_blue = (1-p_yell)*winAmtBlue[i];
        
         // Relative contribution of ion Value Learning verus Color Value Learning
-        EV_push_yell = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
-        EV_push_blue = transfer_weight[participant[i], condition[i]]*EV_push + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
-        EV_pull_yell = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_yell;
-        EV_pull_blue = transfer_weight[participant[i], condition[i]]*EV_pull + (1 - transfer_weight[participant[i], condition[i]])*EV_blue;
+        EV_push_yell = transfer_weight[participant[i], cond[i]]*EV_push + (1 - transfer_weight[participant[i], cond[i]])*EV_yell;
+        EV_push_blue = transfer_weight[participant[i], cond[i]]*EV_push + (1 - transfer_weight[participant[i], cond[i]])*EV_blue;
+        EV_pull_yell = transfer_weight[participant[i], cond[i]]*EV_pull + (1 - transfer_weight[participant[i], cond[i]])*EV_yell;
+        EV_pull_blue = transfer_weight[participant[i], cond[i]]*EV_pull + (1 - transfer_weight[participant[i], cond[i]])*EV_blue;
        
         // pushed and yellow vs pulled and blue
         if ((pushed[i] == 1 && yellowChosen[i] == 1) || (pushed[i] == 0 && yellowChosen[i] == 0))
@@ -144,7 +144,7 @@ transformed parameters {
 }
 model { 
     /* Hierarchical mu parameter*/
-    for (c in 1:nConds){
+    for (c in 1:n_conds_weight){
         hier_weight_mu[c] ~ normal(0,2);
     }
     hier_alpha_pos_mu ~ normal(0,2);
@@ -158,7 +158,7 @@ model {
     
     /* participant-level main paameter*/
     for (p in 1:nParts) {
-        for (c in 1:nConds){
+        for (c in 1:n_conds_weight){
             z_weight[p,c] ~ normal(0,1);
         }
         z_alpha_pos[p] ~ normal(0,1);

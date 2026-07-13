@@ -1,0 +1,958 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import gaussian_kde
+import matplotlib.lines as mlines
+import glob
+import os
+from scipy.io import loadmat
+import sys
+sys.path.append('/mrhome/amingk/Documents/7TPD/ActStimRL')
+from utils import *
+from utils.model_utils import participant_list, MAP_last_axis
+
+def plotRelevantOptionTrial(
+        readBehFile= PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+        save_path = FIGURES_DIR,
+        window_size: int = 4
+    ):
+    """
+    Plot choice behavior (high-reward option proportion) and reversal structure
+    across all participants and all trials.
+
+    Parameters
+    ----------
+    readBehFile : str
+        Directory where `NoNanBehAll.csv` is stored.
+    save_path : str
+        Full path where the figure should be saved (png).
+    window_size : int
+        Rolling mean window size for smoothing choice curves.
+
+    """
+
+    # Load full dataset across all participants
+    behAll = pd.read_csv(f"{readBehFile}")
+    
+    # Set up figure    
+    mm = 1 / 2.54
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
+    axs = axs.flatten()
+    idx = 0
+    # ===========================================
+    for block in ["Act", "Stim"]:
+        for reverse in [14, 21]:
+            behAllCond = behAll.loc[(behAll["block"] == block) &(behAll["reverse"] == reverse)].copy()
+
+            # Compute average across subjects for each group × trial
+            beh_group = behAllCond.groupby( ["group", "trialNumber_new"], as_index=False)["relevantHighRewardOptionPattern"].mean()
+
+            # Rolling averages for each participant group
+            groups = {
+                1: ("PD-OFF", COLORS['PD-OFF']),
+                2: ("HC", COLORS['HC']),
+                3: ("PD-ON", COLORS['PD-ON']),
+            }
+        
+        
+            for group_id, (_, color) in groups.items():
+                y = beh_group.loc[
+                    beh_group["group"] == group_id, "relevantHighRewardOptionPattern"
+                ]
+                moving_avg = y.rolling(window=window_size, min_periods=1).mean()
+                axs[idx].plot(np.arange(1, 43), moving_avg, color=color, linewidth=3)
+
+            axs[idx].axhline(0.5, linestyle="--", color="black")
+
+            # Add reversal markers
+            if reverse == 21:
+                axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
+                axs[idx].plot([0, 21], [.75, .75], color='green')
+                axs[idx].plot([21, 42], [.25, .25], color='green')
+                axs[idx].plot([21, 21], [.75, .25], color='green')
+
+            else:  # 14 + 28 reversals
+                axs[idx].axvline(14, color='c', linestyle='--', alpha=.7)
+                axs[idx].axvline(28, color='c', linestyle='--', alpha=.7)
+                axs[idx].plot([0, 14], [.75, .75], color='green')
+                axs[idx].plot([14, 14], [.75, .25], color='green')
+                axs[idx].plot([14, 28], [.25, .25], color='green')
+                axs[idx].plot([28, 28], [.75, .25], color='green')
+                axs[idx].plot([28, 42], [.75, .75], color='green')
+
+            # Axis configs
+            if block=='Act':
+                axs[idx].set_title("Action value")
+            else:
+                axs[idx].set_title("Color value")
+            axs[idx].set_ylim(0, 1)
+            axs[idx].set_xlim(1, 42)
+            axs[idx].set_xticks([1, 10, 20, 30, 42])
+
+            if idx == 0:
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
+
+            idx += 1
+
+    # Global labels
+    fig.supxlabel("Trial")
+    #fig.supylabel("Choice Proportion")
+
+    fig.tight_layout()
+    # Save figure
+    plt.savefig(f'{save_path}/relevantHighRewardOptionTrial.pdf')
+    
+
+def plotIrrelevantOptionTrial(
+        readBehFile= PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_ALL_FILE,
+        save_path = FIGURES_DIR,
+        window_size: int = 4
+    ):
+    """
+    Plot irrelevant choice behavior (color in Act, action in Clr) and reversal structure
+    across all participants and all trials.
+
+    Parameters
+    ----------
+    readBehFile : str
+        Directory where `NoNanBehAll.csv` is stored.
+    save_path : str
+        Full path where the figure should be saved (png).
+    window_size : int
+        Rolling mean window size for smoothing choice curves.
+
+    """
+
+    # Load full dataset across all participants
+    behAll = pd.read_csv(f"{readBehFile}")
+
+    # Set up figure    
+    mm = 1 / 2.54
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
+    axs = axs.flatten()
+    idx = 0
+    # ===========================================
+    for block in ["Act", "Stim"]:
+        for reverse in [14, 21]:
+            behAllCond = behAll.loc[(behAll["block"] == block) &(behAll["reverse"] == reverse)].copy()
+
+            # Compute average across subjects for each group × trial
+            beh_group = behAllCond.groupby( ["group", "trialNumber_new"], as_index=False)["irrelevantHighRewardOption"].mean()
+
+            # Rolling averages for each participant group
+            groups = {
+                1: ("PD-OFF", COLORS['PD-OFF']),
+                2: ("HC", COLORS['HC']),
+                3: ("PD-ON", COLORS['PD-ON']),
+            }
+        
+        
+            for group_id, (_, color) in groups.items():
+                y = beh_group.loc[
+                    beh_group["group"] == group_id, "irrelevantHighRewardOption"
+                ]
+                moving_avg = y.rolling(window=window_size, min_periods=1).mean()
+                axs[idx].plot(np.arange(1, 43), moving_avg, color=color, linewidth=3)
+
+            axs[idx].axhline(0.5, linestyle="--", color="black")
+
+            # Add reversal markers
+            if reverse == 21:
+                axs[idx].axvline(21, color='c', linestyle='--', alpha=.7)
+
+            else:  # 14 + 28 reversals
+                axs[idx].axvline(14, color='c', linestyle='--', alpha=.7)
+                axs[idx].axvline(28, color='c', linestyle='--', alpha=.7)
+
+            # Axis configs
+            if block=='Act':
+                axs[idx].set_title("Action value")
+            else:
+                axs[idx].set_title("Color value")
+            axs[idx].set_ylim(0, 1)
+            axs[idx].set_xlim(1, 42)
+            axs[idx].set_xticks([1, 10, 20, 30, 42])
+
+            if idx == 0:
+                axs[idx].legend(["PD-OFF", "HC","PD-ON"], fontsize=10)
+
+            idx += 1
+
+    # Global labels
+    fig.supxlabel("Trial")
+    #fig.supylabel("Choice Proportion")
+
+    fig.tight_layout()
+    # Save figure
+    plt.savefig(f'{save_path}/irrelevantHighRewardOptionTrial.pdf')
+ 
+    return behAll
+
+
+def plotChoiceResponseSubjects(readBehDir=PROJECT_DATA_DIR):
+    """
+    Reads raw behavioral .txt files and .mat files for each subject and session,
+    concatenates them, extracts block order information, and generates behavior plots.
+
+    Parameters
+    ----------
+    readBehDir : str
+        Base directory containing subject/session folders.
+    type: ste
+        There are differnt type of choice response plot whihc is the name of funcion
+
+    Returns
+    -------
+    None
+    """
+     
+    # Loop through all subjects
+    fileSubjects = glob.glob(f'{readBehDir}/sub-*')
+    for filesubject in fileSubjects:
+        subName = filesubject.split('/')[-1]
+
+        # Process the two 7T sessions
+        for sess in ['ses-02achieva7t', 'ses-03achieva7t']:
+
+            # ---------------------------------------------------------
+            # 1. Find all .txt behavioral files for this subject/session
+            # ---------------------------------------------------------
+            txt_files = glob.glob(f'{readBehDir}/{subName}/{sess}/beh/*.txt')
+
+            if len(txt_files) == 0:
+                # No behavioral files found for this session → skip session
+                continue
+
+            # ---------------------------------------------------------
+            # 2. Load and concatenate all .txt behavioral files
+            # ---------------------------------------------------------
+            data = pd.DataFrame([])
+
+            for file_path in txt_files:
+                # Read with flexible delimiter (tabs or commas)
+                df = pd.read_csv(file_path, sep=r'[\t,]', engine='python')
+
+                # Remove extension to get simple filename (not used later, but kept for clarity)
+                filename = os.path.splitext(os.path.basename(file_path))[0]
+
+                # Append to the full dataframe
+                data = pd.concat([data, df], ignore_index=True)
+
+            # ---------------------------------------------------------
+            # 3. Load trial structure (.mat) file
+            # ---------------------------------------------------------
+            mat_files = glob.glob(f'{readBehDir}/{subName}/{sess}/beh/*_beh.mat')
+
+            if len(mat_files) == 0:
+                # No .mat file → skip plotting
+                continue
+
+            data_mat = loadmat(mat_files[0])
+
+            # Extract block structure arrays
+            blockList1_1 = data_mat['blockList1_1'][0][0]
+            blockList1_2 = data_mat['blockList1_2'][0][0]
+            blockList2_1 = data_mat['blockList2_1'][0][0]
+            blockList2_2 = data_mat['blockList2_2'][0][0]
+
+            # Combine into a 4-element array
+            data_reverse = np.array([
+                blockList1_1, blockList1_2,
+                blockList2_1, blockList2_2
+            ])
+
+            # ---------------------------------------------------------
+            # 4. Prepare output directory and filename
+            # ---------------------------------------------------------
+            analysis_dir = f'{readBehDir}/{subName}/{sess}/beh/analysis/'
+
+            if not os.path.isdir(analysis_dir):
+                os.makedirs(analysis_dir)
+
+            saveFile = f'{analysis_dir}/{subName}_{sess}_task-DA_beh.png'
+
+            # ---------------------------------------------------------
+            # 5. Generate plot (custom module)
+            # ---------------------------------------------------------
+            plotChoiceResponse(
+                data=data,
+                subName=subName,
+                reverse=data_reverse,
+                saveFile=saveFile
+            )
+
+            print(f"✓ Saved plot for {subName} {sess}")
+
+
+def plotChoiceResponse(data, subName, reverse, saveFile):
+    """Plot of chosen and correct response for all runs and sessions"""
+    # Figure of behavioral data in two column and four rows
+    fig = plt.figure(figsize=(10, 6), tight_layout=True)
+    rows = 2
+    columns = 2
+    # Position marker type and colors of Action adn Color Value Learning
+    y = [1.2 ,1.1, .6 ,.2, .1] 
+    markers = ['v', 'o', 'o' , 'o', '^']
+    colorsAct =['#2ca02c','#2ca02c', '#d62728', '#9467bd', '#9467bd']
+    colorsClr =['#bcbd22','#bcbd22', '#d62728', '#1f77b4', '#1f77b4']
+     
+    idx = 0
+    for run in range(1, 3):
+        # data for run
+        dataRun = data[(data['run']==run)]
+        # order of action and color condition
+        blocks = dataRun['block'].unique()
+        for block in blocks:
+            fig.add_subplot(rows, columns, idx+1) 
+            # Action block
+            if block == 'Act':
+                # Seperate data taken from a session, run and Action block
+                dataCondAct = dataRun[(dataRun['block']==block)]
+                # Seperate the index of pushed and pulled responses
+                resAct = dataCondAct['pushed'].fillna(-1).astype(int).to_numpy()
+                pushed = np.where(resAct==1)[0] + 1
+                pulled = np.where(resAct==0)[0] + 1
+                noRes  = np.where(resAct < 0)[0] + 1
+                # Seperate the index of pushed and pulled correct choices
+                corrAct= dataCondAct['pushCorrect']
+                pushCorr = np.where(corrAct==1)[0] + 1
+                pulledCorr = np.where(corrAct==0)[0] + 1
+                # Put all reponses and correct choice in a Dataframe
+                dicDataAct = ({'label': ['pushed', 'push correct', 'no response', 'pull correct', 'pulled'],
+                            'x': [pushed, pushCorr, noRes, pulledCorr, pulled]})
+                dfPlotAct = pd.DataFrame(dicDataAct)
+                # Create a list of y coordinates for every x coordinate
+                for i in range(len(dfPlotAct)):
+                    plt.scatter(dfPlotAct.x[i],[y[i] for j in range(len(dfPlotAct.x[i]))], 
+                                s=10, c=colorsAct[i], marker=markers[i])
+                # show the empy y axis label
+                plt.yticks(y,[]) 
+                plt.xlabel('Trials', fontsize=12)
+                if block=='Stim':
+                    blockName = 'Clr'
+                elif block=='Act':
+                    blockName = 'Act'
+                    
+                plt.title(subName + ' - Run ' + str(run) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                plt.legend(dfPlotAct.label, fontsize=8)      
+            # Color block
+            elif block == 'Stim':
+                # Seperate data taken from a session, run and Color block
+                dataCondClr = data[(data.run==run) & (data.block==block)]
+                # Seperate the index of yellow and blue responses
+                resClr = dataCondClr['yellowChosen'].fillna(-1).astype(int).to_numpy()
+                yellChosen = np.where(resClr==1)[0] + 1
+                blueChosen = np.where(resClr==0)[0] + 1
+                noRes  = np.where(resClr < 0)[0] + 1
+                # Seperate the index of yellow and blue correct choices
+                corrClr= dataCondClr['yellowCorrect']
+                yellCorr = np.where(corrClr==1)[0] + 1
+                blueCorr = np.where(corrClr==0)[0] + 1
+                # Put all reponses and correct choice in a Dataframe
+                dicDataClr = ({'label': ['yellow chosen', 'yellow correct', 'no response', 'blue correct', 'blue chosen'],
+                            'x': [yellChosen, yellCorr, noRes, blueCorr, blueChosen]})
+                dfPlotClr = pd.DataFrame(dicDataClr)         
+                #create a list of y coordinates for every x coordinate
+                for i in range(len(dfPlotClr)):
+                    plt.scatter(dfPlotClr.x[i],[y[i] for j in range(len(dfPlotClr.x[i]))], 
+                                s=10, c=colorsClr[i], marker=markers[i])
+                # Show the empy y axis label
+                plt.yticks(y,[]) 
+                plt.xlabel('Trials', fontsize=12) 
+                plt.xlabel('Trials', fontsize=12)
+                if block =='Stim':
+                    blockName = 'Clr'
+                elif block =='Act':
+                    blockName = 'Act'
+                    
+                plt.title(subName + ' - Run ' + str(run) + ' - ' +  blockName + ' Value Learning' , fontsize=10)    
+                plt.legend(dfPlotClr.label, fontsize=8)  
+            
+            
+            plt.xlim(0,43)
+            # Draw vertical lines for one or two reversal points learning during runs
+            if reverse[idx]==21:
+                plt.axvline(x = 21, color='#ff7f0e', linewidth=1, alpha=.5)
+            elif reverse[idx]==14:
+                plt.axvline(x = 14, color='#ff7f0e', linewidth=1, alpha=.7)
+                plt.axvline(x = 28, color='#ff7f0e', linewidth=1, alpha=.7)
+
+            idx += 1
+ 
+    # Save plot of chosen and correct response 
+    fig.savefig(saveFile, dpi=500)
+    plt.close()     
+
+
+def plotFeatureBias(
+    readBehFile=PROJECT_NoNAN_BEH_ALL_FILE,
+    saveFigPath=FIGURES_DIR):
+    """
+    Load behavioral data, compute response tendencies for different features, 
+    and plot probability of choosing each feature across groups and conditions.
+
+    Parameters
+    ----------
+    readBehFile : str
+        Path to the CSV file containing behavioral data.
+    saveFigPath : str
+        Path where the generated figure will be saved.
+    """
+    
+    # ------------------- Load data -------------------
+    behAll = pd.read_csv(readBehFile)
+    
+    # ------------------- Rearrange trial numbers -------------------
+    behAll['trialNumber'] = behAll['trialNumber'].replace(
+        list(range(44, 86)),  # old trial numbers
+        list(range(2, 44)))   # new trial numbers
+    
+    # ------------------- Compute chosen amounts and high amount selection -------------------
+    chosenAmount = behAll['leftChosen']*behAll['winAmtLeft'] + (1-behAll['leftChosen'])*behAll['winAmtRight'] 
+    behAll['chosenHighWinAmt'] = chosenAmount >= 50
+    
+    # ------------------- Standardize group and condition labels -------------------
+    behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
+    behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
+    group_order = ['HC', 'PD-OFF', 'PD-ON']
+
+    # ------------------- Aggregate response tendencies by participant -------------------
+    left_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['leftChosen'].mean()
+    amt_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['chosenHighWinAmt'].mean()
+    pushed_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['pushed'].mean()
+    yellow_groups = behAll.groupby(['group', 'Condition', 'sub_ID'], as_index=False)['yellowChosen'].mean()
+    
+    # -------------------Plot responses -------------------
+    mm = 1/2.54  # convert cm to inches for figure size
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
+    axs = axs.flatten()
+    
+    # Custom color palette
+    custom_palette = {'HC': COLORS['HC'], 'PD-ON': COLORS['PD-ON'], 'PD-OFF': COLORS['PD-OFF']}
+    
+    # ------------------- Left responses -------------------
+    sns.barplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0], errorbar='se',
+                palette=custom_palette, hue_order=group_order)
+    sns.stripplot(data=left_groups, x='Condition', y='leftChosen', hue='group', ax=axs[0],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[0].set_ylabel('Left response', fontsize=12)
+    axs[0].set_xlabel('', fontsize=12)
+    axs[0].axhline(.5, color='black', linestyle='--')
+    axs[0].set_ylim(0,1)
+    axs[0].legend(fontsize=10, loc='upper left')
+    
+    # ------------------- High amount responses -------------------
+    sns.barplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1], errorbar='se',
+                palette=custom_palette, legend=False, hue_order=group_order)
+    sns.stripplot(data=amt_groups, x='Condition', y='chosenHighWinAmt', hue='group', ax=axs[1],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[1].set_ylabel('Higher amount', fontsize=12)
+    axs[1].set_xlabel('', fontsize=12)
+    axs[1].axhline(.5, color='black', linestyle='--')
+    axs[1].set_ylim(0,1)
+    
+    # ------------------- Push responses -------------------
+    sns.barplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2], errorbar='se',
+                palette=custom_palette, legend=False, hue_order=group_order)
+    sns.stripplot(data=pushed_groups, x='Condition', y='pushed', hue='group', ax=axs[2],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[2].set_ylabel('Push response', fontsize=12)
+    axs[2].set_xlabel('Condition', fontsize=12)
+    axs[2].axhline(.5, color='black', linestyle='--')
+    axs[2].set_ylim(0,1)
+    
+    # ------------------- Yellow responses -------------------
+    sns.barplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3], errorbar='se',
+                palette=custom_palette, legend=False, hue_order=group_order)
+    sns.stripplot(data=yellow_groups, x='Condition', y='yellowChosen', hue='group', ax=axs[3],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[3].set_ylabel('Yellow response', fontsize=12)
+    axs[3].set_xlabel('Condition', fontsize=12)
+    axs[3].axhline(.5, color='black', linestyle='--')
+    axs[3].set_ylim(0,1)
+    
+    fig.tight_layout()
+    
+    # ------------------- 8. Save figure -------------------
+    plt.savefig(f'{saveFigPath}/featureBias.pdf', bbox_inches='tight')
+    plt.show()
+
+
+def plotProportionRelIrrelevantHighRewardOption(
+    readBehFile=PROJECT_NoNAN_BEH_REL_IRREL_HIGH_REWARD_OPTION_GROUPBY_ALL_FILE,
+    saveFigPath=FIGURES_DIR):
+    """
+    Plot the relevant and irrelevant high reward options and
+    their differnce for each participant and group
+
+    Parameters
+    ----------
+    readBehFile : str
+        Path to the CSV file containing behavioral data.
+    saveFigPath : str
+        Path where the generated figure will be saved.
+    """
+    
+    #Load data 
+    behAll = pd.read_csv(readBehFile)
+    
+    # Standardize group and condition labels
+    behAll['group'] = behAll['group'].replace([1,2,3], ['PD-OFF', 'HC', 'PD-ON'])
+    behAll['Condition'] = behAll['block'].replace(['Act', 'Stim'], ['Action', 'Color'])
+    group_order = ['HC', 'PD-OFF', 'PD-ON']
+    # Plot setting 
+    mm = 1/2.54  # convert cm to inches for figure size
+    fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(21*mm, 16*mm))
+    axs = axs.flatten()
+    
+    # Custom color palette
+    custom_palette = {'HC': COLORS['HC'], 'PD-ON': COLORS['PD-ON'], 'PD-OFF': COLORS['PD-OFF']}
+    
+    # relevant high Reward Option 
+    sns.barplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0], errorbar='se',
+                palette=custom_palette, hue_order=group_order)
+    sns.stripplot(data=behAll, x='Condition', y='relevantHighRewardOption', hue='group', ax=axs[0],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[0].set_ylabel('Relevant High reward option', fontsize=12)
+    axs[0].set_xlabel('', fontsize=12)
+    axs[0].axhline(.5, color='black', linestyle='--')
+    axs[0].set_ylim(0,1)
+    axs[0].legend(fontsize=10, loc="lower left")
+     
+    # irrelevant high Reward Option 
+    sns.barplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1], errorbar='se',
+                palette=custom_palette, legend=False, hue_order=group_order)
+    sns.stripplot(data=behAll, x='Condition', y='irrelevantHighRewardOption', hue='group', ax=axs[1],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[1].set_ylabel('Irrelevant high reward option', fontsize=12)
+    axs[1].set_xlabel('', fontsize=12)
+    axs[1].axhline(.5, color='black', linestyle='--')
+    axs[1].set_ylim(0,1)
+      
+    # differnce between relevant and irrelevant high Reward Option 
+    sns.boxplot(data=behAll, x='Condition', y='relevantVsIrrelevantHighRewardOption', hue='group', ax=axs[2],
+                palette=custom_palette, legend=False, hue_order=group_order)
+    sns.stripplot(data=behAll, x='Condition', y='relevantVsIrrelevantHighRewardOption', hue='group', ax=axs[2],
+                  dodge=True, alpha=1, size=4, legend=False, palette='dark:black', hue_order=group_order)
+    axs[2].set_ylabel('Relevant versus Irrelevant option', fontsize=12)
+    axs[2].set_xlabel('', fontsize=12)
+   
+    
+    fig.tight_layout()
+    
+    # Save figure 
+    plt.savefig(f'{saveFigPath}/proportionRelIrrelevantHighRewardOption.pdf', bbox_inches='tight')
+    plt.show()
+
+
+
+# Taken from https://github.com/laurafontanesi/rlssm/blob/main/rlssm/utils.py 
+def bci(x, alpha=0.05):
+    """Calculate Bayesian credible interval (BCI).
+    Parameters
+    ----------
+    x : array-like
+        An array containing MCMC samples.
+    alpha : float
+        Desired probability of type I error (defaults to 0.05).
+    Returns
+    -------
+    interval : numpy.ndarray
+        Array containing the lower and upper bounds of the bci interval.
+    """
+
+    interval = np.nanpercentile(x, [(alpha/2)*100, (1-alpha/2)*100])
+
+    return interval
+
+
+def calc_min_interval(x, alpha):
+    """Internal method to determine the minimum interval of a given width.
+    Parameters
+    ----------
+    x : array-like
+        An sorted numpy array.
+    alpha : float
+        Desired probability of type I error (defaults to 0.05).
+    Returns
+    -------
+    hdi_min : float
+        The lower bound of the interval.
+    hdi_max : float
+        The upper bound of the interval.
+    """
+
+    n = len(x)
+    cred_mass = 1.0-alpha
+
+    interval_idx_inc = int(np.floor(cred_mass*n))
+    n_intervals = n - interval_idx_inc
+    interval_width = x[interval_idx_inc:] - x[:n_intervals]
+
+    if len(interval_width) == 0:
+        raise ValueError('Too few elements for interval calculation')
+
+    min_idx = np.argmin(interval_width)
+    hdi_min = x[min_idx]
+    hdi_max = x[min_idx+interval_idx_inc]
+    return hdi_min, hdi_max
+
+
+def hdi(x, alpha=0.05):
+    """Calculate highest posterior density (HPD).
+        Parameters
+        ----------
+        x : array-like
+            An array containing MCMC samples.
+        alpha : float
+            Desired probability of type I error (defaults to 0.05).
+    Returns
+    -------
+    interval : numpy.ndarray
+        Array containing the lower and upper bounds of the hdi interval.
+    """
+
+    # Make a copy of trace
+    x = x.copy()
+     # Sort univariate node
+    sx = np.sort(x)
+    interval = np.array(calc_min_interval(sx, alpha))
+
+    return interval
+
+
+def plot_posterior(x,
+                   ax=None,
+                   gridsize=100,
+                   clip=None,
+                   show_intervals="HDI",
+                   alpha_intervals=.05,
+                   color='grey',
+                   intervals_kws=None,
+                   trueValue = None,
+                   title = None,
+                   xlabel = None,
+                   ylabel = None,
+                   legends = None,
+                   **kwargs):
+    """Plots a univariate distribution with Bayesian intervals for inference.
+
+    By default, only plots the kernel density estimation using scipy.stats.gaussian_kde.
+
+    Bayesian instervals can be also shown as shaded areas,
+    by changing show_intervals to either BCI or HDI.
+
+    Parameters
+    ----------
+
+    x : array-like
+        Usually samples from a posterior distribution.
+
+    ax : matplotlib.axes.Axes, optional
+        If provided, plot on this Axes.
+        Default is set to current Axes.
+
+    gridsize : int, default to 100
+        Resolution of the kernel density estimation function.
+
+    clip : tuple of (float, float), optional
+        Range for the kernel density estimation function.
+        Default is min and max values of `x`.
+
+    show_intervals : str, default to "HDI"
+        Either "HDI", "BCI", or None.
+        HDI is better when the distribution is not simmetrical.
+        If None, then no intervals are shown.
+
+    alpha_intervals : float, default to .05
+        Alpha level for the intervals calculation.
+        Default is 5 percent which gives 95 percent BCIs and HDIs.
+
+    intervals_kws : dict, optional
+        Additional arguments for `matplotlib.axes.Axes.fill_between`
+        that shows shaded intervals.
+        By default, they are 50 percent transparent.
+
+    color : matplotlib.colors
+        Color for both the density curve and the intervals.
+
+    Returns
+    -------
+
+    ax : matplotlib.axes.Axes
+        Returns the `matplotlib.axes.Axes` object with the plot
+        for further tweaking.
+
+    """
+    if clip is None:
+        min_x = np.min(x)
+        max_x = np.max(x)
+    else:
+        min_x, max_x = clip
+
+    if ax is None:
+        ax = plt.gca()
+        
+    if trueValue is not None:
+        ax.axvline(x=trueValue, ls='--')
+
+    if intervals_kws is None:
+        intervals_kws = {'alpha':.5}
+
+    density = gaussian_kde(x, bw_method='scott')
+    xd = np.linspace(min_x, max_x, gridsize)
+    yd = density(xd)
+
+    ax.plot(xd, yd, color=color, **kwargs)
+
+    if show_intervals is not None:
+        if np.sum(show_intervals == np.array(['BCI', 'HDI'])) < 1:
+            raise ValueError("must be either None, BCI, or HDI")
+        if show_intervals == 'BCI':
+            low, high = bci(x, alpha_intervals)
+        else:
+            low, high = hdi(x, alpha_intervals)
+        ax.fill_between(xd[np.logical_and(xd >= low, xd <= high)],
+                        yd[np.logical_and(xd >= low, xd <= high)],
+                        color=color,
+                        **intervals_kws)
+    
+    if legends is not None:
+        ax.legend(legends) 
+        
+    if title is not None:
+        plt.title(title, fontsize=12)
+
+    if ylabel is not None:
+        plt.ylabel(ylabel, fontsize=12)
+    
+    if xlabel is not None:
+        plt.xlabel(xlabel, fontsize=14)
+    
+   
+    sns.despine()
+     
+    return ax    
+
+
+def plot_hier_kde_posterior(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
+    """
+    Plot posterior distributions for hierarchical model parameters.
+    Dimention of posterior paramters in (nConds, nMeds_nSes,nSamples)
+
+    Parameters
+    ----------
+    config : list of dict
+        A list where each element is a dictionary describing one parameter.
+        Each dictionary must contain:
+            - "param" : str
+                Name of the parameter in the fitted model (e.g., fit[param])
+            - "label" : str
+                Label for the x-axis of the subplot
+            - "legend" : list of str or None (optional)
+                Labels for each dimension of the parameter (e.g., ["Act", "Clr"]).
+                If None, no legend will be displayed.
+
+    -----
+    - Assumes `fit`, `writeMainScarch`, `partcipant_group`, and `model_name`
+      are defined in the global scope.
+    - Assumes parameters are bounded between 0 and 1 (due to set_xlim(0,1)).
+    """
+
+
+    # check if config is a list
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+        
+    # Convert hierarchical parameter plots to axs structure
+    mm = 1/2.54  # convert cm to inches
+    nrows = 2
+    ncols = 2
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(21*mm, 7*nrows*mm))
+    axs = axs.flatten()  # flatten to 1D array for easy indexing
+
+    for p, cfg in enumerate(config):
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+        param = cfg["param"]
+        label = cfg["label"]
+        legend = cfg.get("legend", None)
+        xlim = cfg.get("range", None)
+
+        # get parameter posterior
+        param_post = fit[param] 
+        print('param_post.shape:', param_post.shape)
+        # number of dimetion
+        ndim = param_post.ndim
+        # convert to (nConds, nMeds_nSes,n_Sample)
+        if ndim==2:
+            param_post = param_post[np.newaxis,:,:]
+            
+        # size of each dimention
+        size1=param_post.shape[0]
+        size2=param_post.shape[1]
+        # loop over the dimention of paramters
+        for i in range(size1):
+            for j in range(size2):
+                # get the samples
+                sample_param = param_post[i,j]
+                sns.kdeplot(sample_param, ax=axs[p],fill=True, linewidth=1)
+                if xlim is not None:
+                    axs[p].set_xlim(xlim)
+                
+        # Only add legend if it exists
+        if legend is not None:
+            axs[p].legend(legend, fontsize=10)
+        if label is not None:
+            axs[p].set_xlabel(label, fontsize=10)
+        axs[p].set_ylabel('Density', fontsize=10)
+
+    # Adjust layout and save
+    fig.tight_layout()
+    fig.savefig(f'{model_dir}/{model_name}_{group}_hier.png', dpi=500)
+    plt.close()
+
+
+def plot_indv_kde_posterior(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
+    """
+    Plot posterior KDE for individual parameters from individual RL model with shape:
+    (nParts, nConds, nSess, nSamples)
+    """ 
+
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+    for p, cfg in enumerate(config):
+
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+
+        param = cfg["param"]
+        label = cfg["label"]
+        xlim = cfg.get("range", None)
+
+        param_post = fit[param]
+        print('param_post.shape:', param_post.shape)
+
+        # Ensure 4D shape
+        if param_post.ndim == 4:
+            pass
+        elif param_post.ndim == 3:
+            param_post = param_post[:, :, np.newaxis, :]
+        elif param_post.ndim == 2:
+            param_post = param_post[:, np.newaxis, np.newaxis, :]
+        else:
+            raise ValueError("Unsupported parameter shape")
+
+        nParts, nConds, nSess, nSamples = param_post.shape
+
+        # plotting 
+        mm = 1 / 2.54
+        nrows=nConds*nSess
+        fig, axs = plt.subplots(nrows=nrows, ncols=1,
+                                figsize=(21 * mm, 5 * nrows * mm))
+        # make axs subscriptable
+        if nrows == 1:
+            axs = [axs]
+        
+        idx=0
+        # plotting loop
+        for c in range(nConds):
+            for s in range(nSess):
+                # plot each participant
+                for p_idx in range(nParts):
+                    samples = param_post[p_idx, c, s, :]
+                    sns.kdeplot(samples, ax=axs[idx])
+
+                # labels
+                axs[idx].set_xlabel(label[idx], fontsize=10)
+                axs[idx].set_ylabel("Density", fontsize=10)
+                if xlim is not None:
+                    axs[idx].set_xlim(xlim)
+                idx+=1
+
+        fig.tight_layout()
+        # save
+        fig.savefig(f'{model_dir}/{model_name}_{group}_{param}_indv.png', dpi=300)
+
+        plt.close()
+
+
+def plot_indv_kde_posterior_seperate(fit: dict[str, np.ndarray], model_dir:str, config:list[dict], group:str, model_name:str):
+    """
+    Plot posterior KDE for individual parameters from individual RL model in seperate plots for each participant with shape:
+    (nParts, nConds, nSess, nSamples)
+    """ 
+
+    if not isinstance(config, list):
+        raise TypeError("config must be a list")
+
+    for p, cfg in enumerate(config):
+
+        if "param" not in cfg or "label" not in cfg:
+            raise ValueError(f"config[{p}] must contain 'param' and 'label'")
+
+        param = cfg["param"]
+        label = cfg["label"]
+        xlim = cfg.get("range", None)
+
+        param_post = fit[param]
+        print('param_post.shape:', param_post.shape)
+
+        # Ensure 4D shape
+        if param_post.ndim == 4:
+            pass
+        elif param_post.ndim == 3:
+            param_post = param_post[:, :, np.newaxis, :]
+        elif param_post.ndim == 2:
+            param_post = param_post[:, np.newaxis, np.newaxis, :]
+        else:
+            raise ValueError("Unsupported parameter shape")
+
+        nParts, nConds, nSess, nSamples = param_post.shape
+        
+        # get the name of participants 
+        participants_names = participant_list(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group=group)
+
+        # plotting loop
+        for p_idx in range(nParts):
+            # plotting 
+            mm = 1 / 2.54
+            nrows=nConds*nSess
+            fig, axs = plt.subplots(nrows=nrows, ncols=1,
+                                    figsize=(21 * mm, 5 * nrows * mm))
+            # make axs subscriptable
+            if nrows == 1:
+                axs = [axs]
+
+            # participant id
+            participant= participants_names[p_idx]
+
+            idx=0
+            for c in range(nConds):
+                for s in range(nSess):
+                    # plot each participant
+                    samples = param_post[p_idx, c, s, :]
+                    sns.kdeplot(samples, ax=axs[idx])
+                    # map of posterior
+                    samples_map,_ = MAP_last_axis(samples)
+                    # mean of posterior
+                    param_post_mean = samples.mean(axis=-1)
+                    axs[idx].axvline(x=samples_map, linestyle='--', color='red')
+                    axs[idx].axvline(x=param_post_mean, linestyle='--', color='green')
+                    # labels
+                    axs[idx].set_title(participant, fontsize=10)
+                    axs[idx].set_xlabel(label[idx], fontsize=10)
+                    axs[idx].set_ylabel("Density", fontsize=10)
+                    if xlim is not None:
+                        axs[idx].set_xlim(xlim)
+                    idx+=1
+
+            fig.tight_layout()
+            # save
+            fig.savefig(f'{model_dir}/{model_name}_{group}_{param}_{participant}.png', dpi=300)
+
+            plt.close()
+ 

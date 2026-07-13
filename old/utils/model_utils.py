@@ -8,7 +8,224 @@ from utils import *
 from scipy.stats import kurtosis
 import json 
 from scipy import stats
- 
+
+
+def compute_and_save_clinical_parameters(
+    readClicalEvalFile=PROJECT_CLIN_EVAL_FILE,
+    readModel=SCRATCH_HIER_MODEL_DIR,
+    outDir=SCRATCH_CLIN_EVAL_DIR,
+    outFile=SCARTCH_CLIN_EVAL_FILE
+):
+    """
+    Computes MAP estimates (via KDE mode) of hierarchical RL parameters for PD & HC,
+    merges them with clinical evaluation data, computes medication effects,
+    and saves the combined table to CSV.
+
+    Parameters
+    ----------
+    readClicalEvalDIR : str
+        Directory containing behavioral and model data (pickle files, clinical_evaluation.csv).
+
+    outDir : str
+        Directory where the final output CSV will be written.
+
+    Returns
+    -------
+    parameter_clinical_evaluation : pd.DataFrame
+        Table containing clinical + model-derived parameters.
+    """
+
+    
+    # Helper function: KDE mode
+    def get_mode_density(values):
+        """Return the mode of a posterior distribution using KDE."""
+        kde = gaussian_kde(values)
+        x_grid = np.linspace(min(values), max(values), 1000)
+        return x_grid[np.argmax(kde(x_grid))]
+
+    # read collected data across all participants
+    behAll = pd.read_csv(PROJECT_NoNAN_BEH_ALL_FILE)
+    # select group 
+    behAll_PD = behAll[(behAll['patient']=='PD')].copy().reset_index(drop=False)
+    behAll_HC = behAll[(behAll['patient']=='HC')].copy().reset_index(drop=False)
+    #  participant
+    particiapnts_PD = behAll_PD['sub_ID'].unique()
+    particiapnts_HC = behAll_HC['sub_ID'].unique()
+
+    # Load clinical evaluation
+    clinical_evaluation = pd.read_csv(f'{readClicalEvalFile}')
+
+    # LOAD PD MODEL RESULTS  
+    pkl_PD = f'{readModel}/Tabel3/PD/tabel3_model1_complement_prob_PD.pkl'
+    fit_PD = load_pickle(load_path=pkl_PD)['fit']
+
+    # Extract posterior samples
+    transfer_alpha_pos_PD = fit_PD["transfer_alpha_pos"]
+    transfer_alpha_neg_PD = fit_PD["transfer_alpha_neg"]
+    transfer_sensitivity_PD = fit_PD["transfer_sensitivity"]
+    transfer_weight_PD = fit_PD["transfer_weight"]
+
+    nParts = transfer_alpha_pos_PD.shape[0]
+    nMeds = transfer_alpha_pos_PD.shape[1]
+    nConds = 2
+
+    # Initialize MAP arrays
+    map_alpha_pos_PD = np.zeros((nParts, nMeds))
+    map_alpha_neg_PD = np.zeros((nParts, nConds, nMeds))
+    map_sensitivity_PD = np.zeros((nParts, nConds, nMeds))
+    map_weighting_PD = np.zeros((nParts, nConds, nMeds))
+
+    # Positive LR
+    for i in range(nParts):
+        for j in range(nMeds):
+            map_alpha_pos_PD[i, j] = get_mode_density(transfer_alpha_pos_PD[i, j])
+
+    # Negative LR, sensitivity, weighting
+    for i in range(nParts):
+        for j in range(nConds):
+            for k in range(nMeds):
+                map_alpha_neg_PD[i, j, k] = get_mode_density(transfer_alpha_neg_PD[i, j, k])
+                map_weighting_PD[i, j, k] = get_mode_density(transfer_weight_PD[i, j, k])
+                map_sensitivity_PD[i, j, k] = get_mode_density(transfer_sensitivity_PD[i, j, k])
+
+    # Medication effects (PD ON - PD OFF)
+    map_med_alpha_pos_PD = map_alpha_pos_PD[:, 1] - map_alpha_pos_PD[:, 0]
+    map_mean_alpha_pos_PD = np.mean([map_alpha_pos_PD[:, 1], map_alpha_pos_PD[:, 0]], axis=0)
+
+    map_med_alpha_neg_PD = np.mean([map_alpha_neg_PD[:, 0, 1], map_alpha_neg_PD[:, 1, 1]], axis=0) - \
+                           np.mean([map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 1, 0]], axis=0)
+
+    map_mean_alpha_neg_PD = np.mean([
+        map_alpha_neg_PD[:, 0, 0], map_alpha_neg_PD[:, 0, 1],
+        map_alpha_neg_PD[:, 1, 0], map_alpha_neg_PD[:, 1, 1]
+    ], axis=0)
+
+    map_med_sensitivity_PD = np.mean([map_sensitivity_PD[:, 0, 1], map_sensitivity_PD[:, 1, 1]], axis=0) - \
+                             np.mean([map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 1, 0]], axis=0)
+
+    map_mean_sensitivity_PD = np.mean([
+        map_sensitivity_PD[:, 0, 0], map_sensitivity_PD[:, 0, 1],
+        map_sensitivity_PD[:, 1, 0], map_sensitivity_PD[:, 1, 1]
+    ], axis=0)
+
+    # Weighting parameter
+    map_med_weighting_act_PD = map_weighting_PD[:, 0, 1] - map_weighting_PD[:, 0, 0]
+    map_mean_weighting_act_PD = np.mean([map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0]], axis=0)
+
+    map_med_weighting_clr_PD = map_weighting_PD[:, 1, 1] - map_weighting_PD[:, 1, 0]
+    map_mean_weighting_clr_PD = np.mean([map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]], axis=0)
+
+    map_med_weighting_PD = map_med_weighting_act_PD + map_med_weighting_clr_PD
+    map_mean_weighting_PD = np.mean([
+        map_weighting_PD[:, 0, 1], map_weighting_PD[:, 0, 0],
+        map_weighting_PD[:, 1, 1], map_weighting_PD[:, 1, 0]
+    ], axis=0)
+
+    
+    # LOAD HC MODEL RESULTS
+    pkl_HC = f'{readModel}/Tabel3/HC/tabel3_model1_complement_prob_HC.pkl'
+    fit_HC = load_pickle(load_path=pkl_HC)['fit']
+
+    transfer_alpha_pos_HC = fit_HC["transfer_alpha_pos"]
+    transfer_alpha_neg_HC = fit_HC["transfer_alpha_neg"]
+    transfer_sensitivity_HC = fit_HC["transfer_sensitivity"]
+    transfer_weight_HC = fit_HC["transfer_weight"]
+
+    nParts = transfer_alpha_pos_HC.shape[0]
+
+    map_alpha_pos_HC = np.zeros((nParts, 2))
+    map_alpha_neg_HC = np.zeros((nParts, 2, 2))
+    map_sensitivity_HC = np.zeros((nParts, 2, 2))
+    map_weighting_HC = np.zeros((nParts, 2, 2))
+
+    for i in range(nParts):
+        for j in range(2):
+            map_alpha_pos_HC[i, j] = get_mode_density(transfer_alpha_pos_HC[i, j])
+
+    for i in range(nParts):
+        for j in range(2):
+            for k in range(2):
+                map_alpha_neg_HC[i, j, k] = get_mode_density(transfer_alpha_neg_HC[i, j, k])
+                map_weighting_HC[i, j, k] = get_mode_density(transfer_weight_HC[i, j, k])
+                map_sensitivity_HC[i, j, k] = get_mode_density(transfer_sensitivity_HC[i, j, k])
+
+    map_mean_alpha_pos_HC = np.mean([map_alpha_pos_HC[:, 1], map_alpha_pos_HC[:, 0]], axis=0)
+
+    map_mean_alpha_neg_HC = np.mean([
+        map_alpha_neg_HC[:, 0, 0], map_alpha_neg_HC[:, 0, 1],
+        map_alpha_neg_HC[:, 1, 0], map_alpha_neg_HC[:, 1, 1]
+    ], axis=0)
+
+    map_mean_sensitivity_HC = np.mean([
+        map_sensitivity_HC[:, 0, 0], map_sensitivity_HC[:, 0, 1],
+        map_sensitivity_HC[:, 1, 0], map_sensitivity_HC[:, 1, 1]
+    ], axis=0)
+
+    map_mean_weighting_act_HC = np.mean([map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0]], axis=0)
+    map_mean_weighting_clr_HC = np.mean([map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]], axis=0)
+
+    map_mean_weighting_HC = np.mean([
+        map_weighting_HC[:, 0, 1], map_weighting_HC[:, 0, 0],
+        map_weighting_HC[:, 1, 1], map_weighting_HC[:, 1, 0]
+    ], axis=0)
+
+    
+    #MERGE MODEL PARAMETERS WITH CLINICAL DATA ----
+    parameter_clinical_evaluation = clinical_evaluation.copy()
+
+    # Assign parameters in PD
+    for sub, subject in enumerate(particiapnts_PD):
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_PD[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_PD[sub]
+
+        # PD-specific medication effects
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_pos'] = map_med_alpha_pos_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_alpha_neg'] = map_med_alpha_neg_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_sensitivity'] = map_med_sensitivity_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_act'] = map_med_weighting_act_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting_clr'] = map_med_weighting_clr_PD[sub]
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_med_weighting'] = map_med_weighting_PD[sub]
+
+        # UPDRS difference
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'med_UPDRS'] = \
+            parameter_clinical_evaluation['total_UPDRSON'] - parameter_clinical_evaluation['total_UPDRSOFF']
+
+
+    for sub, subject in enumerate(particiapnts_HC):
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_pos'] = map_mean_alpha_pos_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_alpha_neg'] = map_mean_alpha_neg_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_sensitivity'] = map_mean_sensitivity_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_act'] = map_mean_weighting_act_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting_clr'] = map_mean_weighting_clr_HC[sub]
+
+        parameter_clinical_evaluation.loc[parameter_clinical_evaluation['sub_ID']==subject, 'map_mean_weighting'] = map_mean_weighting_HC[sub]
+    
+    # Save CSV
+
+    # Check out if it does not exist
+    if not os.path.isdir(f'{outDir}'):
+            os.makedirs(f'{outDir}') 
+
+    parameter_clinical_evaluation.to_csv(outFile, index=False)
+
+    print(f"Saved clinical parameter table to:\n{outDir}")
+
 
 def dataStanActClr(readBehFile= PROJECT_NoNAN_BEH_ALL_FILE, group:str='PD',
                    table:str='table3', model:str='model1'):

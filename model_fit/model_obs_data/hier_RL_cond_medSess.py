@@ -11,11 +11,11 @@ from utils import *
 import os
 
 # name of the model
-model = 'model1'
+model = 'model6'
 # group, PD, HC
 partcipant_group = 'PD' 
 # class of model
-model_calss ='tabel3'
+model_calss ='tabel2'
 # full model name
 model_full_name = f'{model_calss}_{model}'
 

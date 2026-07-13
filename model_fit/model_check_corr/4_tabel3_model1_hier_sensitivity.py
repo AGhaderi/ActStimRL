@@ -43,15 +43,15 @@ axs = axs.flatten()
 transfer_hier_sensitivity_mu_HC_sess1 = np.mean([transfer_hier_sensitivity_mu_HC[0,0], transfer_hier_sensitivity_mu_HC[1,0]], axis=0)
 transfer_hier_sensitivity_mu_HC_sess2 = np.mean([transfer_hier_sensitivity_mu_HC[0,1], transfer_hier_sensitivity_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess2, ax=axs[0], color=COLORS['HC-Sess2'], fill=True, linewidth=1, alpha=.6,  label='See2')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess1, ax=axs[0], color=COLORS['HC-Sess1'], fill=True, linewidth=1, alpha=.6,  label='See1')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess2, ax=axs[0], color=COLORS['HC-Sess2'], fill=True, linewidth=1, alpha=.6,  label='HC-See2')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_sess1, ax=axs[0], color=COLORS['HC-Sess1'], fill=True, linewidth=1, alpha=.6,  label='HC-See1')
 
 # condition
 transfer_hier_sensitivity_mu_HC_Act = np.mean([transfer_hier_sensitivity_mu_HC[0,0], transfer_hier_sensitivity_mu_HC[0,1]], axis=0)
 transfer_hier_sensitivity_mu_HC_Clr = np.mean([transfer_hier_sensitivity_mu_HC[1,0], transfer_hier_sensitivity_mu_HC[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Act, ax=axs[1], color=COLORS['HC-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Clr, ax=axs[1], color=COLORS['HC-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Act, ax=axs[1], color=COLORS['HC-POS'], fill=True, linewidth=1, alpha=.6,  label='HC-Act')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_HC_Clr, ax=axs[1], color=COLORS['HC-NEG'], fill=True, linewidth=1, alpha=.6,  label='HC-Clr')
 
 axs[0].legend(fontsize=7, loc='upper left')
 axs[0].set_xlim(0.01,.08)
@@ -73,12 +73,12 @@ axs[1].set_title('B) Condition effect in sensitivity in HC', loc='left', fontsiz
 i_sess = np.mean((transfer_hier_sensitivity_mu_HC_sess2 - transfer_hier_sensitivity_mu_HC_sess1)>0)
 bf_sess = i_sess/(1-i_sess)
 print(' Session effect in sensitivity in HC: ', bf_sess)
-axs[0].text(.5, .9, f'BF(sess) = {round(bf_sess, 2)}', transform= axs[0].transAxes, fontsize=7)
+axs[0].text(.5, .9, f'BF = {round(bf_sess, 2)}', transform= axs[0].transAxes, fontsize=7)
 # Condition BF
 i_cond = np.mean((transfer_hier_sensitivity_mu_HC_Act - transfer_hier_sensitivity_mu_HC_Clr)>0)
 bf_cond = i_cond/(1-i_cond)
 print(' Condition effect in sensitivity in HC: ', bf_cond)
-axs[1].text(.5, .9, f'BF(cond) = {round(bf_cond, 2)}', transform= axs[1].transAxes, fontsize=7)
+axs[1].text(.5, .9, f'BF = {round(bf_cond, 2)}', transform= axs[1].transAxes, fontsize=7)
 
  
  
@@ -90,26 +90,26 @@ axs[1].text(.5, .9, f'BF(cond) = {round(bf_cond, 2)}', transform= axs[1].transAx
 transfer_hier_sensitivity_mu_PD_OFF = np.mean([transfer_hier_sensitivity_mu_PD[0,0], transfer_hier_sensitivity_mu_PD[1,0]], axis=0)
 transfer_hier_sensitivity_mu_PD_ON = np.mean([transfer_hier_sensitivity_mu_PD[0,1], transfer_hier_sensitivity_mu_PD[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_ON, ax=axs[2], color=COLORS['PD-ON'], fill=True, linewidth=1, alpha=.6,  label='ON')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_OFF, ax=axs[2], color=COLORS['PD-OFF'], fill=True, linewidth=1, alpha=.6,  label='OFF')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_ON, ax=axs[2], color=COLORS['PD-ON'], fill=True, linewidth=1, alpha=.6,  label='PD ON')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_OFF, ax=axs[2], color=COLORS['PD-OFF'], fill=True, linewidth=1, alpha=.6,  label='PD OFF')
 
 # Condition
 transfer_hier_sensitivity_mu_PD_Act = np.mean([transfer_hier_sensitivity_mu_PD[0,0], transfer_hier_sensitivity_mu_PD[0,1]], axis=0)
 transfer_hier_sensitivity_mu_PD_Clr = np.mean([transfer_hier_sensitivity_mu_PD[1,0], transfer_hier_sensitivity_mu_PD[1,1]], axis=0)
 
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Clr, ax=axs[3], color=COLORS['PD-NEG'], fill=True, linewidth=1, alpha=.6,  label='Clr')
-sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Act, ax=axs[3], color=COLORS['PD-POS'], fill=True, linewidth=1, alpha=.6,  label='Act')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Clr, ax=axs[3], color=COLORS['PD-NEG'], fill=True, linewidth=1, alpha=.6,  label='PD-Clr')
+sns.kdeplot(data=transfer_hier_sensitivity_mu_PD_Act, ax=axs[3], color=COLORS['PD-POS'], fill=True, linewidth=1, alpha=.6,  label='PD-Act')
 
 # Medication Effect BF
 i_sess = np.mean((transfer_hier_sensitivity_mu_PD_OFF - transfer_hier_sensitivity_mu_PD_ON)>0)
 bf_sess = i_sess/(1-i_sess)
 print(' Medication effect in sensitivity in PD: ', bf_sess)
-axs[2].text(.5, .9, f'BF(med) = {round(bf_sess, 2)}', transform= axs[2].transAxes, fontsize=7)
+axs[2].text(.5, .9, f'BF = {round(bf_sess, 2)}', transform= axs[2].transAxes, fontsize=7)
 # Condition BF
 i_cond = np.mean((transfer_hier_sensitivity_mu_PD_Act - transfer_hier_sensitivity_mu_PD_Clr)>0)
 bf_cond = i_cond/(1-i_cond)
 print(' Condition effect in sensitivity in PD: ', bf_cond)
-axs[3].text(.5, .9, f'BF(cond) = {round(bf_cond, 2)}', transform= axs[3].transAxes, fontsize=7)
+axs[3].text(.5, .9, f'BF = {round(bf_cond, 2)}', transform= axs[3].transAxes, fontsize=7)
 
 
 
@@ -134,8 +134,8 @@ axs[3].set_title('D) Condition effect in sensitivity in PD', loc='left', fontsiz
 plt.tight_layout()
 
 # Check out if it does not exist
-if not os.path.isdir(f'{SCRATCH_HIER_MODEL_DIR}/Tabel3/'):
-        os.makedirs(f'{SCRATCH_HIER_MODEL_DIR}/Tabel3/') 
+if not os.path.isdir(f'{SCRATCH_HIER_MODEL_DIR}/tabel3/'):
+        os.makedirs(f'{SCRATCH_HIER_MODEL_DIR}/tabel3/') 
                        
 fig.savefig(f'{SCRATCH_HIER_MODEL_DIR}/tabel3/{model_name}_HC_PD_sensitivity.pdf')
 plt.close()
